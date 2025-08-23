@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Glove80 Ninja"
-run/main_scene="uid://v1twkfdtvwwj"
+run/main_scene="uid://btxgor12njard"
 config/features=PackedStringArray("4.4", "Forward Plus")
 boot_splash/bg_color=Color(0.231606, 0.353981, 0.409801, 1)
 boot_splash/fullsize=false

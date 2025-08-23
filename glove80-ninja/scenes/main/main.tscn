@@ -1,0 +1,68 @@
+[gd_scene load_steps=3 format=3 uid="uid://v1twkfdtvwwj"]
+
+[ext_resource type="Script" uid="uid://cq0s66p8ibd80" path="res://scenes/main/main.gd" id="1_iuonh"]
+[ext_resource type="Theme" uid="uid://dcmue30t571sw" path="res://themes/default.tres" id="2_k2fmo"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_iuonh")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -951.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1, 8.4)
+color = Color(0.309804, 0.305882, 0.364706, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -525.0
+offset_top = -141.5
+offset_right = 525.0
+offset_bottom = 141.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="SampleLabel" type="RichTextLabel" parent="VBoxContainer/CenterContainer"]
+layout_mode = 2
+theme = ExtResource("2_k2fmo")
+bbcode_enabled = true
+text = "Example  Text"
+fit_content = true
+scroll_active = false
+autowrap_mode = 2
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="SettingsBtn" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -18.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "⚙"
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="IdleTimer" type="Timer" parent="."]

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c1og1ei5bsewr"]
+
+[ext_resource type="Script" uid="uid://c6wlhtcag3l2s" path="res://scenes/virtual keyboard/virtual_keyboard.gd" id="1_gkkcr"]
+
+[node name="VirtualKeyboard" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_gkkcr")

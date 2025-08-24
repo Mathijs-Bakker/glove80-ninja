@@ -16,12 +16,13 @@ config/features=PackedStringArray("4.4", "Forward Plus")
 boot_splash/bg_color=Color(0.231606, 0.353981, 0.409801, 1)
 boot_splash/fullsize=false
 boot_splash/image="uid://c4he1hocbe6g"
-config/icon="res://assets/icon.svg"
+config/icon="res://assets/identity/icon.svg"
 boot_splash/minimum_display_time=30
 
 [autoload]
 
 ConfigManager="*res://autoload/config_manager.gd"
+Log="*res://addons/logger/logger.gd"
 
 [display]
 
@@ -29,3 +30,7 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
 window/dpi/allow_hidpi=false
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/logger/plugin.cfg")

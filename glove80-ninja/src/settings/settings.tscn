@@ -32,6 +32,12 @@ text = "Cursor Style:"
 [node name="CursorOption" type="OptionButton" parent="Panel/VBoxContainer"]
 layout_mode = 2
 
+[node name="CursorPreview" type="RichTextLabel" parent="Panel/VBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "Example"
+fit_content = true
+
 [node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
 layout_mode = 2
 

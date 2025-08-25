@@ -5,6 +5,7 @@ extends Control
 @onready var save_btn: Button = $Panel/VBoxContainer/HBoxContainer/SaveBtn
 @onready var cancel_btn: Button = $Panel/VBoxContainer/HBoxContainer/CancelBtn
 @onready var reset_btn: Button = $Panel/VBoxContainer/HBoxContainer/ResetBtn
+@onready var cursor_preview: RichTextLabel = $Panel/VBoxContainer/CursorPreview
 
 var config_manager: Node
 var original_values = {}
@@ -27,6 +28,7 @@ func _ready():
     setup_cursor_options()
     load_current_settings()
     update_ui_state()
+    add_to_group("practice_controllers")
 
 
 func setup_cursor_options():
@@ -81,23 +83,28 @@ func update_ui_state():
         print("❌ ConfigManager not available for UI update")
 
 
-func _on_cursor_option_item_selected(index: int):
-    print("Cursor option selected: ", index)
-    var cursor_style = cursor_option.get_item_metadata(index)
-    print("Setting cursor style to: ", cursor_style)
+func _on_cursor_option_item_selected(p_index: int):
+    var cursor_style = cursor_option.get_item_metadata(p_index)
+    UserConfigManager.set_setting("cursor_style", cursor_style, true)  # Save immediately
     
-    # Check if value is actually changing
-    var current_style = config_manager.get_setting("cursor_style", "block")
-    print("Current style before change: ", current_style)
+    # Force immediate visual update
+    # get_tree().call_group("practice_controllers", "update_display")
+    update_cursor_preview(cursor_style)
+
+
+func update_cursor_preview(p_style: String) -> void:
+    var preview_text = ""
+    match p_style:
+        "block":
+            preview_text = "[bgcolor=#555555][color=white]A[/color][/bgcolor] B C"
+        "box":
+            preview_text = "[border=2][color=#FF9900]A[/color][/border] B C"
+        "line":
+            preview_text = "[u][color=#FF9900]A[/color][/u] B C"
+        "underline":
+            preview_text = "[u][color=white]A[/color][/u] B C"
     
-    config_manager.set_setting("cursor_style", cursor_style)
-    
-    # Check immediately after setting
-    var new_style = config_manager.get_setting("cursor_style", "block")
-    print("Style after change: ", new_style)
-    print("Has unsaved changes: ", config_manager.has_unsaved_changes())
-    
-    update_ui_state()
+    cursor_preview.text = preview_text
 
 
 func _on_save_btn_pressed():

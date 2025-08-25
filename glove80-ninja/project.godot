@@ -26,6 +26,7 @@ JSONManager="*res://autoload/json_manager.gd"
 UserConfigManager="*res://autoload/user_config_manager.gd"
 UserProfileManager="*res://autoload/user_profile_manager.gd"
 FilePaths="*res://autoload/file_paths.gd"
+TextDisplayManager="*res://autoload/text_display_manager.gd"
 
 [display]
 

@@ -7,11 +7,11 @@ class_name TypingGameController
 #region Dependencies
 var typing_manager: TypingManager
 var stats_manager: StatsManager
-var text_display: TextDisplayManager
 #endregion
 
 
 #region Scene References  
+var text_display:= TextDisplayManager 
 @onready var sample_label: RichTextLabel = $VBoxContainer/CenterContainer/SampleLabel
 @onready var stats_label: Label = $VBoxContainer/StatsLabel
 @onready var idle_timer: Timer = $IdleTimer
@@ -31,6 +31,8 @@ var settings_scene: Control
 
 
 func _ready() -> void:
+	text_display.setup($VBoxContainer/CenterContainer/SampleLabel, get_node("/root/ConfigManager"))
+	text_display.apply_theme_settings()
 	initialize_game()
 
 
@@ -47,7 +49,7 @@ func initialize_game() -> void:
 func setup_managers() -> void:
 	typing_manager = TypingManager.new()
 	stats_manager = StatsManager.new()
-	text_display = TextDisplayManager.new()
+	# text_display = TextDisplayManager.new()
 	
 	var config_manager = get_node("/root/ConfigManager")
 	text_display.setup(sample_label, config_manager)
@@ -87,7 +89,15 @@ func start_new_exercise() -> void:
 
 
 func update_display() -> void:
-	text_display.update_display(typing_manager.get_display_data())
+	# text_display.update_display(typing_manager.get_display_data())
+	var display_data = {
+		"current_text": typing_manager.current_text,
+		"user_input": typing_manager.user_input,
+		"current_index": typing_manager.current_char_index,
+		"mistakes": typing_manager.mistakes
+	}
+	
+	text_display.update_display(display_data)
 
 
 func open_settings() -> void:
@@ -168,8 +178,15 @@ func show_results(stats: Dictionary) -> void:
 	print("Exercise completed: ", results_text)
 
 
-func _on_character_typed(_correct: bool) -> void:
+func _on_character_typed(p_correct: bool) -> void:
 	stats_manager.update_wpm(typing_manager.user_input.length())
+	update_display()
+	
+	# Visual feedback
+	if p_correct:
+		text_display.show_correct_feedback()
+	else:
+		text_display.show_incorrect_feedback()
 
 
 func _on_progress_updated(_progress: float) -> void:
@@ -187,3 +204,8 @@ func _on_idle_timeout() -> void:
 	if typing_manager.is_typing and not typing_manager.user_input.is_empty():
 		print("Resetting due to inactivity...")
 		start_new_exercise()
+
+func _on_config_changed(p_setting_name: String, p_new_value) -> void:
+	if p_setting_name == "cursor_style" or p_setting_name == "theme" or p_setting_name == "font_size":
+		update_display()
+		text_display.apply_theme_settings()

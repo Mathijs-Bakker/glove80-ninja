@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dwca0eexv6w8s"]
 
-[ext_resource type="Script" uid="uid://cbfouoen72kkt" path="res://src/practice/practice_controller.gd" id="1_3s2vg"]
+[ext_resource type="Script" path="res://src/practice/practice_controller.gd" id="1_3s2vg"]
 [ext_resource type="Theme" uid="uid://dcmue30t571sw" path="res://themes/default.tres" id="2_p0pty"]
 
 [node name="Practice" type="Control"]
@@ -58,9 +58,11 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -18.0
-offset_bottom = 31.0
+offset_left = -89.0
+offset_bottom = 91.0
 grow_horizontal = 0
+theme = ExtResource("2_p0pty")
+theme_override_font_sizes/font_size = 50
 text = "⚙"
 
 [node name="Timer" type="Timer" parent="."]

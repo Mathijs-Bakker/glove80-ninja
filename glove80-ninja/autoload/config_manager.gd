@@ -1,4 +1,3 @@
-# ConfigManager.gd (for autoload)
 extends Node
 
 # Configuration data structure

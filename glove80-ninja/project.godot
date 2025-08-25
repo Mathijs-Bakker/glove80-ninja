@@ -22,7 +22,10 @@ boot_splash/minimum_display_time=30
 [autoload]
 
 ConfigManager="*res://autoload/config_manager.gd"
-Log="*res://addons/logger/logger.gd"
+JSONManager="*res://autoload/json_manager.gd"
+UserConfigManager="*res://autoload/user_config_manager.gd"
+UserProfileManager="*res://autoload/user_profile_manager.gd"
+FilePaths="*res://autoload/file_paths.gd"
 
 [display]
 
@@ -33,4 +36,4 @@ window/dpi/allow_hidpi=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/logger/plugin.cfg")
+enabled=PackedStringArray()

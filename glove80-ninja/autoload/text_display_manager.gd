@@ -37,8 +37,22 @@ func update_display(p_typing_data: Dictionary) -> void:
 	var display_text = generate_display_text(user_input, mistakes)
 	sample_label.text = display_text
 	
-	# Update cursor position and visibility
+	# Always update cursor position, even for first character
 	update_cursor_position()
+	
+	# Debug: Print cursor state
+	print("Cursor update - position: ", current_cursor_position, 
+		  " character: '", current_text[current_cursor_position] if current_cursor_position < current_text.length() else "N/A", 
+		  "' visible: ", cursor.visible if cursor else false)
+
+
+func force_cursor_update(p_position: int) -> void:
+	if not cursor or current_text.is_empty():
+		return
+	
+	current_cursor_position = p_position
+	update_cursor_position()
+	print("Force updated cursor to position: ", p_position)
 
 
 func generate_display_text(p_user_input: String, p_mistakes: int) -> String:
@@ -57,13 +71,22 @@ func generate_display_text(p_user_input: String, p_mistakes: int) -> String:
 
 
 func update_cursor_position() -> void:
+	print("update_cursor_position called - current_cursor_position: ", current_cursor_position)
+	
 	if current_cursor_position >= current_text.length() or not cursor:
 		if cursor:
 			cursor.visible = false
+			print("Cursor hidden - beyond text length")
+		return
+	
+	if current_text.is_empty():
+		print("Cursor hidden - empty text")
+		cursor.visible = false
 		return
 	
 	# Calculate cursor position based on character index
 	var cursor_char = current_text[current_cursor_position]
+	print("Setting cursor character: '", cursor_char, "'")
 	
 	# Set character using direct property access with safety check
 	if "character" in cursor:
@@ -73,13 +96,25 @@ func update_cursor_position() -> void:
 	
 	cursor.visible = true
 	
-	# Get position of the current character in the RichTextLabel
+	# Get text measurements - FIXED: Use the actual displayed text (with BBCode removed)
 	var text_before_cursor = current_text.substr(0, current_cursor_position)
-	var text_size = sample_label.get_theme_default_font().get_string_size(text_before_cursor, HORIZONTAL_ALIGNMENT_LEFT, -1, sample_label.get_theme_font_size("normal_font_size"))
+	var font = sample_label.get_theme_default_font()
+	var font_size = sample_label.get_theme_font_size("normal_font_size")
 	
-	# Position cursor (adjust these values based on your font and layout)
-	cursor.position = Vector2(text_size.x, 0)
-	cursor.size = Vector2(30, sample_label.size.y)
+	# Use get_string_size for accurate measurement - FIXED: Use plain text without BBCode
+	var text_size = font.get_string_size(text_before_cursor, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
+	
+	# Account for RichTextLabel padding and alignment
+	var x_position = text_size.x
+	var y_position = 0
+	
+	# Set cursor size based on font
+	var font_height = font.get_height(font_size)
+	cursor.size = Vector2(font.get_string_size(cursor_char, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x + 8, font_height)
+	
+	cursor.position = Vector2(x_position, y_position)
+	
+	print("Cursor updated - position: ", cursor.position, " character: '", cursor_char, "' text_before: '", text_before_cursor, "' text_size: ", text_size)
 
 
 func update_cursor_style() -> void:

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dwca0eexv6w8s"]
 
-[ext_resource type="Script" uid="uid://cbfouoen72kkt" path="res://src/practice/practice_controller.gd" id="1_3s2vg"]
+[ext_resource type="Script" path="res://src/practice/practice_controller.gd" id="1_3s2vg"]
 [ext_resource type="Theme" uid="uid://dcmue30t571sw" path="res://themes/default.tres" id="2_p0pty"]
 
 [node name="Practice" type="Control"]

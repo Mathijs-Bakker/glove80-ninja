@@ -86,9 +86,12 @@ func start_new_exercise() -> void:
 	var sample = TextProvider.get_random_sample()
 	typing_manager.load_new_text(sample)
 	stats_manager.stop_timing()
+	
+	# Force update display to show the new text and cursor
 	update_display()
+	
 	TextDisplayManager.set_cursor_active(true)
-	print("New exercise started")
+	print("New exercise started: ", sample.left(50) + "..." if sample.length() > 50 else sample)
 
 
 func update_display() -> void:

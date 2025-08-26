@@ -27,6 +27,7 @@ UserConfigManager="*res://autoload/user_config_manager.gd"
 UserProfileManager="*res://autoload/user_profile_manager.gd"
 FilePaths="*res://autoload/file_paths.gd"
 TextDisplayManager="*res://autoload/text_display_manager.gd"
+Log="*res://addons/logger/logger.gd"
 
 [display]
 
@@ -37,4 +38,4 @@ window/dpi/allow_hidpi=false
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/logger/plugin.cfg")

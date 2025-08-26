@@ -132,21 +132,19 @@ func _on_cursor_option_item_selected(p_index: int):
 
 
 func update_cursor_preview(p_style: String) -> void:
+	# For now, use text preview until we implement custom cursor in settings
 	var preview_text = ""
 	match p_style:
 		"block":
-			preview_text = "[bgcolor=#555555][color=white]A[/color][/bgcolor] B C"
+			preview_text = "Block: [bgcolor=#555555][color=white]A[/color][/bgcolor]"
 		"box":
-			preview_text = "[border=2][color=#FF9900]A[/color][/border] B C"
+			preview_text = "Box: [border=2][color=#FF9900]A[/color][/border]"
 		"line":
-			preview_text = "[u][color=#FF9900]A[/color][/u] B C"
+			preview_text = "Line: │A"  # Using vertical line character
 		"underline":
-			preview_text = "[u][color=white]A[/color][/u] B C"
-		_:
-			preview_text = "[bgcolor=#555555][color=white]A[/color][/bgcolor] B C"
+			preview_text = "Underline: [u][color=white]A[/color][/u]"
 	
 	cursor_preview.text = preview_text
-	print("Cursor preview updated: ", p_style)
 
 
 func _on_save_btn_pressed():

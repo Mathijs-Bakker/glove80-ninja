@@ -1,5 +1,5 @@
 extends Control
-class_name TypingGameController
+class_name PracticeController
 
 ## Handles all typing game logic and coordination
 
@@ -7,11 +7,11 @@ class_name TypingGameController
 #region Dependencies
 var typing_manager: TypingManager
 var stats_manager: StatsManager
+var text_display: TextDisplayManager
 #endregion
 
 
 #region Scene References  
-var text_display:= TextDisplayManager 
 @onready var sample_label: RichTextLabel = $VBoxContainer/CenterContainer/SampleLabel
 @onready var stats_label: Label = $VBoxContainer/StatsLabel
 @onready var idle_timer: Timer = $IdleTimer
@@ -31,12 +31,10 @@ var settings_scene: Control
 
 
 func _ready() -> void:
-	text_display.setup($VBoxContainer/CenterContainer/SampleLabel, get_node("/root/ConfigManager"))
-	text_display.apply_theme_settings()
-	initialize_game()
+	initialize_practice()
 
 
-func initialize_game() -> void:
+func initialize_practice() -> void:
 	setup_managers()
 	setup_ui()
 	setup_timers()
@@ -49,10 +47,15 @@ func initialize_game() -> void:
 func setup_managers() -> void:
 	typing_manager = TypingManager.new()
 	stats_manager = StatsManager.new()
-	# text_display = TextDisplayManager.new()
+	
+	# Initialize text_display properly
+	text_display = TextDisplayManager
 	
 	var config_manager = get_node("/root/ConfigManager")
-	text_display.setup(sample_label, config_manager)
+	text_display.setup($VBoxContainer/CenterContainer/SampleLabel, config_manager)  # Setup happens here
+	text_display.apply_theme_settings()  # Apply themes here
+	
+	print("Managers setup complete")
 
 
 func setup_ui() -> void:
@@ -80,11 +83,11 @@ func setup_connections() -> void:
 
 
 func start_new_exercise() -> void:
-	var text_provider = TextProvider.new()
-	var sample_text = text_provider.get_random_sample()
-	typing_manager.load_new_text(sample_text)
+	var sample = TextProvider.get_random_sample()
+	typing_manager.load_new_text(sample)
 	stats_manager.stop_timing()
 	update_display()
+	TextDisplayManager.set_cursor_active(true)
 	print("New exercise started")
 
 
@@ -151,6 +154,10 @@ func _on_typing_finished(_wpm: float, _accuracy: float, _time: float, _mistakes:
 	complete_exercise()
 
 
+func finish_typing() -> void:
+	TextDisplayManager.set_cursor_active(false)
+
+
 func complete_exercise() -> void:
 	var final_stats = get_final_stats()
 	show_results(final_stats)
@@ -184,9 +191,9 @@ func _on_character_typed(p_correct: bool) -> void:
 	
 	# Visual feedback
 	if p_correct:
-		text_display.show_correct_feedback()
+		TextDisplayManager.show_correct_feedback()
 	else:
-		text_display.show_incorrect_feedback()
+		TextDisplayManager.show_incorrect_feedback()
 
 
 func _on_progress_updated(_progress: float) -> void:
@@ -205,7 +212,8 @@ func _on_idle_timeout() -> void:
 		print("Resetting due to inactivity...")
 		start_new_exercise()
 
-func _on_config_changed(p_setting_name: String, p_new_value) -> void:
+
+func _on_config_changed(p_setting_name: String, _p_new_value) -> void:
 	if p_setting_name == "cursor_style" or p_setting_name == "theme" or p_setting_name == "font_size":
 		update_display()
-		text_display.apply_theme_settings()
+		TextDisplayManager.apply_theme_settings()

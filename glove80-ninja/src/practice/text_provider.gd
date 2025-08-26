@@ -12,6 +12,6 @@ const TEXT_SAMPLES := [
 static func get_random_sample() -> String:
 	return TEXT_SAMPLES.pick_random()
 
-static func get_sample_by_difficulty(difficulty: String) -> String:
+static func get_sample_by_difficulty(_p_difficulty: String) -> String:
 	# Implement difficulty-based text selection
 	return get_random_sample()

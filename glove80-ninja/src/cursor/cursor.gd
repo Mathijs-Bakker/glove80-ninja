@@ -23,6 +23,11 @@ signal cursor_style_changed
 		is_active = value
 		queue_redraw()
 
+@export var font_size: int = 16:
+	set(value):
+		font_size = value
+		queue_redraw()
+
 @export var blink_rate: float = 0.5  # Blinks per second
 var blink_timer: float = 0.0
 var visible_state: bool = true
@@ -58,7 +63,7 @@ func _draw():
 	if not is_active or not visible_state:
 		return
 	
-	var char_size = font.get_string_size(character, HORIZONTAL_ALIGNMENT_LEFT, -1, 16)
+	var char_size = font.get_string_size(character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
 	var cursor_pos = Vector2(0, 0)
 	
 	match cursor_style:
@@ -66,26 +71,25 @@ func _draw():
 			# Draw background block
 			draw_rect(Rect2(cursor_pos, Vector2(char_size.x + 8, size.y)), CURSOR_COLORS.block)
 			# Draw character
-			draw_string(font, cursor_pos + Vector2(4, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color.WHITE)
+			draw_string(font, cursor_pos + Vector2(4, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.WHITE)
 		
 		"box":
 			# Draw box border
-			# draw_rect(Rect2(cursor_pos, Vector2(char_size.x + 8, size.y)), Color.TRANSPARENT, false, CURSOR_COLORS.box, 2)
-			draw_rect(Rect2(cursor_pos, Vector2(char_size.x + 8, size.y)), Color.TRANSPARENT, false, 1.0)
+			draw_rect(Rect2(cursor_pos, Vector2(char_size.x + 8, size.y)), CURSOR_COLORS.box, false, 2)
 			# Draw character
-			draw_string(font, cursor_pos + Vector2(4, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, CURSOR_COLORS.box)
+			draw_string(font, cursor_pos + Vector2(4, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, CURSOR_COLORS.box)
 		
 		"line":
 			# Draw vertical line on left side
 			draw_line(cursor_pos, cursor_pos + Vector2(0, size.y), CURSOR_COLORS.line, 2)
 			# Draw character
-			draw_string(font, cursor_pos + Vector2(8, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, CURSOR_COLORS.line)
+			draw_string(font, cursor_pos + Vector2(8, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, CURSOR_COLORS.line)
 		
 		"underline":
 			# Draw underline
 			draw_line(cursor_pos + Vector2(0, size.y - 2), cursor_pos + Vector2(char_size.x + 8, size.y - 2), CURSOR_COLORS.underline, 2)
 			# Draw character
-			draw_string(font, cursor_pos + Vector2(4, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color.WHITE)
+			draw_string(font, cursor_pos + Vector2(4, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.WHITE)
 
 
 # Animation methods
@@ -113,6 +117,11 @@ func set_active(active: bool) -> void:
 	is_active = active
 	visible_state = true
 	blink_timer = 0.0
+	queue_redraw()
+
+
+func set_font_size(size: int) -> void:
+	font_size = size
 	queue_redraw()
 
 

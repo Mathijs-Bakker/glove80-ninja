@@ -37,22 +37,8 @@ func update_display(p_typing_data: Dictionary) -> void:
 	var display_text = generate_display_text(user_input, mistakes)
 	sample_label.text = display_text
 	
-	# Always update cursor position, even for first character
+	# Update cursor position and visibility
 	update_cursor_position()
-	
-	# Debug: Print cursor state
-	print("Cursor update - position: ", current_cursor_position, 
-		  " character: '", current_text[current_cursor_position] if current_cursor_position < current_text.length() else "N/A", 
-		  "' visible: ", cursor.visible if cursor else false)
-
-
-func force_cursor_update(p_position: int) -> void:
-	if not cursor or current_text.is_empty():
-		return
-	
-	current_cursor_position = p_position
-	update_cursor_position()
-	print("Force updated cursor to position: ", p_position)
 
 
 func generate_display_text(p_user_input: String, p_mistakes: int) -> String:
@@ -71,50 +57,44 @@ func generate_display_text(p_user_input: String, p_mistakes: int) -> String:
 
 
 func update_cursor_position() -> void:
-	print("update_cursor_position called - current_cursor_position: ", current_cursor_position)
-	
 	if current_cursor_position >= current_text.length() or not cursor:
 		if cursor:
 			cursor.visible = false
-			print("Cursor hidden - beyond text length")
 		return
 	
 	if current_text.is_empty():
-		print("Cursor hidden - empty text")
 		cursor.visible = false
 		return
 	
 	# Calculate cursor position based on character index
 	var cursor_char = current_text[current_cursor_position]
-	print("Setting cursor character: '", cursor_char, "'")
 	
-	# Set character using direct property access with safety check
+	# Set character using direct property access
 	if "character" in cursor:
 		cursor.character = cursor_char
-	else:
-		print("Cursor does not have 'character' property")
 	
 	cursor.visible = true
 	
-	# Get text measurements - FIXED: Use the actual displayed text (with BBCode removed)
+	# Get text measurements - use the same font settings as SampleLabel
 	var text_before_cursor = current_text.substr(0, current_cursor_position)
 	var font = sample_label.get_theme_default_font()
 	var font_size = sample_label.get_theme_font_size("normal_font_size")
 	
-	# Use get_string_size for accurate measurement - FIXED: Use plain text without BBCode
+	# Use get_string_size for accurate measurement
 	var text_size = font.get_string_size(text_before_cursor, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
 	
 	# Account for RichTextLabel padding and alignment
 	var x_position = text_size.x
 	var y_position = 0
 	
-	# Set cursor size based on font
+	# Set cursor size based on the SAME font settings as SampleLabel
+	var char_size = font.get_string_size(cursor_char, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
 	var font_height = font.get_height(font_size)
-	cursor.size = Vector2(font.get_string_size(cursor_char, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x + 8, font_height)
+	
+	# Use consistent sizing - match the SampleLabel's font metrics exactly
+	cursor.size = Vector2(char_size.x + 8, font_height)
 	
 	cursor.position = Vector2(x_position, y_position)
-	
-	print("Cursor updated - position: ", cursor.position, " character: '", cursor_char, "' text_before: '", text_before_cursor, "' text_size: ", text_size)
 
 
 func update_cursor_style() -> void:
@@ -123,32 +103,24 @@ func update_cursor_style() -> void:
 		
 	var cursor_style = UserConfigManager.get_setting("cursor_style", "block")
 	
-	# Set cursor style using direct property access with safety check
+	# Set cursor style using direct property access
 	if "cursor_style" in cursor:
 		cursor.cursor_style = cursor_style
-	else:
-		print("Cursor does not have 'cursor_style' property")
 
 
 func show_correct_feedback() -> void:
 	if cursor and "pulse" in cursor:
 		cursor.pulse()
-	elif cursor:
-		print("Cursor does not have 'pulse' method")
 
 
 func show_incorrect_feedback() -> void:
 	if cursor and "shake" in cursor:
 		cursor.shake()
-	elif cursor:
-		print("Cursor does not have 'shake' method")
 
 
 func set_cursor_active(p_active: bool) -> void:
 	if cursor and "set_active" in cursor:
 		cursor.set_active(p_active)
-	elif cursor:
-		print("Cursor does not have 'set_active' method")
 
 
 func update_stats_display(p_stats: Dictionary, p_stats_label: Label) -> void:
@@ -177,4 +149,9 @@ func apply_theme_settings() -> void:
 			sample_label.add_theme_color_override("default_color", Color.YELLOW)
 	
 	sample_label.add_theme_font_size_override("normal_font_size", font_size)
+	
+	# Also update cursor with the same font size if it supports it
+	if cursor and "set_font_size" in cursor:
+		cursor.set_font_size(font_size)
+	
 	update_cursor_style()

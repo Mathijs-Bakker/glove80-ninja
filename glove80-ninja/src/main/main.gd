@@ -1,9 +1,12 @@
 extends Node
 
 func _ready() -> void:
-	print("[main] Application started.")
+	Log.info("[main] Application started.")
+	instantiate_practice_scene()
 	
-	# Load and add typing_game.tscn as a child
+
+
+func instantiate_practice_scene():
 	var practice_scene = preload("res://src/practice/practice.tscn")
 	var practice_instance = practice_scene.instantiate()
 	add_child(practice_instance)

@@ -13,22 +13,14 @@ const CONFIG_PATH = "user://config/config.json"
 const DEFAULT_CONFIG = {
 	"cursor_style": "block",
 	"theme": "dark",
-	"sound_volume": 80,
-	"music_volume": 60,
-	"sound_effects": true,
-	"background_music": true,
-	"difficulty": "medium",
-	"show_hints": true,
 	"font_size": 16,
+	"sound_volume": 80,
 	"typing_sounds": true,
-	"keyboard_sounds": true,
-	"auto_save": true,
-	"auto_save_interval": 5,
 	"language": "en"
 }
 
 var current_config: Dictionary = {}
-var unsaved_changes: Dictionary = {}  # Ensure this exists
+var unsaved_changes: Dictionary = {}
 
 
 func _ready() -> void:
@@ -48,16 +40,16 @@ func save_config() -> bool:
 	# Apply unsaved changes to current config
 	for key in unsaved_changes:
 		current_config[key] = unsaved_changes[key]
-	
+
 	unsaved_changes.clear()  # Clear after saving
-	
+
 	var success = JSONManager.save_data(CONFIG_PATH, current_config)
 	if success:
 		config_saved.emit()
 		print("User config saved")
 	else:
 		push_error("Failed to save user config")
-	
+
 	return success
 
 
@@ -77,22 +69,22 @@ func get_setting(p_setting_name: String, p_default_value = null):
 # Set a configuration value
 func set_setting(p_setting_name: String, p_value, p_save_immediately: bool = false) -> void:
 	print("set_setting called: ", p_setting_name, " = ", p_value)
-	
+
 	# Get current value (including unsaved changes)
 	var current_value = get_setting(p_setting_name)
 	print("Current value: ", current_value, " New value: ", p_value)
-	
+
 	if current_value == p_value:
 		print("No change needed")
 		return  # No change needed
-	
+
 	# Store in unsaved changes
 	unsaved_changes[p_setting_name] = p_value
 	print("Unsaved changes now: ", unsaved_changes)
-	
+
 	config_changed.emit(p_setting_name, p_value)
 	print("Signal emitted")
-	
+
 	if p_save_immediately:
 		save_config()
 
@@ -115,10 +107,10 @@ func discard_unsaved_changes() -> void:
 func reset_to_defaults(p_save_immediately: bool = true) -> void:
 	current_config = DEFAULT_CONFIG.duplicate(true)
 	unsaved_changes.clear()
-	
+
 	if p_save_immediately:
 		save_config()
-	
+
 	print("Config reset to defaults")
 
 
@@ -133,7 +125,7 @@ func export_config(p_export_path: String) -> bool:
 	var export_data = current_config.duplicate(true)
 	for key in unsaved_changes:
 		export_data[key] = unsaved_changes[key]
-	
+
 	return JSONManager.save_data(p_export_path, export_data)
 
 
@@ -141,11 +133,11 @@ func export_config(p_export_path: String) -> bool:
 func import_config(p_import_path: String) -> bool:
 	if not FileAccess.file_exists(p_import_path):
 		return false
-	
+
 	var imported_config = JSONManager.load_data(p_import_path, {})
 	if imported_config.is_empty():
 		return false
-	
+
 	current_config = imported_config
 	unsaved_changes.clear()
 	save_config()

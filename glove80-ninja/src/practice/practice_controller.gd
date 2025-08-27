@@ -36,7 +36,7 @@ var _initialization_pending: bool = false
 
 
 func _ready() -> void:
-	print("PracticeController: _ready() called")
+	Log.info("[PracticeController][_ready] Ready called")
 	_setup_ui()
 	await get_tree().process_frame  # Wait for scene to be fully ready
 	_setup_components()
@@ -45,10 +45,11 @@ func _ready() -> void:
 	if _initialization_pending:
 		_execute_initialization()
 
-	print("PracticeController: _ready() complete")
+	Log.info("[PracticeController][_ready] Ready complete")
 
 
 func _exit_tree() -> void:
+	Log.info("[PracticeController][_exit_tree] Cleaning up resources")
 	# Clean up session manager resources
 	if session_manager:
 		session_manager.cleanup()
@@ -56,29 +57,29 @@ func _exit_tree() -> void:
 
 ## Initialize with required services
 func initialize(p_config_service: ConfigService, p_user_service: UserService) -> void:
-	print("PracticeController: initialize() called")
+	Log.info("[PracticeController][initialize] Initialize called with services")
 	_pending_config_service = p_config_service
 	_pending_user_service = p_user_service
 	_initialization_pending = true
 
 	# If components are already set up, initialize immediately
 	if text_display != null:
+		Log.info("[PracticeController][initialize] Components ready, executing immediately")
 		_execute_initialization()
 
 
 ## Execute the actual initialization after components are ready
 func _execute_initialization() -> void:
-	print("PracticeController: _execute_initialization() called")
+	Log.info("[PracticeController][_execute_initialization] Executing initialization")
 	config_service = _pending_config_service
 	user_service = _pending_user_service
 	_initialization_pending = false
 
-	print("PracticeController: Services assigned - config: ", config_service != null, " user: ", user_service != null)
-	print("PracticeController: text_display state: ", text_display != null)
-	print("PracticeController: input_handler state: ", input_handler != null)
+	Log.info("[PracticeController][_execute_initialization] Services assigned - config: %s, user: %s" % [config_service != null, user_service != null])
+	Log.info("[PracticeController][_execute_initialization] Component states - text_display: %s, input_handler: %s" % [text_display != null, input_handler != null])
 
 	if text_display == null:
-		push_error("TextDisplay component is null - components not set up properly")
+		Log.error("[PracticeController][_execute_initialization] TextDisplay component is null - components not set up properly")
 		return
 
 	_initialize_components()
@@ -116,57 +117,59 @@ func _setup_ui() -> void:
 
 
 func _setup_components() -> void:
-	print("PracticeController: _setup_components() called")
+	Log.info("[PracticeController][_setup_components] Setting up components")
 
 	# Create text display component
-	print("PracticeController: Loading TextDisplay scene...")
+	Log.info("[PracticeController][_setup_components] Loading TextDisplay scene")
 	var text_display_scene = load("res://src/ui/components/text_display.tscn")
 	if text_display_scene:
-		print("PracticeController: TextDisplay scene loaded successfully")
+		Log.info("[PracticeController][_setup_components] TextDisplay scene loaded successfully")
 		text_display = text_display_scene.instantiate()
-		print("PracticeController: TextDisplay instantiated: ", text_display != null)
+		Log.info("[PracticeController][_setup_components] TextDisplay instantiated: %s" % (text_display != null))
 
 		if text_display_container:
 			text_display_container.add_child(text_display)
-			print("PracticeController: TextDisplay added to container")
+			Log.info("[PracticeController][_setup_components] TextDisplay added to container")
 		else:
-			push_error("PracticeController: TextDisplayContainer not found in scene")
+			Log.error("[PracticeController][_setup_components] TextDisplayContainer not found in scene")
 	else:
-		push_error("PracticeController: Failed to load TextDisplay scene")
+		Log.error("[PracticeController][_setup_components] Failed to load TextDisplay scene")
 
 	# Create input handler
-	print("PracticeController: Creating InputHandler...")
+	Log.info("[PracticeController][_setup_components] Creating InputHandler")
 	input_handler = InputHandler.new()
 	add_child(input_handler)
-	print("PracticeController: InputHandler created: ", input_handler != null)
+	Log.info("[PracticeController][_setup_components] InputHandler created: %s" % (input_handler != null))
 
 	# Create session manager
-	print("PracticeController: Creating SessionManager...")
+	Log.info("[PracticeController][_setup_components] Creating SessionManager")
 	session_manager = SessionManager.new()
-	print("PracticeController: SessionManager created: ", session_manager != null)
+	Log.info("[PracticeController][_setup_components] SessionManager created: %s" % (session_manager != null))
 
 
 func _initialize_components() -> void:
+	Log.info("[PracticeController][_initialize_components] Initializing components")
+
 	# Initialize text display with config service
 	if text_display:
 		text_display.initialize("", config_service)
-		print("TextDisplay initialized")
+		Log.info("[PracticeController][_initialize_components] TextDisplay initialized")
 	else:
-		push_error("TextDisplay component is null during initialization")
+		Log.error("[PracticeController][_initialize_components] TextDisplay component is null during initialization")
 
 	# Initialize input handler
 	if input_handler:
-		input_handler.initialize(config_service)
-		print("InputHandler initialized")
+		input_handler.initialize()
+		Log.info("[PracticeController][_initialize_components] InputHandler initialized")
 	else:
-		push_error("InputHandler is null during initialization")
+		Log.error("[PracticeController][_initialize_components] InputHandler is null during initialization")
 
 	# Initialize session manager with user service
 	if session_manager:
 		session_manager.initialize(user_service, self)
-		print("SessionManager initialized")
+		Log.info("[PracticeController][_initialize_components] SessionManager initialized")
 	else:
-		push_error("SessionManager is null during initialization")
+		Log.error("[PracticeController][_initialize_components] SessionManager is null during initialization")
 
 
 func _connect_services() -> void:

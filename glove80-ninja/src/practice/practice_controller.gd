@@ -1,194 +1,355 @@
+class_name PracticeControllerRefactored
 extends Control
-class_name PracticeController
 
-## Handles all typing logic and coordination
+## Refactored practice controller with proper separation of concerns
+## Uses dependency injection and composition instead of monolithic design
 
 
-var typing_manager: TypingManager
-var stats_manager: StatsManager
-var text_display: TextDisplayManager
+signal exercise_started()
+signal exercise_completed(results: Dictionary)
+signal settings_requested()
 
-@onready var _stats_label: Label = $VBoxContainer/StatsLabel
-@onready var _idle_timer: Timer = $IdleTimer
-@onready var _settings_btn: Button = $SettingsBtn
+# Services (injected dependencies)
+var config_service: ConfigService
+var user_service: UserService
 
-const IDLE_TIMEOUT := 10.0
-const RESULTS_DISPLAY_TIME := 2.0
+# Components
+var text_display: TextDisplay
+var input_handler: InputHandler
+var session_manager: SessionManager
 
-var settings_scene: Control
+# UI References
+@onready var settings_button: Button = $HeaderContainer/SettingsButton
+@onready var restart_button: Button = $HeaderContainer/RestartButton
+@onready var text_display_container: Control = $MainContainer/TextDisplayContainer
+@onready var results_popup: AcceptDialog = $ResultsPopup
+@onready var results_label: RichTextLabel = $ResultsPopup/VBoxContainer/ResultsLabel
+
+# State
+var current_exercise: TypingExercise
+var is_active: bool = false
+
+# Deferred initialization
+var _pending_config_service: ConfigService
+var _pending_user_service: UserService
+var _initialization_pending: bool = false
 
 
 func _ready() -> void:
-	_initialize_practice()
-
-
-func _initialize_practice() -> void:
-	_setup_managers()
+	print("PracticeController: _ready() called")
 	_setup_ui()
-	setup_timers()
-	_setup_signal_connections()
-	
+	await get_tree().process_frame  # Wait for scene to be fully ready
+	_setup_components()
+
+	# If initialization was called before _ready, execute it now
+	if _initialization_pending:
+		_execute_initialization()
+
+	print("PracticeController: _ready() complete")
+
+
+func _exit_tree() -> void:
+	# Clean up session manager resources
+	if session_manager:
+		session_manager.cleanup()
+
+
+## Initialize with required services
+func initialize(p_config_service: ConfigService, p_user_service: UserService) -> void:
+	print("PracticeController: initialize() called")
+	_pending_config_service = p_config_service
+	_pending_user_service = p_user_service
+	_initialization_pending = true
+
+	# If components are already set up, initialize immediately
+	if text_display != null:
+		_execute_initialization()
+
+
+## Execute the actual initialization after components are ready
+func _execute_initialization() -> void:
+	print("PracticeController: _execute_initialization() called")
+	config_service = _pending_config_service
+	user_service = _pending_user_service
+	_initialization_pending = false
+
+	print("PracticeController: Services assigned - config: ", config_service != null, " user: ", user_service != null)
+	print("PracticeController: text_display state: ", text_display != null)
+	print("PracticeController: input_handler state: ", input_handler != null)
+
+	if text_display == null:
+		push_error("TextDisplay component is null - components not set up properly")
+		return
+
+	_initialize_components()
+	_connect_services()
 	_start_new_exercise()
 
 
-func _setup_managers() -> void:
-	typing_manager = TypingManager.new()
-	stats_manager = StatsManager.new()
-	
-	# Initialize text_display properly
-	text_display = TextDisplayManager
-	
-	# var config_manager = get_node("/root/ConfigManager")
-	text_display.setup($VBoxContainer/CenterContainer/SampleLabel, ConfigManager) 
-	text_display.apply_theme_settings()  # Apply themes here
-	
+## Start a new typing exercise
+func start_new_exercise() -> void:
+	if not _can_start_exercise():
+		return
+
+	_start_new_exercise()
+
+
+## Handle manual restart request
+func restart_current_exercise() -> void:
+	if current_exercise:
+		_restart_exercise()
+
+
+# Private methods
 
 func _setup_ui() -> void:
-	_settings_btn.pressed.connect(open_settings)
+	print("PracticeController: _setup_ui() called")
+	print("PracticeController: settings_button exists: ", settings_button != null)
+	print("PracticeController: restart_button exists: ", restart_button != null)
+	print("PracticeController: text_display_container exists: ", text_display_container != null)
+
+	if settings_button:
+		settings_button.pressed.connect(_on_settings_requested)
+
+	if restart_button:
+		restart_button.pressed.connect(_on_restart_requested)
 
 
-func setup_timers() -> void:
-	_idle_timer.wait_time = IDLE_TIMEOUT
-	_idle_timer.one_shot = true
-	_idle_timer.timeout.connect(_on_idle_timeout)
+func _setup_components() -> void:
+	print("PracticeController: _setup_components() called")
+
+	# Create text display component
+	print("PracticeController: Loading TextDisplay scene...")
+	var text_display_scene = load("res://src/ui/components/text_display.tscn")
+	if text_display_scene:
+		print("PracticeController: TextDisplay scene loaded successfully")
+		text_display = text_display_scene.instantiate()
+		print("PracticeController: TextDisplay instantiated: ", text_display != null)
+
+		if text_display_container:
+			text_display_container.add_child(text_display)
+			print("PracticeController: TextDisplay added to container")
+		else:
+			push_error("PracticeController: TextDisplayContainer not found in scene")
+	else:
+		push_error("PracticeController: Failed to load TextDisplay scene")
+
+	# Create input handler
+	print("PracticeController: Creating InputHandler...")
+	input_handler = InputHandler.new()
+	add_child(input_handler)
+	print("PracticeController: InputHandler created: ", input_handler != null)
+
+	# Create session manager
+	print("PracticeController: Creating SessionManager...")
+	session_manager = SessionManager.new()
+	print("PracticeController: SessionManager created: ", session_manager != null)
 
 
-func _setup_signal_connections() -> void:
-	typing_manager.typing_started.connect(_on_typing_started)
-	typing_manager.typing_finished.connect(_on_typing_finished)
-	typing_manager.character_typed.connect(_on_character_typed)
-	typing_manager.progress_updated.connect(_on_progress_updated)
-	
-	stats_manager.stats_updated.connect(_on_stats_updated)
+func _initialize_components() -> void:
+	# Initialize text display with config service
+	if text_display:
+		text_display.initialize("", config_service)
+		print("TextDisplay initialized")
+	else:
+		push_error("TextDisplay component is null during initialization")
+
+	# Initialize input handler
+	if input_handler:
+		input_handler.initialize(config_service)
+		print("InputHandler initialized")
+	else:
+		push_error("InputHandler is null during initialization")
+
+	# Initialize session manager with user service
+	if session_manager:
+		session_manager.initialize(user_service, self)
+		print("SessionManager initialized")
+	else:
+		push_error("SessionManager is null during initialization")
+
+
+func _connect_services() -> void:
+	# Connect input handler signals
+	input_handler.character_typed.connect(_on_character_typed)
+	input_handler.input_completed.connect(_on_input_completed)
+	input_handler.input_error.connect(_on_input_error)
+
+	# Connect session manager signals
+	session_manager.session_started.connect(_on_session_started)
+	session_manager.session_completed.connect(_on_session_completed)
+	session_manager.stats_updated.connect(_on_stats_updated)
+
+	# Connect config changes
+	if config_service:
+		config_service.setting_changed.connect(_on_config_changed)
 
 
 func _start_new_exercise() -> void:
-	var sample = TextProvider.get_random_sample()
-	typing_manager.load_new_text(sample)
-	stats_manager.stop_timing()
-	
-	_update_display()
-	
-	TextDisplayManager.set_cursor_active(true)
+	# Create new exercise
+	current_exercise = TypingExercise.new()
+	current_exercise.load_random_text()
+
+	# Setup components for new exercise
+	text_display.set_text(current_exercise.get_text())
+	input_handler.set_target_text(current_exercise.get_text())
+	session_manager.start_session()
+
+	# Update state
+	is_active = true
+	_update_ui_state()
+
+	exercise_started.emit()
 
 
-func _update_display() -> void:
-	var display_data = {
-		"current_text": typing_manager.current_text,
-		"user_input": typing_manager.user_input,
-		"current_index": typing_manager.current_char_index,
-		"mistakes": typing_manager.mistakes
-	}
-	
-	text_display.update_display(display_data)
+func _restart_exercise() -> void:
+	if current_exercise:
+		# Reset exercise state
+		current_exercise.reset()
 
+		# Reset components
+		text_display.set_text(current_exercise.get_text())
+		input_handler.reset()
+		session_manager.restart_session()
 
-func open_settings() -> void:
-	if not settings_scene:
-		settings_scene = preload("res://src/settings/settings.tscn").instantiate()
-		add_child(settings_scene)
-	
-	settings_scene.show()
-
-
-func _input(event: InputEvent) -> void:
-	if not event is InputEventKey:
-		return
-	
-	var key_event := event as InputEventKey
-	if not key_event.pressed or key_event.echo:
-		return
-	
-	if key_event.keycode == KEY_ESCAPE:
-		_toggle_settings()
-		return
-	
-	if typing_manager.handle_input(key_event):
-		_reset_idle_timer()
-		_update_display()
-
-
-func _reset_idle_timer() -> void:
-	if _idle_timer.is_stopped():
-		_idle_timer.start()
-	else:
-		_idle_timer.start(IDLE_TIMEOUT)
-
-
-func _toggle_settings() -> void:
-	if settings_scene and settings_scene.visible:
-		settings_scene.hide()
-	else:
-		open_settings()
-
-
-func _on_typing_started() -> void:
-	stats_manager.start_timing()
-	_idle_timer.start()
-
-
-func _on_typing_finished(_wpm: float, _accuracy: float, _time: float, _mistakes: int) -> void:
-	_complete_exercise()
-
-
-func _finish_typing() -> void:
-	TextDisplayManager.set_cursor_active(false)
+		# Update state
+		is_active = true
+		_update_ui_state()
 
 
 func _complete_exercise() -> void:
-	var final_stats = _get_final_stats()
-	show_results(final_stats)
-	
-	await get_tree().create_timer(RESULTS_DISPLAY_TIME).timeout
-	_start_new_exercise()
+	is_active = false
+
+	# Get final results
+	var exercise_results = current_exercise.get_results()
+	var session_results = session_manager.complete_session(exercise_results)
+
+	# Show results
+	_show_results(session_results)
+
+	# Emit completion signal
+	exercise_completed.emit(session_results)
+
+	# Schedule next exercise
+	_schedule_next_exercise()
 
 
-func _get_final_stats() -> Dictionary:
-	return stats_manager.get_final_stats(
-		typing_manager.user_input.length(),
-		typing_manager.calculate_accuracy(),
-		typing_manager.mistakes
-	)
+func _show_results(results: Dictionary) -> void:
+	if not results_label or not results_popup:
+		return
+
+	var wpm = results.get("wpm", 0.0)
+	var accuracy = results.get("accuracy", 0.0)
+	var time = results.get("duration", 0.0)
+	var mistakes = results.get("mistakes", 0)
+	var characters = results.get("characters_typed", 0)
+
+	var results_text = "[center][b]Exercise Complete![/b][/center]\n\n"
+	results_text += "⚡ WPM: [b]%.1f[/b]\n" % wpm
+	results_text += "🎯 Accuracy: [b]%.1f%%[/b]\n" % accuracy
+	results_text += "⏱️ Time: [b]%.1fs[/b]\n" % time
+	results_text += "❌ Mistakes: [b]%d[/b]\n" % mistakes
+	results_text += "📝 Characters: [b]%d[/b]" % characters
+
+	# Add achievement notifications if any
+	var achievements = results.get("achievements_unlocked", [])
+	if not achievements.is_empty():
+		results_text += "\n\n🏆 [b]New Achievements![/b]\n"
+		for achievement in achievements:
+			results_text += "• %s\n" % achievement
+
+	results_label.text = results_text
+	results_popup.popup_centered()
 
 
-func show_results(stats: Dictionary) -> void:
-	var results_text = "Completed! WPM: %.1f | Accuracy: %.1f%% | Time: %.1fs | Mistakes: %d" % [
-		stats.get("wpm", 0.0), 
-		stats.get("accuracy", 0.0), 
-		stats.get("time", 0.0),
-		stats.get("mistakes", 0)
-	]
-	_stats_label.text = results_text
-
-
-func _on_character_typed(p_correct: bool) -> void:
-	stats_manager.update_wpm(typing_manager.user_input.length())
-	_update_display()
-	
-	# Visual feedback
-	if p_correct:
-		TextDisplayManager.show_correct_feedback()
-	else:
-		TextDisplayManager.show_incorrect_feedback()
-
-
-func _on_progress_updated(_progress: float) -> void:
-	_update_display()
-
-
-func _on_stats_updated(wpm: float, accuracy: float, mistakes: int) -> void:
-	text_display.update_stats_display(
-		{"wpm": wpm, "accuracy": accuracy, "mistakes": mistakes},
-		_stats_label
-	)
-
-
-func _on_idle_timeout() -> void:
-	if typing_manager.is_typing and not typing_manager.user_input.is_empty():
+func _schedule_next_exercise() -> void:
+	# Wait a moment before starting next exercise
+	await get_tree().create_timer(2.0).timeout
+	if is_inside_tree():
 		_start_new_exercise()
 
 
-func _on_config_changed(p_setting_name: String, _p_new_value) -> void:
-	if p_setting_name == "cursor_style" or p_setting_name == "theme" or p_setting_name == "font_size":
-		_update_display()
-		TextDisplayManager.apply_theme_settings()
+func _update_ui_state() -> void:
+	if restart_button:
+		restart_button.disabled = not is_active
+
+
+func _can_start_exercise() -> bool:
+	return config_service != null and user_service != null
+
+
+# Signal handlers
+
+func _on_character_typed(character: String, is_correct: bool, char_position: int) -> void:
+	if not is_active or not current_exercise:
+		return
+
+	# Update exercise with typed character
+	current_exercise.process_character(character, is_correct, char_position)
+
+	# Update display
+	var progress_data = current_exercise.get_progress_data()
+	text_display.update_progress(
+		progress_data.user_input,
+		progress_data.current_index,
+		progress_data.mistakes
+	)
+
+	# Show visual feedback
+	if is_correct:
+		text_display.show_correct_feedback()
+	else:
+		text_display.show_incorrect_feedback()
+
+
+func _on_input_completed() -> void:
+	if is_active:
+		_complete_exercise()
+
+
+func _on_input_error(error_type: String, details: Dictionary) -> void:
+	# Handle input errors (like invalid characters, etc.)
+	print("Input error: %s - %s" % [error_type, details])
+
+
+func _on_session_started() -> void:
+	print("Typing session started")
+
+
+func _on_session_completed(results: Dictionary) -> void:
+	print("Session completed with results: ", results)
+
+
+func _on_stats_updated(stats: Dictionary) -> void:
+	if text_display:
+		text_display.update_stats(
+			stats.get("wpm", 0.0),
+			stats.get("accuracy", 100.0),
+			stats.get("mistakes", 0)
+		)
+
+
+func _on_settings_requested() -> void:
+	settings_requested.emit()
+
+
+func _on_restart_requested() -> void:
+	restart_current_exercise()
+
+
+func _on_config_changed(setting_name: String, _new_value) -> void:
+	# Propagate config changes to components
+	match setting_name:
+		"theme", "font_size", "cursor_style":
+			if text_display:
+				text_display.apply_theme_settings()
+
+
+# Input handling
+
+func _input(event: InputEvent) -> void:
+	if not is_active or not input_handler:
+		return
+
+	# Delegate input handling to input handler component
+	input_handler.handle_input(event)

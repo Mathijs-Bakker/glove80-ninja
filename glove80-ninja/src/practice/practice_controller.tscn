@@ -1,0 +1,60 @@
+[gd_scene load_steps=2 format=3 uid="uid://17cvtuoul1oj"]
+
+[ext_resource type="Script" path="res://src/practice/practice_controller.gd" id="1_practice_controller"]
+
+[node name="PracticeController" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_practice_controller")
+
+[node name="HeaderContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 50.0
+alignment = 2
+
+[node name="RestartButton" type="Button" parent="HeaderContainer"]
+layout_mode = 2
+text = "Restart (F5)"
+disabled = true
+
+[node name="SettingsButton" type="Button" parent="HeaderContainer"]
+layout_mode = 2
+text = "Settings (ESC)"
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 60.0
+offset_bottom = -10.0
+
+[node name="TextDisplayContainer" type="Control" parent="MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ResultsPopup" type="AcceptDialog" parent="."]
+title = "Exercise Results"
+initial_position = 2
+size = Vector2i(400, 300)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ResultsPopup"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -49.0
+
+[node name="ResultsLabel" type="RichTextLabel" parent="ResultsPopup/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = true

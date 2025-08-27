@@ -27,12 +27,12 @@ var update_interval: float = 0.5  # Update stats every 500ms
 var stats_timer: Timer
 
 
-## Initialize session manager with user service
-func initialize(p_user_service: UserService) -> void:
+## Initialize session manager with user service and parent node for timer
+func initialize(p_user_service: UserService, p_parent_node: Node) -> void:
 	user_service = p_user_service
 	current_stats = SessionStats.new()
 	performance_tracker = PerformanceTracker.new()
-	_setup_stats_timer()
+	_setup_stats_timer(p_parent_node)
 
 
 ## Start a new typing session
@@ -130,11 +130,12 @@ func is_active() -> bool:
 
 # Private methods
 
-func _setup_stats_timer() -> void:
+func _setup_stats_timer(p_parent_node: Node) -> void:
 	stats_timer = Timer.new()
 	stats_timer.wait_time = update_interval
 	stats_timer.timeout.connect(_on_stats_timer_timeout)
 	stats_timer.autostart = false
+	p_parent_node.add_child(stats_timer)
 
 
 func _generate_session_id() -> String:
@@ -298,3 +299,12 @@ class PerformanceTracker:
 			"accuracy_history": accuracy_history.duplicate(),
 			"milestones": milestones_reached.duplicate()
 		}
+
+
+## Cleanup resources (call when session manager is no longer needed)
+func cleanup() -> void:
+	if stats_timer and is_instance_valid(stats_timer):
+		if stats_timer.is_inside_tree():
+			stats_timer.get_parent().remove_child(stats_timer)
+		stats_timer.queue_free()
+		stats_timer = null

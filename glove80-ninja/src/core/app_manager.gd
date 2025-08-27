@@ -122,12 +122,16 @@ func shutdown_app() -> void:
 
 
 ## Create a new PracticeController with proper dependency injection
-func create_practice_controller() -> PracticeControllerV2:
+func create_practice_controller() -> PracticeControllerRefactored:
 	if not are_services_ready():
 		push_error("Cannot create PracticeController: Services not ready")
 		return null
 
-	var practice_controller = preload("res://src/practice/practice_controller_v2.tscn").instantiate()
+	var practice_scene = load("res://src/practice/practice_controller.tscn")
+	if not practice_scene:
+		push_error("Could not load practice controller scene")
+		return null
+	var practice_controller = practice_scene.instantiate()
 	practice_controller.initialize(config_service, user_service)
 	return practice_controller
 
@@ -138,7 +142,11 @@ func create_settings_controller() -> Control:
 		push_error("Cannot create SettingsController: ConfigService not available")
 		return null
 
-	var settings_controller = preload("res://src/settings/settings_controller.tscn").instantiate()
+	var settings_scene = load("res://src/settings/settings_controller.tscn")
+	if not settings_scene:
+		push_error("Could not load settings controller scene")
+		return null
+	var settings_controller = settings_scene.instantiate()
 	settings_controller.initialize(config_service)
 	return settings_controller
 

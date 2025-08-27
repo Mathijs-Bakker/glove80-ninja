@@ -144,8 +144,11 @@ func _connect_signals() -> void:
 func _apply_initial_styling() -> void:
 	# Set up default styling
 	if sample_label:
-		sample_label.fit_content = true
-		sample_label.scroll_active = false
+		# Handle potential compatibility issues with properties
+		if sample_label.has_method("set_fit_content"):
+			sample_label.fit_content = true
+		if sample_label.has_method("set_scroll_active"):
+			sample_label.scroll_active = false
 		sample_label.bbcode_enabled = true
 		sample_label.add_theme_color_override("default_color", correct_color)
 
@@ -164,22 +167,22 @@ func _apply_config_settings() -> void:
 	_apply_font_size(font_size)
 
 	# Apply theme colors
-	var theme = config_service.get_setting("theme", "dark")
-	_apply_theme_colors(theme)
+	var current_theme = config_service.get_setting("theme", "dark")
+	_apply_theme_colors(current_theme)
 
 
-func _apply_font_size(size: int) -> void:
+func _apply_font_size(font_size: int) -> void:
 	if sample_label:
-		sample_label.add_theme_font_size_override("normal_font_size", size)
+		sample_label.add_theme_font_size_override("normal_font_size", font_size)
 
 	var labels = [wpm_label, accuracy_label, mistakes_label]
 	for label in labels:
 		if label:
-			label.add_theme_font_size_override("font_size", max(12, size - 4))
+			label.add_theme_font_size_override("font_size", max(12, font_size - 4))
 
 
-func _apply_theme_colors(theme: String) -> void:
-	match theme:
+func _apply_theme_colors(theme_name: String) -> void:
+	match theme_name:
 		"dark":
 			correct_color = Color.WHITE
 			incorrect_color = Color.RED
@@ -218,26 +221,26 @@ func _build_rich_text() -> String:
 
 	# Process each character in the text
 	for i in range(current_text.length()):
-		var char = current_text[i]
+		var character = current_text[i]
 
 		if i < current_input.length():
 			# Character has been typed
-			if current_input[i] == char:
+			if current_input[i] == character:
 				# Correct character
-				result += "[color=%s]%s[/color]" % [correct_color.to_html(), char]
+				result += "[color=%s]%s[/color]" % [correct_color.to_html(), character]
 			else:
 				# Incorrect character
 				result += "[color=%s][bgcolor=%s]%s[/bgcolor][/color]" % [
 					Color.WHITE.to_html(),
 					incorrect_color.to_html(),
-					char
+					character
 				]
 		elif i == current_index:
 			# Current character to be typed
-			result += "[bgcolor=%s]%s[/bgcolor]" % [pending_color.to_html(), char]
+			result += "[bgcolor=%s]%s[/bgcolor]" % [pending_color.to_html(), character]
 		else:
 			# Not yet typed
-			result += "[color=%s]%s[/color]" % [pending_color.to_html(), char]
+			result += "[color=%s]%s[/color]" % [pending_color.to_html(), character]
 
 	return result
 
@@ -250,8 +253,10 @@ func _update_cursor_position() -> void:
 	var char_size = _estimate_character_size()
 	var cursor_x = current_index * char_size.x
 
-	typing_cursor.position = Vector2(cursor_x, 0)
-	cursor_moved.emit()
+	# Ensure cursor position is valid
+	if cursor_x >= 0:
+		typing_cursor.position = Vector2(cursor_x, 0)
+		cursor_moved.emit()
 
 
 func _update_progress_bar() -> void:
@@ -279,8 +284,15 @@ func _estimate_character_size() -> Vector2:
 	var font = sample_label.get_theme_font("normal_font")
 	var font_size = sample_label.get_theme_font_size("normal_font_size")
 
-	if font:
-		return Vector2(font.get_char_size(ord("M"), font_size).x, font.get_height(font_size))
+	if font and font_size > 0:
+		# Use get_string_size for Godot 4 compatibility
+		var char_size = font.get_string_size("M", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
+		# Ensure we have valid dimensions
+		if char_size.x > 0 and char_size.y > 0:
+			return char_size
+		else:
+			# Fallback calculation based on font size
+			return Vector2(font_size * 0.6, font_size * 1.2)
 	else:
 		return Vector2(10, 20)
 
@@ -299,7 +311,8 @@ func _on_cursor_moved() -> void:
 
 func _on_cursor_blink() -> void:
 	if typing_cursor and show_cursor:
-		typing_cursor.blink()
+		# TypingCursor handles blinking automatically through its _process method
+		pass
 
 
 func _on_config_changed(setting_name: String, _new_value) -> void:

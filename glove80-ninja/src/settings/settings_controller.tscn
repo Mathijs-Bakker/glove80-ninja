@@ -1,0 +1,146 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvju6sxwa7me2"]
+
+[ext_resource type="Script" path="res://src/settings/settings_controller.gd" id="1_settings_controller"]
+
+[node name="SettingsController" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_settings_controller")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = -40.0
+offset_bottom = -40.0
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Settings"
+horizontal_alignment = 1
+add_theme_font_size_override("font_size", 24)
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="SettingsContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CursorStyleContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CursorStyleLabel" type="Label" parent="VBoxContainer/SettingsContainer/CursorStyleContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cursor Style:"
+vertical_alignment = 1
+
+[node name="CursorStyleOption" type="OptionButton" parent="VBoxContainer/SettingsContainer/CursorStyleContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ThemeContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ThemeLabel" type="Label" parent="VBoxContainer/SettingsContainer/ThemeContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Theme:"
+vertical_alignment = 1
+
+[node name="ThemeOption" type="OptionButton" parent="VBoxContainer/SettingsContainer/ThemeContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FontSizeContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FontSizeLabel" type="Label" parent="VBoxContainer/SettingsContainer/FontSizeContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Font Size:"
+vertical_alignment = 1
+
+[node name="FontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsContainer/FontSizeContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 12.0
+max_value = 24.0
+value = 16.0
+
+[node name="SoundVolumeContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SoundVolumeLabel" type="Label" parent="VBoxContainer/SettingsContainer/SoundVolumeContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sound Volume:"
+vertical_alignment = 1
+
+[node name="SoundVolumeSlider" type="HSlider" parent="VBoxContainer/SettingsContainer/SoundVolumeContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 80.0
+
+[node name="TypingSoundsContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TypingSoundsLabel" type="Label" parent="VBoxContainer/SettingsContainer/TypingSoundsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Typing Sounds:"
+vertical_alignment = 1
+
+[node name="TypingSoundsCheckBox" type="CheckBox" parent="VBoxContainer/SettingsContainer/TypingSoundsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+button_pressed = true
+
+[node name="LanguageContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LanguageLabel" type="Label" parent="VBoxContainer/SettingsContainer/LanguageContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Language:"
+vertical_alignment = 1
+
+[node name="LanguageOption" type="OptionButton" parent="VBoxContainer/SettingsContainer/LanguageContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="SaveButton" type="Button" parent="VBoxContainer/ButtonContainer"]
+layout_mode = 2
+text = "Save"
+disabled = true
+
+[node name="CancelButton" type="Button" parent="VBoxContainer/ButtonContainer"]
+layout_mode = 2
+text = "Cancel"
+disabled = true
+
+[node name="ResetButton" type="Button" parent="VBoxContainer/ButtonContainer"]
+layout_mode = 2
+text = "Reset to Defaults"

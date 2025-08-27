@@ -35,7 +35,7 @@ var visible_state: bool = true
 # Colors for different cursor styles
 const CURSOR_COLORS = {
 	"block": Color("#555555"),
-	"box": Color("#FF9900"), 
+	"box": Color("#FF9900"),
 	"line": Color("#FF9900"),
 	"underline": Color("#FFFFFF")
 }
@@ -62,29 +62,29 @@ func _process(delta):
 func _draw():
 	if not is_active or not visible_state:
 		return
-	
+
 	var char_size = font.get_string_size(character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
 	var cursor_pos = Vector2(0, 0)
-	
+
 	match cursor_style:
 		"block":
 			# Draw background block
 			draw_rect(Rect2(cursor_pos, Vector2(char_size.x + 8, size.y)), CURSOR_COLORS.block)
 			# Draw character
 			draw_string(font, cursor_pos + Vector2(4, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.WHITE)
-		
+
 		"box":
 			# Draw box border
 			draw_rect(Rect2(cursor_pos, Vector2(char_size.x + 8, size.y)), CURSOR_COLORS.box, false, 2)
 			# Draw character
 			draw_string(font, cursor_pos + Vector2(4, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, CURSOR_COLORS.box)
-		
+
 		"line":
 			# Draw vertical line on left side
 			draw_line(cursor_pos, cursor_pos + Vector2(0, size.y), CURSOR_COLORS.line, 2)
 			# Draw character
 			draw_string(font, cursor_pos + Vector2(8, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, CURSOR_COLORS.line)
-		
+
 		"underline":
 			# Draw underline
 			draw_line(cursor_pos + Vector2(0, size.y - 2), cursor_pos + Vector2(char_size.x + 8, size.y - 2), CURSOR_COLORS.underline, 2)
@@ -93,15 +93,15 @@ func _draw():
 
 
 # Animation methods
-func move_to(new_position: Vector2, animate: bool = true) -> void:
-	if animate:
+func move_to(p_new_position: Vector2, p_animate: bool = true) -> void:
+	if p_animate:
 		# Animated movement
 		var tween = create_tween()
-		tween.tween_property(self, "position", new_position, 0.1)
+		tween.tween_property(self, "position", p_new_position, 0.1)
 		tween.tween_callback(_on_move_complete)
 	else:
 		# Instant movement
-		position = new_position
+		position = p_new_position
 		_on_move_complete()
 
 
@@ -109,20 +109,24 @@ func _on_move_complete() -> void:
 	cursor_moved.emit()
 
 
-func set_blink_rate(rate: float) -> void:
-	blink_rate = rate
+func set_blink_rate(p_rate: float) -> void:
+	blink_rate = p_rate
 
 
-func set_active(active: bool) -> void:
-	is_active = active
+func set_active(p_active: bool) -> void:
+	is_active = p_active
 	visible_state = true
 	blink_timer = 0.0
 	queue_redraw()
 
 
-func set_font_size(size: int) -> void:
-	font_size = size
+func set_font_size(p_new_size: int) -> void:
+	font_size = p_new_size
 	queue_redraw()
+
+
+func set_style(p_style: String) -> void:
+	cursor_style = p_style
 
 
 # Visual feedback animations

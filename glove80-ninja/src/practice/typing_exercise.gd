@@ -35,8 +35,7 @@ var corrections_made: int = 0
 var mistake_positions: Array = []
 var keystroke_timings: Array = []
 
-# Text providers
-var text_provider: TextProvider
+# Text providers (using static methods, no instance needed)
 
 
 ## Initialize exercise with optional parameters
@@ -47,7 +46,7 @@ func initialize(config: Dictionary = {}) -> void:
 	target_wpm = config.get("target_wpm", 0.0)
 	target_accuracy = config.get("target_accuracy", 90.0)
 
-	text_provider = TextProvider.new()
+	# TextProvider uses static methods, no instance needed
 
 	# Load text based on type
 	match exercise_type:
@@ -61,13 +60,13 @@ func initialize(config: Dictionary = {}) -> void:
 
 ## Load a random text sample
 func load_random_text() -> void:
-	original_text = text_provider.get_random_sample()
+	original_text = TextProvider.get_random_sample()
 	_process_text()
 
 
 ## Load text from a specific lesson
 func load_lesson_text(lesson_id: String) -> void:
-	original_text = text_provider.get_lesson_text(lesson_id)
+	original_text = TextProvider.get_lesson_text(lesson_id)
 	if original_text.is_empty():
 		load_random_text()  # Fallback to random
 	else:
@@ -339,8 +338,8 @@ func _count_words(text: String) -> int:
 func _count_unique_characters(text: String) -> int:
 	var unique_chars = {}
 	for i in range(text.length()):
-		var char = text[i]
-		unique_chars[char] = true
+		var character = text[i]
+		unique_chars[character] = true
 	return unique_chars.size()
 
 
@@ -351,8 +350,8 @@ func _calculate_text_complexity(text: String) -> float:
 	var punctuation_count = 0
 
 	for i in range(text.length()):
-		var char = text[i]
-		if char in ".,!?;:\"'()[]{}":
+		var character = text[i]
+		if character in ".,!?;:\"'()[]{}":
 			punctuation_count += 1
 
 	var complexity = 0.0
@@ -388,16 +387,16 @@ func _get_keystroke_analysis() -> Dictionary:
 	# Identify problem characters (characters that are often mistyped)
 	for timing in keystroke_timings:
 		if not timing.is_correct:
-			var char = timing.character
-			if not analysis.problem_characters.has(char):
-				analysis.problem_characters[char] = 0
-			analysis.problem_characters[char] += 1
+			var character = timing.character
+			if not analysis.problem_characters.has(character):
+				analysis.problem_characters[character] = 0
+			analysis.problem_characters[character] += 1
 
 	return analysis
 
 
 func _get_performance_metrics() -> Dictionary:
-	var typing_time = _get_typing_duration()
+	var _typing_time = _get_typing_duration()
 
 	return {
 		"consistency_score": _calculate_consistency_score(),

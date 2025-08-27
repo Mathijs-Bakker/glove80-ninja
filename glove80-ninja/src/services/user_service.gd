@@ -187,7 +187,7 @@ func _calculate_experience_gain(session_results: Dictionary) -> int:
 
 func _calculate_level_from_experience(experience: int) -> int:
 	# Simple level calculation: every 1000 exp = 1 level
-	return max(1, int(experience / 1000) + 1)
+	return max(1, int(experience / 1000.0) + 1)
 
 
 func _check_for_achievements(session_results: Dictionary) -> void:

@@ -15,3 +15,8 @@ static func get_random_sample() -> String:
 static func get_sample_by_difficulty(_p_difficulty: String) -> String:
 	# Implement difficulty-based text selection
 	return get_random_sample()
+
+static func get_lesson_text(_p_lesson_id: String) -> String:
+	# For now, return random sample - can be extended to load actual lessons
+	# TODO: Implement proper lesson loading system
+	return get_random_sample()

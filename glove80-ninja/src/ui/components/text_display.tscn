@@ -29,18 +29,26 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="SampleLabel" type="RichTextLabel" parent="VBoxContainer/SampleContainer"]
+[node name="SampleLabel" type="Label" parent="VBoxContainer/SampleContainer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 theme = ExtResource("2_8ne8b")
-bbcode_enabled = true
 text = "Sample text will appear here..."
-fit_content = true
-scroll_active = false
+
+[node name="ColorOverlayContainer" type="Control" parent="VBoxContainer/SampleContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -3.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="CursorContainer" type="Control" parent="VBoxContainer/SampleContainer"]
 layout_mode = 1

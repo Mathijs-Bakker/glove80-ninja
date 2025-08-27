@@ -13,7 +13,8 @@ signal cursor_moved()
 @export var show_progress: bool = true
 
 # UI components
-@onready var sample_label: RichTextLabel = $VBoxContainer/SampleContainer/SampleLabel
+@onready var sample_label: Label = $VBoxContainer/SampleContainer/SampleLabel
+@onready var color_overlay_container: Control = $VBoxContainer/SampleContainer/ColorOverlayContainer
 @onready var cursor_container: Control = $VBoxContainer/SampleContainer/CursorContainer
 @onready var progress_bar: ProgressBar = $VBoxContainer/ProgressBar
 @onready var stats_container: HBoxContainer = $VBoxContainer/StatsContainer
@@ -29,7 +30,14 @@ var cursor_timer: Timer
 var current_text: String = ""
 var current_input: String = ""
 var current_index: int = 0
+
 var mistakes_count: int = 0
+
+# Character overlay system for colors (eliminates flashing)
+var character_overlays: Array[ColorRect] = []
+var font: Font
+var character_width: float = 0.0
+var character_height: float = 0.0
 
 # Theme and styling
 var correct_color: Color = Color.WHITE
@@ -42,10 +50,12 @@ var config_service: ConfigService
 
 
 func _ready() -> void:
+	Log.info("[TextDisplay] _ready() called")
 	_setup_cursor()
 	_setup_timer()
 	_connect_signals()
 	_apply_initial_styling()
+	Log.info("[TextDisplay] _ready() complete")
 
 
 ## Initialize the display with text content
@@ -71,7 +81,11 @@ func update_progress(user_input: String, char_index: int, mistakes: int) -> void
 	current_input = user_input
 	current_index = char_index
 	mistakes_count = mistakes
-	_update_display()
+
+	# Update colors instantly without flashing
+	_update_character_colors()
+	_update_cursor_position()
+	_update_progress_bar()
 
 
 ## Update statistics display
@@ -121,10 +135,12 @@ func set_colors(correct: Color, incorrect: Color, pending: Color, bg: Color) -> 
 # Private methods
 
 func _setup_cursor() -> void:
+	Log.info("[TextDisplay] Setting up cursor")
 	typing_cursor = TypingCursor.new()
 	typing_cursor.name = "TypingCursor"
 	cursor_container.add_child(typing_cursor)
 	typing_cursor.cursor_moved.connect(_on_cursor_moved)
+	Log.info("[TextDisplay] Cursor setup complete")
 
 
 func _setup_timer() -> void:
@@ -141,15 +157,19 @@ func _connect_signals() -> void:
 
 
 func _apply_initial_styling() -> void:
-	# Set up default styling
 	if sample_label:
-		# Handle potential compatibility issues with properties
-		if sample_label.has_method("set_fit_content"):
-			sample_label.fit_content = true
-		if sample_label.has_method("set_scroll_active"):
-			sample_label.scroll_active = false
-		sample_label.bbcode_enabled = true
-		sample_label.add_theme_color_override("default_color", correct_color)
+		Log.info("[TextDisplay] Applying initial styling to sample_label")
+		# Setup plain text label (no BBCode)
+		sample_label.add_theme_color_override("font_color", pending_color)
+		# Ensure label uses monospace font for alignment
+		sample_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+		sample_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+
+		# Remove any text padding/margins that might affect alignment
+		sample_label.add_theme_constant_override("line_spacing", 0)
+
+		_setup_character_overlays()
+		Log.info("[TextDisplay] Initial styling applied")
 
 
 func _apply_config_settings() -> void:
@@ -171,14 +191,34 @@ func _apply_config_settings() -> void:
 
 
 func _apply_font_size(p_font_size: int) -> void:
-	if sample_label:
-		sample_label.add_theme_font_size_override("normal_font_size", p_font_size)
+	Log.info("[TextDisplay] Applying font size: %d" % p_font_size)
 
-	# Update cursor with EXACT same font and size as text
+	if sample_label:
+		# Set font size on the Label
+		sample_label.add_theme_font_size_override("font_size", p_font_size)
+		Log.info("[TextDisplay] Font size set on Label")
+
+	# Force immediate update and wait for Label to process the font change
+	if sample_label:
+		await get_tree().process_frame
+
+	# Update cursor font size to match text - ensure EXACT same font
 	if typing_cursor and sample_label:
-		var text_font = sample_label.get_theme_font("normal_font")
-		var text_size = sample_label.get_theme_font_size("normal_font_size")
+		var text_font = sample_label.get_theme_font("font")
+		var text_size = sample_label.get_theme_font_size("font_size")
+
+		# Fallback to default font if needed
+		if not text_font:
+			text_font = get_theme_default_font()
+
+		Log.info("[TextDisplay] Setting cursor font - Font: %s, Size: %d" % [text_font, text_size])
 		typing_cursor.set_font_and_size(text_font, text_size)
+
+	# Wait another frame to ensure cursor is updated
+	await get_tree().process_frame
+
+	# Recalculate character dimensions for overlays
+	_setup_character_overlays()
 
 	# Update stats labels with smaller font
 	for label in [wpm_label, accuracy_label, mistakes_label]:
@@ -211,49 +251,66 @@ func _update_display() -> void:
 	if not sample_label:
 		return
 
-	var display_text = _build_rich_text()
-	sample_label.text = display_text
-
+	# Set plain text once (no flashing)
+	sample_label.text = current_text
+	_update_character_colors()
 	_update_cursor_position()
 	_update_progress_bar()
 
+func _setup_character_overlays() -> void:
+	Log.info("[TextDisplay] _setup_character_overlays() called")
+	Log.info("[TextDisplay] color_overlay_container exists: %s" % (color_overlay_container != null))
+	Log.info("[TextDisplay] sample_label exists: %s" % (sample_label != null))
 
-func _build_rich_text() -> String:
-	if current_text.is_empty():
-		return ""
+	if not color_overlay_container or not sample_label:
+		Log.info("[TextDisplay] Missing components, exiting setup")
+		return
 
-	var result = ""
+	# Get EXACT same font metrics as the label - ensure it's up to date
+	font = sample_label.get_theme_font("font")
+	var font_size = sample_label.get_theme_font_size("font_size")
 
-	# Process each character in the text
-	for i in range(current_text.length()):
-		var character = current_text[i]
+	# Verify we got the updated font size
+	if font_size <= 0:
+		font_size = 16  # Fallback
 
-		if i < current_input.length():
-			# Character has been typed
-			if current_input[i] == character:
-				# Correct character
-				result += "[color=%s]%s[/color]" % [correct_color.to_html(), character]
-			else:
-				# Incorrect character
-				result += "[color=%s][bgcolor=%s]%s[/bgcolor][/color]" % [
-					Color.WHITE.to_html(),
-					incorrect_color.to_html(),
-					character
-				]
-		elif i == current_index:
-			# Current character to be typed
-			result += "[bgcolor=%s]%s[/bgcolor]" % [pending_color.to_html(), character]
-		else:
-			# Not yet typed
-			result += "[color=%s]%s[/color]" % [pending_color.to_html(), character]
+	Log.info("[TextDisplay] Got font from label: %s" % font)
+	Log.info("[TextDisplay] Font size from label: %d" % font_size)
 
-	return result
+	if not font:
+		font = get_theme_default_font()
+		Log.info("[TextDisplay] Using default font: %s" % font)
+
+	# Use same character reference as cursor for consistency
+	character_width = font.get_string_size("0", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+	character_height = font.get_string_size("0", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).y
+
+	Log.info("[TextDisplay] Final character metrics: width=%f, height=%f (font_size=%d)" % [character_width, character_height, font_size])
+
+func _update_character_colors() -> void:
+	if not color_overlay_container:
+		return
+
+	# Clear existing overlays
+	for overlay in character_overlays:
+		overlay.queue_free()
+	character_overlays.clear()
+
+	# Create overlays for typed characters
+	for i in range(min(current_input.length(), current_text.length())):
+		if current_input[i] != current_text[i]:
+			# Create red background for incorrect character
+			var overlay = ColorRect.new()
+			overlay.color = incorrect_color
+			overlay.position = Vector2(i * character_width, 0)
+			overlay.size = Vector2(character_width, character_height)
+			color_overlay_container.add_child(overlay)
+			character_overlays.append(overlay)
 
 
 func _update_cursor_position() -> void:
 	if not typing_cursor or not show_cursor:
 		return
-		# Update cursor character to show current character that needs to be typed
 
 	if current_index < current_text.length():
 		var current_char = current_text[current_index]
@@ -264,13 +321,33 @@ func _update_cursor_position() -> void:
 		typing_cursor.character = " "
 		Log.info("[TextDisplay][_update_cursor_position] At end of text, cursor shows space")
 
+	# ALIGNMENT DEBUG - Add debug info here since we know this function runs
+	Log.info("[TextDisplay][ALIGNMENT_DEBUG] Current index: %d" % current_index)
+	Log.info("[TextDisplay][ALIGNMENT_DEBUG] Character width cached: %f" % character_width)
+	Log.info("[TextDisplay][ALIGNMENT_DEBUG] Sample label exists: %s" % (sample_label != null))
+	Log.info("[TextDisplay][ALIGNMENT_DEBUG] Typing cursor exists: %s" % (typing_cursor != null))
+	Log.info("[TextDisplay][ALIGNMENT_DEBUG] Cursor size: %s" % typing_cursor.size)
+
 	# Calculate cursor position by measuring actual text width up to current position
 	var cursor_x = _calculate_accurate_cursor_position()
+	Log.info("[TextDisplay][ALIGNMENT_DEBUG] Calculated cursor_x: %f" % cursor_x)
 
-	# Ensure cursor position is valid
+	# Get Label's text rendering position to match exactly
+	var label_offset = Vector2.ZERO
+	if sample_label:
+		# Account for Label's internal text positioning
+		var font_metrics = sample_label.get_theme_font("font")
+		Log.info("[TextDisplay][ALIGNMENT_DEBUG] Label font: %s" % font_metrics)
+		if font_metrics:
+			# Add slight vertical offset to align baselines
+			label_offset.y = 0  # Keep at top for now
+			label_offset.x = 0  # No horizontal offset needed for left-aligned text
+
+	# Ensure cursor position is valid and aligned with Label
 	if cursor_x >= 0:
-		typing_cursor.position = Vector2(cursor_x, 0)
+		typing_cursor.position = Vector2(cursor_x + label_offset.x, label_offset.y)
 		cursor_moved.emit()
+		Log.info("[TextDisplay] Cursor positioned at: %s (offset: %s)" % [typing_cursor.position, label_offset])
 
 
 func _update_progress_bar() -> void:
@@ -284,7 +361,7 @@ func _update_progress_bar() -> void:
 
 func _update_display_colors() -> void:
 	if sample_label:
-		sample_label.add_theme_color_override("default_color", correct_color)
+		sample_label.add_theme_color_override("font_color", pending_color)
 
 	modulate = Color.WHITE
 	_update_display()
@@ -295,12 +372,12 @@ func _estimate_character_size() -> Vector2:
 		return Vector2(10, 20)  # Default fallback
 
 	# Get font metrics for character size estimation
-	var font = sample_label.get_theme_font("normal_font")
-	var font_size = sample_label.get_theme_font_size("normal_font_size")
+	var label_font = sample_label.get_theme_font("font")
+	var font_size = sample_label.get_theme_font_size("font_size")
 
-	if font and font_size > 0:
+	if label_font and font_size > 0:
 		# Use get_string_size for Godot 4 compatibility
-		var char_size = font.get_string_size("M", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
+		var char_size = label_font.get_string_size("M", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
 		# Ensure we have valid dimensions
 		if char_size.x > 0 and char_size.y > 0:
 			return char_size
@@ -315,24 +392,19 @@ func _calculate_accurate_cursor_position() -> float:
 	if not sample_label or current_index <= 0:
 		return 0.0
 
-	# Get the font used by the sample label
-	var font = sample_label.get_theme_font("normal_font")
-	var font_size = sample_label.get_theme_font_size("normal_font_size")
+	# Ensure we have up-to-date character width
+	if character_width <= 0:
+		_setup_character_overlays()
 
-	if not font:
-		# Fallback to estimated position
-		var char_size = _estimate_character_size()
-		return current_index * char_size.x
+	# Use exact same calculation as cursor internally uses
+	if character_width > 0:
+		var cursor_position = current_index * character_width
+		Log.info("[TextDisplay][_calculate_accurate_cursor_position] Position: index %d * width %f = %f" % [current_index, character_width, cursor_position])
+		return cursor_position
 
-	# For monospace fonts, calculate position using consistent character width
-	# Use 'A' as reference character for consistent spacing (matches cursor sizing)
-	# Professional typing app approach: fixed monospace positioning
-	var monospace_width = font.get_string_size("A", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
-	var cursor_position = current_index * monospace_width
-
-	Log.info("[TextDisplay][_calculate_accurate_cursor_position] Terminal-style position: index %d * width %f = %f" % [current_index, monospace_width, cursor_position])
-
-	return cursor_position
+	# Fallback calculation
+	var char_size = _estimate_character_size()
+	return current_index * char_size.x
 
 
 func _flash_background(color: Color, duration: float) -> void:

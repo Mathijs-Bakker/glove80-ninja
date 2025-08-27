@@ -23,7 +23,7 @@ const DEFAULT_APP_CONFIG = {
 const DEFAULT_USER_CONFIG = {
 	"cursor_style": "block",
 	"theme": "dark",
-	"font_size": 16,
+	"font_size": 40,
 	"sound_volume": 80,
 	"typing_sounds": true,
 	"language": "en",

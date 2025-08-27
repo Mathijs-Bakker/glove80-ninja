@@ -1,15 +1,12 @@
 class_name PracticeControllerRefactored
 extends Control
 
-## Refactored practice controller with proper separation of concerns
-## Uses dependency injection and composition instead of monolithic design
-
 
 signal exercise_started()
 signal exercise_completed(results: Dictionary)
 signal settings_requested()
 
-# Services (injected dependencies)
+# Services
 var config_service: ConfigService
 var user_service: UserService
 

@@ -254,7 +254,7 @@ func _setup_ui() -> void:
 	# Setup font size
 	if font_size_spinbox:
 		font_size_spinbox.min_value = 12
-		font_size_spinbox.max_value = 24
+		font_size_spinbox.max_value = 40
 		font_size_spinbox.step = 1
 		font_size_spinbox.value_changed.connect(_on_font_size_changed)
 		Log.info("[SettingsController][_setup_ui] Font size spinbox configured (12-24)")

@@ -2,7 +2,6 @@ class_name TextDisplay
 extends Control
 
 ## TextDisplay component that handles text rendering, cursor display, and visual feedback
-## Replaces the TextDisplayManager autoload with a proper UI component
 
 
 signal text_updated()
@@ -171,14 +170,20 @@ func _apply_config_settings() -> void:
 	_apply_theme_colors(current_theme)
 
 
-func _apply_font_size(font_size: int) -> void:
+func _apply_font_size(p_font_size: int) -> void:
 	if sample_label:
-		sample_label.add_theme_font_size_override("normal_font_size", font_size)
+		sample_label.add_theme_font_size_override("normal_font_size", p_font_size)
 
-	var labels = [wpm_label, accuracy_label, mistakes_label]
-	for label in labels:
+	# Update cursor with EXACT same font and size as text
+	if typing_cursor and sample_label:
+		var text_font = sample_label.get_theme_font("normal_font")
+		var text_size = sample_label.get_theme_font_size("normal_font_size")
+		typing_cursor.set_font_and_size(text_font, text_size)
+
+	# Update stats labels with smaller font
+	for label in [wpm_label, accuracy_label, mistakes_label]:
 		if label:
-			label.add_theme_font_size_override("font_size", max(12, font_size - 4))
+			label.add_theme_font_size_override("font_size", max(12, p_font_size - 4))
 
 
 func _apply_theme_colors(theme_name: String) -> void:
@@ -248,10 +253,19 @@ func _build_rich_text() -> String:
 func _update_cursor_position() -> void:
 	if not typing_cursor or not show_cursor:
 		return
+		# Update cursor character to show current character that needs to be typed
 
-	# Calculate cursor position based on current character index
-	var char_size = _estimate_character_size()
-	var cursor_x = current_index * char_size.x
+	if current_index < current_text.length():
+		var current_char = current_text[current_index]
+		typing_cursor.character = current_char
+		Log.info("[TextDisplay][_update_cursor_position] Updated cursor character to: '%s'" % current_char)
+	else:
+		# At end of text, could show a completion indicator or space
+		typing_cursor.character = " "
+		Log.info("[TextDisplay][_update_cursor_position] At end of text, cursor shows space")
+
+	# Calculate cursor position by measuring actual text width up to current position
+	var cursor_x = _calculate_accurate_cursor_position()
 
 	# Ensure cursor position is valid
 	if cursor_x >= 0:
@@ -295,6 +309,30 @@ func _estimate_character_size() -> Vector2:
 			return Vector2(font_size * 0.6, font_size * 1.2)
 	else:
 		return Vector2(10, 20)
+
+
+func _calculate_accurate_cursor_position() -> float:
+	if not sample_label or current_index <= 0:
+		return 0.0
+
+	# Get the font used by the sample label
+	var font = sample_label.get_theme_font("normal_font")
+	var font_size = sample_label.get_theme_font_size("normal_font_size")
+
+	if not font:
+		# Fallback to estimated position
+		var char_size = _estimate_character_size()
+		return current_index * char_size.x
+
+	# For monospace fonts, calculate position using consistent character width
+	# Use 'A' as reference character for consistent spacing (matches cursor sizing)
+	# Professional typing app approach: fixed monospace positioning
+	var monospace_width = font.get_string_size("A", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+	var cursor_position = current_index * monospace_width
+
+	Log.info("[TextDisplay][_calculate_accurate_cursor_position] Terminal-style position: index %d * width %f = %f" % [current_index, monospace_width, cursor_position])
+
+	return cursor_position
 
 
 func _flash_background(color: Color, duration: float) -> void:

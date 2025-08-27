@@ -1,8 +1,7 @@
 extends Control
 class_name TypingCursor
 
-## Custom cursor node that supports various styles and animations
-
+## Ultra-simple cursor for testing - always draws a blue block
 
 signal cursor_moved
 signal cursor_style_changed
@@ -10,13 +9,14 @@ signal cursor_style_changed
 @export var character: String = "A":
 	set(value):
 		character = value
+		if is_inside_tree() and font:
+			_update_cursor_size()
 		queue_redraw()
 
 @export var cursor_style: String = "block":
 	set(value):
 		cursor_style = value
 		queue_redraw()
-		cursor_style_changed.emit(value)
 
 @export var is_active: bool = true:
 	set(value):
@@ -26,125 +26,65 @@ signal cursor_style_changed
 @export var font_size: int = 16:
 	set(value):
 		font_size = value
+		if is_inside_tree() and font:
+			_update_cursor_size()
 		queue_redraw()
 
-@export var blink_rate: float = 0.5  # Blinks per second
-var blink_timer: float = 0.0
-var visible_state: bool = true
-
-# Colors for different cursor styles
-const CURSOR_COLORS = {
-	"block": Color("#555555"),
-	"box": Color("#FF9900"),
-	"line": Color("#FF9900"),
-	"underline": Color("#FFFFFF")
-}
-
-# Font for character display
 var font: Font
-
+var text_font_size: int
 
 func _ready():
-	font = get_theme_default_font()
-	# Start blinking animation
-	set_process(true)
+	_update_cursor_size()
+	queue_redraw()
 
 
-func _process(delta):
-	# Handle blinking animation
-	blink_timer += delta
-	if blink_timer >= blink_rate:
-		blink_timer = 0.0
-		visible_state = !visible_state
-		queue_redraw()
+func set_font_and_size(p_font: Font, p_size: int):
+	"""Set the exact same font and size as the main text"""
+	font = p_font
+	text_font_size = p_size
+	_update_cursor_size()
+	queue_redraw()
+
+
+func _update_cursor_size():
+	if not font:
+		return
+
+	# # Use the EXACT same font and size as the main text
+	var monospace_width = font.get_string_size("0", HORIZONTAL_ALIGNMENT_LEFT, -1, text_font_size).x
+	var char_height = font.get_string_size("M", HORIZONTAL_ALIGNMENT_LEFT, -1, text_font_size).y
+
+	# Set consistent terminal-style cursor size
+	size = Vector2(monospace_width, char_height)
 
 
 func _draw():
-	if not is_active or not visible_state:
+	if not is_active or not font:
 		return
 
-	var char_size = font.get_string_size(character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
-	var cursor_pos = Vector2(0, 0)
+	# Draw cursor background
+	var rect = Rect2(Vector2(0, 0), size)
+	var cursor_color = Color(0.3, 0.5, 1.0, 1.0)
+	draw_rect(rect, cursor_color)
 
-	match cursor_style:
-		"block":
-			# Draw background block
-			draw_rect(Rect2(cursor_pos, Vector2(char_size.x + 8, size.y)), CURSOR_COLORS.block)
-			# Draw character
-			draw_string(font, cursor_pos + Vector2(4, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.WHITE)
-
-		"box":
-			# Draw box border
-			draw_rect(Rect2(cursor_pos, Vector2(char_size.x + 8, size.y)), CURSOR_COLORS.box, false, 2)
-			# Draw character
-			draw_string(font, cursor_pos + Vector2(4, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, CURSOR_COLORS.box)
-
-		"line":
-			# Draw vertical line on left side
-			draw_line(cursor_pos, cursor_pos + Vector2(0, size.y), CURSOR_COLORS.line, 2)
-			# Draw character
-			draw_string(font, cursor_pos + Vector2(8, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, CURSOR_COLORS.line)
-
-		"underline":
-			# Draw underline
-			draw_line(cursor_pos + Vector2(0, size.y - 2), cursor_pos + Vector2(char_size.x + 8, size.y - 2), CURSOR_COLORS.underline, 2)
-			# Draw character
-			draw_string(font, cursor_pos + Vector2(4, size.y - 4), character, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.WHITE)
-
-
-# Animation methods
-func move_to(p_new_position: Vector2, p_animate: bool = true) -> void:
-	if p_animate:
-		# Animated movement
-		var tween = create_tween()
-		tween.tween_property(self, "position", p_new_position, 0.1)
-		tween.tween_callback(_on_move_complete)
-	else:
-		# Instant movement
-		position = p_new_position
-		_on_move_complete()
-
-
-func _on_move_complete() -> void:
-	cursor_moved.emit()
-
-
-func set_blink_rate(p_rate: float) -> void:
-	blink_rate = p_rate
-
-
-func set_active(p_active: bool) -> void:
-	is_active = p_active
-	visible_state = true
-	blink_timer = 0.0
-	queue_redraw()
-
+	# Draw character using EXACT same font and size as text
+	var text_pos = Vector2(0, font.get_ascent(text_font_size))
+	draw_string(font, text_pos, character, HORIZONTAL_ALIGNMENT_LEFT, -1, text_font_size, Color.WHITE)
 
 func set_font_size(p_new_size: int) -> void:
 	font_size = p_new_size
-	queue_redraw()
+	if font:
+		_update_cursor_size()
 
+
+func move_to(p_new_position: Vector2, p_animate: bool = true) -> void:
+	position = p_new_position
+	cursor_moved.emit()
+
+func set_active(p_active: bool) -> void:
+	is_active = p_active
+	queue_redraw()
 
 func set_style(p_style: String) -> void:
 	cursor_style = p_style
-
-
-# Visual feedback animations
-func pulse() -> void:
-	var tween = create_tween()
-	tween.tween_property(self, "scale", Vector2(1.2, 1.2), 0.1)
-	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.1)
-
-
-func shake() -> void:
-	var tween = create_tween()
-	tween.tween_property(self, "position", position + Vector2(-3, 0), 0.05)
-	tween.tween_property(self, "position", position + Vector2(6, 0), 0.05)
-	tween.tween_property(self, "position", position + Vector2(-3, 0), 0.05)
-
-
-func highlight() -> void:
-	var tween = create_tween()
-	var original_modulate = modulate
-	tween.tween_property(self, "modulate", Color.YELLOW, 0.1)
-	tween.tween_property(self, "modulate", original_modulate, 0.3)
+	queue_redraw()

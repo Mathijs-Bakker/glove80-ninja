@@ -1,12 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://cgag1gd7bsmae"]
+[gd_scene load_steps=3 format=3 uid="uid://cgag1gd7bsmae"]
 
-[ext_resource type="Script" path="res://src/ui/components/text_display.gd" id="1_1a2b3c"]
+[ext_resource type="Script" uid="uid://di2o1pgxmslw2" path="res://src/ui/components/text_display.gd" id="1_1a2b3c"]
+[ext_resource type="Theme" uid="uid://dcmue30t571sw" path="res://themes/default.tres" id="2_8ne8b"]
 
 [node name="TextDisplay" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_1a2b3c")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -18,6 +21,8 @@ offset_left = 20.0
 offset_top = 20.0
 offset_right = -20.0
 offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="SampleContainer" type="Control" parent="VBoxContainer"]
 layout_mode = 2
@@ -29,22 +34,25 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-fit_content = true
-scroll_active = false
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_8ne8b")
 bbcode_enabled = true
 text = "Sample text will appear here..."
-fit_content_height = true
+fit_content = true
+scroll_active = false
 
 [node name="CursorContainer" type="Control" parent="VBoxContainer/SampleContainer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ProgressBar" type="ProgressBar" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-max_value = 100.0
 step = 0.1
 show_percentage = false
 

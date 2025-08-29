@@ -1,7 +1,8 @@
 class_name TextDisplay
 extends Control
 
-## TextDisplay component that handles text rendering, cursor display, and visual feedback
+## Optimized TextDisplay component that handles text rendering, cursor display, and visual feedback
+## Fixed performance issues with character overlays and position calculations
 
 
 signal text_updated()
@@ -30,14 +31,26 @@ var cursor_timer: Timer
 var current_text: String = ""
 var current_input: String = ""
 var current_index: int = 0
-
 var mistakes_count: int = 0
 
-# Character overlay system for colors (eliminates flashing)
-var character_overlays: Array[Label] = []
+# OPTIMIZATION: Character overlay system with pooling (eliminates node creation/destruction)
+var overlay_pool: Array[Label] = []
+var active_overlays: Dictionary = {}  # position -> overlay
 var font: Font
 var character_width: float = 0.0
 var character_height: float = 0.0
+
+# OPTIMIZATION: Position caching system (eliminates O(n) calculations)
+var position_cache: Dictionary = {}  # char_index -> Vector2
+var cache_valid: bool = false
+var cached_line_breaks: Array[int] = []  # Pre-calculated line break positions
+var cached_line_height: float = 0.0
+
+# OPTIMIZATION: Batched updates system (reduces update frequency)
+var update_timer: Timer
+var pending_updates: bool = false
+var stats_update_timer: Timer
+var pending_stats_updates: bool = false
 
 # Horizontal scrolling variables
 var scroll_offset: float = 0.0
@@ -55,7 +68,7 @@ var config_service: ConfigService
 
 func _ready() -> void:
 	_setup_cursor()
-	_setup_timer()
+	_setup_timers()
 	_connect_signals()
 	_apply_initial_styling()
 
@@ -75,37 +88,39 @@ func set_text(text: String) -> void:
 	current_index = 0
 	mistakes_count = 0
 
-	# Reset any positioning
+	# Reset positions and clear overlays
 	_reset_container_positions()
+	_clear_all_overlays()
+
+	# Invalidate caches
+	cache_valid = false
 
 	_update_display()
 	text_updated.emit()
 
 
-## Update display with current typing progress
+## OPTIMIZED: Update display with current typing progress
 func update_progress(user_input: String, char_index: int, mistakes: int) -> void:
 	current_input = user_input
 	current_index = char_index
 	mistakes_count = mistakes
 
-	# No special handling needed for wrapped text
-
-	# Update colors instantly without flashing
-	_update_character_colors()
-	_update_cursor_position()
-	_update_progress_bar()
+	# OPTIMIZATION: Batch updates instead of immediate processing
+	if not pending_updates:
+		pending_updates = true
+		update_timer.start()
 
 
-## Update statistics display
+## OPTIMIZED: Update statistics display with batching
 func update_stats(wpm: float, accuracy: float, mistakes: int) -> void:
-	if wpm_label:
-		wpm_label.text = "WPM: %.0f" % wpm
+	# Store stats for batched update
+	_pending_wpm = wpm
+	_pending_accuracy = accuracy
+	_pending_mistakes = mistakes
 
-	if accuracy_label:
-		accuracy_label.text = "Accuracy: %.1f%%" % accuracy
-
-	if mistakes_label:
-		mistakes_label.text = "Mistakes: %d" % mistakes
+	if not pending_stats_updates:
+		pending_stats_updates = true
+		stats_update_timer.start()
 
 
 ## Show visual feedback for correct typing
@@ -140,7 +155,7 @@ func set_colors(correct: Color, incorrect: Color, pending: Color, bg: Color) -> 
 	_update_display()
 
 
-# Private methods
+# Private methods - Setup
 
 func _setup_cursor() -> void:
 	typing_cursor = TypingCursor.new()
@@ -149,12 +164,27 @@ func _setup_cursor() -> void:
 	typing_cursor.cursor_moved.connect(_on_cursor_moved)
 
 
-func _setup_timer() -> void:
+func _setup_timers() -> void:
+	# Cursor blink timer
 	cursor_timer = Timer.new()
 	cursor_timer.wait_time = 1.0 / cursor_blink_speed
 	cursor_timer.autostart = true
 	cursor_timer.timeout.connect(_on_cursor_blink)
 	add_child(cursor_timer)
+
+	# OPTIMIZATION: Batched update timer (~60fps)
+	update_timer = Timer.new()
+	update_timer.wait_time = 0.016  # ~60fps
+	update_timer.one_shot = true
+	update_timer.timeout.connect(_perform_batched_updates)
+	add_child(update_timer)
+
+	# OPTIMIZATION: Stats update timer (lower frequency)
+	stats_update_timer = Timer.new()
+	stats_update_timer.wait_time = 0.1  # 10fps for stats
+	stats_update_timer.one_shot = true
+	stats_update_timer.timeout.connect(_perform_stats_update)
+	add_child(stats_update_timer)
 
 
 func _connect_signals() -> void:
@@ -195,20 +225,15 @@ func _apply_config_settings() -> void:
 
 func _apply_font_size(p_font_size: int) -> void:
 	if sample_label:
-		# Set font size on the Label
 		sample_label.add_theme_font_size_override("font_size", p_font_size)
 
 	# Force immediate update and wait for Label to process the font change
 	if sample_label:
 		await get_tree().process_frame
 
-	# Font will be synchronized in _setup_character_overlays
-	# This ensures both cursor and text use the exact same font reference
-
-	# Wait another frame to ensure cursor is updated
 	await get_tree().process_frame
 
-	# Recalculate character dimensions for overlays
+	# Recalculate character dimensions and invalidate cache
 	_setup_character_overlays()
 
 	# Update stats labels with smaller font
@@ -250,29 +275,30 @@ func _update_display() -> void:
 	if sample_label.text.is_empty():
 		sample_label.text = "Sample text will appear here..."
 
-	_update_character_colors()
-	_update_cursor_position()
-	_update_progress_bar()
+	# Invalidate position cache when text changes
+	cache_valid = false
+
+	# Force immediate update for initial display
+	_perform_batched_updates()
+
 
 func _setup_character_overlays() -> void:
 	if not color_overlay_container or not sample_label:
 		return
 
-	# Ensure we have the monospace font from theme
+	# Get font information
 	font = null
 	var font_size = 16
 
-	# Try to get the font from theme first - prioritize Label font since we added it
+	# Try to get the font from theme first
 	var current_theme = get_theme()
 	if current_theme:
-		# First try to get Label font we added to theme
 		var label_font = current_theme.get_font("font", "Label")
 		var label_size = current_theme.get_font_size("font_size", "Label")
 		if label_font and label_size > 0:
 			font = label_font
 			font_size = label_size
 		else:
-			# Fallback to RichTextLabel monospace font
 			var mono_font = current_theme.get_font("mono_font", "RichTextLabel")
 			if mono_font:
 				font = mono_font
@@ -296,76 +322,229 @@ func _setup_character_overlays() -> void:
 	# Always ensure text is white and visible
 	sample_label.add_theme_color_override("font_color", Color.WHITE)
 
-	# Use same character reference as cursor for consistency
+	# Calculate character dimensions
 	character_width = font.get_string_size("0", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
 	character_height = font.get_string_size("0", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).y
-
+	cached_line_height = font.get_height(font_size)
 
 	# Update cursor with the exact same font
 	if typing_cursor:
 		typing_cursor.set_font_and_size(font, font_size)
 
-	# No additional setup needed for wrapped text
+	# Invalidate position cache when font changes
+	cache_valid = false
 
-func _update_character_colors() -> void:
+
+# OPTIMIZATION: Batched update system
+
+var _pending_wpm: float = 0.0
+var _pending_accuracy: float = 0.0
+var _pending_mistakes: int = 0
+
+func _perform_batched_updates() -> void:
+	if not cache_valid:
+		_rebuild_position_cache()
+
+	_update_character_colors_optimized()
+	_update_cursor_position_optimized()
+	_update_progress_bar()
+
+	pending_updates = false
+
+
+func _perform_stats_update() -> void:
+	if wpm_label:
+		wpm_label.text = "WPM: %.0f" % _pending_wpm
+	if accuracy_label:
+		accuracy_label.text = "Accuracy: %.1f%%" % _pending_accuracy
+	if mistakes_label:
+		mistakes_label.text = "Mistakes: %d" % _pending_mistakes
+
+	pending_stats_updates = false
+
+
+# OPTIMIZATION: Position caching system
+
+func _rebuild_position_cache() -> void:
+	if not sample_label or not font:
+		return
+
+	position_cache.clear()
+	cached_line_breaks.clear()
+
+	var font_size = sample_label.get_theme_font_size("font_size")
+	var label_width = sample_label.size.x
+
+	if label_width <= 0:
+		label_width = 400  # Fallback width
+
+	# Pre-calculate all positions and line breaks
+	var current_line = 0
+	var current_x = 0.0
+	var line_text = ""
+
+	for i in range(current_text.length()):
+		var ch = current_text[i]
+
+		# Handle line breaks
+		if ch == "\n":
+			cached_line_breaks.append(i)
+			position_cache[i] = Vector2(current_x, current_line * cached_line_height)
+			current_line += 1
+			current_x = 0.0
+			line_text = ""
+			continue
+
+		# Try adding this character to current line
+		var test_line = line_text + ch
+		var test_width = font.get_string_size(test_line, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+
+		# Check if we need to wrap
+		if test_width > label_width and line_text.length() > 0:
+			# Mark line break and wrap to next line
+			if cached_line_breaks.is_empty() or cached_line_breaks[-1] != i - 1:
+				cached_line_breaks.append(i - 1)
+			current_line += 1
+			current_x = font.get_string_size(ch, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+			line_text = ch
+		else:
+			# Fits on current line
+			current_x = test_width
+			line_text = test_line
+
+		# Cache this position
+		position_cache[i] = Vector2(current_x, current_line * cached_line_height)
+
+	cache_valid = true
+
+
+# OPTIMIZATION: Improved character overlay system with pooling
+
+func _update_character_colors_optimized() -> void:
 	if not color_overlay_container:
 		return
 
-	# Clear existing overlays
-	for overlay in character_overlays:
-		overlay.queue_free()
-	character_overlays.clear()
+	# Only update changed characters instead of recreating everything
+	var changes_made = false
 
-	# Create overlays for typed characters
+	# Check for new errors or corrections
 	for i in range(min(current_input.length(), current_text.length())):
-		if current_input[i] != current_text[i]:
-			# Create red character label for incorrect character
-			var overlay = Label.new()
-			overlay.text = current_text[i]  # Show the expected character
-			overlay.add_theme_color_override("font_color", incorrect_color)
+		var is_error = current_input[i] != current_text[i]
+		var has_overlay = i in active_overlays
 
-			# Calculate position for wrapped text
-			var char_pos = _calculate_character_position_wrapped(i)
-			overlay.position = Vector2(char_pos.x, char_pos.y)  # Remove the offset, let it align naturally
-			overlay.size = Vector2(character_width, character_height)
+		if is_error and not has_overlay:
+			# Add error overlay
+			_add_error_overlay(i)
+			changes_made = true
+		elif not is_error and has_overlay:
+			# Remove error overlay (character was corrected)
+			_remove_error_overlay(i)
+			changes_made = true
 
-			# Use the same cached font as the main text and cursor
-			if font:
-				overlay.add_theme_font_override("font", font)
-				var text_size = sample_label.get_theme_font_size("font_size") if sample_label else 16
-				if text_size > 0:
-					overlay.add_theme_font_size_override("font_size", text_size)
+	# Remove overlays for positions beyond current input
+	var positions_to_remove = []
+	for pos in active_overlays.keys():
+		if pos >= current_input.length():
+			positions_to_remove.append(pos)
 
-			# Match main label alignment
-			overlay.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-			overlay.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-			overlay.add_theme_constant_override("line_spacing", 0)
-
-			color_overlay_container.add_child(overlay)
-			character_overlays.append(overlay)
+	for pos in positions_to_remove:
+		_remove_error_overlay(pos)
+		changes_made = true
 
 
-func _update_cursor_position() -> void:
+func _add_error_overlay(pos: int) -> void:
+	if pos in active_overlays or pos >= current_text.length():
+		return
+
+	var overlay = _get_overlay_from_pool()
+	overlay.text = current_text[pos]
+	overlay.add_theme_color_override("font_color", incorrect_color)
+
+	# Use cached position
+	if pos in position_cache:
+		overlay.position = position_cache[pos]
+	else:
+		overlay.position = Vector2.ZERO  # Fallback
+
+	overlay.size = Vector2(character_width, character_height)
+	overlay.visible = true
+
+	active_overlays[pos] = overlay
+	color_overlay_container.add_child(overlay)
+
+
+func _remove_error_overlay(pos: int) -> void:
+	if pos not in active_overlays:
+		return
+
+	var overlay = active_overlays[pos]
+	active_overlays.erase(pos)
+
+	# Remove from scene and return to pool
+	color_overlay_container.remove_child(overlay)
+	overlay.visible = false
+	overlay_pool.append(overlay)
+
+
+func _get_overlay_from_pool() -> Label:
+	if overlay_pool.size() > 0:
+		return overlay_pool.pop_back()
+	else:
+		return _create_new_overlay()
+
+
+func _create_new_overlay() -> Label:
+	var overlay = Label.new()
+
+	# Apply font settings
+	if font:
+		overlay.add_theme_font_override("font", font)
+		var text_size = sample_label.get_theme_font_size("font_size") if sample_label else 16
+		if text_size > 0:
+			overlay.add_theme_font_size_override("font_size", text_size)
+
+	# Match main label alignment
+	overlay.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	overlay.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	overlay.add_theme_constant_override("line_spacing", 0)
+
+	return overlay
+
+
+func _clear_all_overlays() -> void:
+	# Return all active overlays to pool
+	for overlay in active_overlays.values():
+		color_overlay_container.remove_child(overlay)
+		overlay.visible = false
+		overlay_pool.append(overlay)
+
+	active_overlays.clear()
+
+
+# OPTIMIZATION: Simplified cursor positioning
+
+func _update_cursor_position_optimized() -> void:
 	if not typing_cursor or not show_cursor:
 		return
 
+	# Set cursor character
 	if current_index < current_text.length():
-		var current_char = current_text[current_index]
-		typing_cursor.character = current_char
+		typing_cursor.character = current_text[current_index]
 	else:
-		# At end of text, could show a completion indicator or space
 		typing_cursor.character = " "
 
-	# Calculate cursor position for wrapped text (both X and Y)
-	var cursor_pos = _calculate_wrapped_cursor_position()
+	# Use cached position
+	var cursor_pos = Vector2.ZERO
+	if current_index in position_cache:
+		cursor_pos = position_cache[current_index]
+	elif current_index == current_text.length() and current_index > 0:
+		# End of text - position after last character
+		var last_pos = position_cache.get(current_index - 1, Vector2.ZERO)
+		cursor_pos = Vector2(last_pos.x + character_width, last_pos.y)
 
-	# Update horizontal scrolling to keep cursor visible
-	_update_horizontal_scroll(cursor_pos.x)
-
-	# Position cursor at the calculated wrapped position
-	if typing_cursor:
-		typing_cursor.position = cursor_pos
-		cursor_moved.emit()
+	# Update cursor position
+	typing_cursor.position = cursor_pos
+	cursor_moved.emit()
 
 
 func _update_progress_bar() -> void:
@@ -385,44 +564,6 @@ func _update_display_colors() -> void:
 	_update_display()
 
 
-func _estimate_character_size() -> Vector2:
-	if not sample_label:
-		return Vector2(10, 20)  # Default fallback
-
-	# Get font metrics for character size estimation
-	var label_font = sample_label.get_theme_font("font")
-	var font_size = sample_label.get_theme_font_size("font_size")
-
-	if label_font and font_size > 0:
-		# Use get_string_size for Godot 4 compatibility
-		var char_size = label_font.get_string_size("M", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
-		# Ensure we have valid dimensions
-		if char_size.x > 0 and char_size.y > 0:
-			return char_size
-		else:
-			# Fallback calculation based on font size
-			return Vector2(font_size * 0.6, font_size * 1.2)
-	else:
-		return Vector2(10, 20)
-
-
-func _calculate_accurate_cursor_position() -> float:
-	if current_index <= 0:
-		return 0.0
-
-	# For wrapped text, we need to calculate which line we're on
-	if not sample_label or not font:
-		return 0.0
-
-	var cursor_pos = _calculate_wrapped_cursor_position()
-	return cursor_pos.x
-
-
-func _update_horizontal_scroll(_cursor_x: float) -> void:
-	# No scrolling needed with text wrapping
-	pass
-
-
 func _reset_container_positions() -> void:
 	# Reset all container positions and ensure visibility
 	if sample_label:
@@ -434,64 +575,6 @@ func _reset_container_positions() -> void:
 		cursor_container.position = Vector2.ZERO
 
 
-func _initialize_scrolling() -> void:
-	# No scrolling initialization needed with text wrapping
-	pass
-
-
-func _calculate_wrapped_cursor_position() -> Vector2:
-	# Use the exact same logic as character positioning since that works correctly
-	return _calculate_character_position_wrapped(current_index)
-
-
-func _calculate_character_position_wrapped(char_index: int) -> Vector2:
-	if not sample_label or not font or char_index < 0:
-		return Vector2.ZERO
-
-	var font_size = sample_label.get_theme_font_size("font_size")
-	var line_height = font.get_height(font_size)
-	var label_width = sample_label.size.x
-
-	# Ensure we have a valid width for wrapping calculations
-	if label_width <= 0:
-		label_width = 400  # Fallback width
-
-	# Get text up to character position
-	var text_before = current_text.substr(0, char_index)
-
-	# Simulate text wrapping to find exact position
-	var current_line = 0
-	var current_x = 0.0
-	var line_text = ""
-
-	for i in range(text_before.length()):
-		var ch = text_before[i]
-
-		# Handle line breaks
-		if ch == "\n":
-			current_line += 1
-			current_x = 0.0
-			line_text = ""
-			continue
-
-		# Try adding this character to current line
-		var test_line = line_text + ch
-		var test_width = font.get_string_size(test_line, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
-
-		# Check if we need to wrap
-		if test_width > label_width and line_text.length() > 0:
-			# Wrap to next line
-			current_line += 1
-			current_x = font.get_string_size(ch, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
-			line_text = ch
-		else:
-			# Fits on current line
-			current_x = test_width
-			line_text = test_line
-
-	return Vector2(current_x, current_line * line_height)
-
-
 func _flash_background(color: Color, duration: float) -> void:
 	var original_modulate = modulate
 	modulate = color
@@ -499,6 +582,8 @@ func _flash_background(color: Color, duration: float) -> void:
 	var tween = create_tween()
 	tween.tween_property(self, "modulate", original_modulate, duration)
 
+
+# Signal handlers
 
 func _on_cursor_moved() -> void:
 	cursor_moved.emit()

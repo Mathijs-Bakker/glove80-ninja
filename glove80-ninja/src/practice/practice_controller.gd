@@ -6,12 +6,15 @@ signal exercise_started()
 signal exercise_completed(results: Dictionary)
 signal settings_requested()
 
+# Configuration - Set which display type to use
+const USE_RICH_TEXT_DISPLAY: bool = true  # Set to false to use original TextDisplay
+
 # Services
 var config_service: ConfigService
 var user_service: UserService
 
 # Components
-var text_display: TextDisplay
+var text_display: Control  # Can be TextDisplay or RichTextDisplay
 var input_handler: InputHandler
 var session_manager: SessionManager
 
@@ -116,21 +119,32 @@ func _setup_ui() -> void:
 func _setup_components() -> void:
 	Log.info("[PracticeController][_setup_components] Setting up components")
 
-	# Create text display component
-	Log.info("[PracticeController][_setup_components] Loading TextDisplay scene")
-	var text_display_scene = load("res://src/ui/components/text_display.tscn")
+	# Create text display component based on configuration
+	Log.info("[PracticeController][_setup_components] Loading display scene")
+	var text_display_scene = null
+	var scene_type = "Unknown"
+	var scene_path = ""
+
+	if USE_RICH_TEXT_DISPLAY:
+		scene_path = "res://src/ui/components/rich_text_display.tscn"
+		scene_type = "RichTextDisplay"
+	else:
+		scene_path = "res://src/ui/components/text_display.tscn"
+		scene_type = "TextDisplay"
+
+	text_display_scene = load(scene_path)
 	if text_display_scene:
-		Log.info("[PracticeController][_setup_components] TextDisplay scene loaded successfully")
+		Log.info("[PracticeController][_setup_components] %s scene loaded successfully" % scene_type)
 		text_display = text_display_scene.instantiate()
-		Log.info("[PracticeController][_setup_components] TextDisplay instantiated: %s" % (text_display != null))
+		Log.info("[PracticeController][_setup_components] %s instantiated: %s" % [scene_type, text_display != null])
 
 		if text_display_container:
 			text_display_container.add_child(text_display)
-			Log.info("[PracticeController][_setup_components] TextDisplay added to container")
+			Log.info("[PracticeController][_setup_components] %s added to container" % scene_type)
 		else:
 			Log.error("[PracticeController][_setup_components] TextDisplayContainer not found in scene")
 	else:
-		Log.error("[PracticeController][_setup_components] Failed to load TextDisplay scene")
+		Log.error("[PracticeController][_setup_components] Failed to load %s scene from %s" % [scene_type, scene_path])
 
 	# Create input handler
 	Log.info("[PracticeController][_setup_components] Creating InputHandler")
@@ -191,7 +205,7 @@ func _start_new_exercise() -> void:
 	current_exercise.load_random_text()
 
 	# Setup components for new exercise
-	text_display.set_text(current_exercise.get_text())
+	_safe_call_display_method("set_text", [current_exercise.get_text()])
 	input_handler.set_target_text(current_exercise.get_text())
 	session_manager.start_session()
 
@@ -208,7 +222,7 @@ func _restart_exercise() -> void:
 		current_exercise.reset()
 
 		# Reset components
-		text_display.set_text(current_exercise.get_text())
+		_safe_call_display_method("set_text", [current_exercise.get_text()])
 		input_handler.reset()
 		session_manager.restart_session()
 
@@ -289,17 +303,17 @@ func _on_character_typed(character: String, is_correct: bool, char_position: int
 
 	# Update display
 	var progress_data = current_exercise.get_progress_data()
-	text_display.update_progress(
+	_safe_call_display_method("update_progress", [
 		progress_data.user_input,
 		progress_data.current_index,
 		progress_data.mistakes
-	)
+	])
 
 	# Show visual feedback
 	if is_correct:
-		text_display.show_correct_feedback()
+		_safe_call_display_method("show_correct_feedback")
 	else:
-		text_display.show_incorrect_feedback()
+		_safe_call_display_method("show_incorrect_feedback")
 
 
 func _on_input_completed() -> void:
@@ -322,11 +336,11 @@ func _on_session_completed(results: Dictionary) -> void:
 
 func _on_stats_updated(stats: Dictionary) -> void:
 	if text_display:
-		text_display.update_stats(
+		_safe_call_display_method("update_stats", [
 			stats.get("wpm", 0.0),
 			stats.get("accuracy", 100.0),
 			stats.get("mistakes", 0)
-		)
+		])
 
 
 func _on_settings_requested() -> void:
@@ -342,7 +356,22 @@ func _on_config_changed(setting_name: String, _new_value) -> void:
 	match setting_name:
 		"theme", "font_size", "cursor_style":
 			if text_display:
-				text_display.apply_theme_settings()
+				_safe_call_display_method("apply_theme_settings")
+
+
+# Helper methods to work with both TextDisplay and RichTextDisplay
+
+func _safe_call_display_method(method_name: String, args: Array = []):
+	"""Safely call methods on text_display regardless of type"""
+	if text_display and text_display.has_method(method_name):
+		if args.is_empty():
+			text_display.call(method_name)
+		else:
+			text_display.callv(method_name, args)
+
+func _is_rich_text_display() -> bool:
+	"""Check if current display is RichTextDisplay"""
+	return text_display != null and text_display.get_script() != null and text_display.get_script().get_global_name() == "RichTextDisplay"
 
 
 # Input handling

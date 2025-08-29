@@ -58,11 +58,7 @@ func _update_cursor_size():
 	# Set cursor size to consistent monospace width
 	size = Vector2(monospace_width, char_height)
 
-	Log.info("[TypingCursor] Font: %s" % font)
-	Log.info("[TypingCursor] Font size: %d" % text_font_size)
-	Log.info("[TypingCursor] Character width: %f" % monospace_width)
-	Log.info("[TypingCursor] Cursor size: %s" % size)
-	Log.info("[TypingCursor] Cursor position: %s" % position)
+
 
 
 func _draw():

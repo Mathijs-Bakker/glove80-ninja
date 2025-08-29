@@ -1,88 +1,40 @@
-[gd_scene load_steps=3 format=3 uid="uid://crv66wp0pregd"]
-
-[ext_resource type="Script" path="res://src/ui/components/rich_text_display.gd" id="1_rich_text"]
-[ext_resource type="Theme" uid="uid://dcmue30t571sw" path="res://themes/default.tres" id="2_8ne8b"]
+[gd_scene format=3 uid="uid://d1igsd77n3ec2"]
 
 [node name="RichTextDisplay" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_rich_text")
+anchors_preset = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="SampleContainer" type="Control" parent="VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 
 [node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/SampleContainer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-theme = ExtResource("2_8ne8b")
-bbcode_enabled = true
-text = "[color=gray]Sample text will appear here...[/color]"
-fit_content = false
-scroll_active = false
-autowrap_mode = 1
-tab_size = 4
-shortcut_keys_enabled = false
-selection_enabled = false
-deselect_on_focus_loss_enabled = false
-
-
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="CursorContainer" type="Control" parent="VBoxContainer/SampleContainer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="ProgressBar" type="ProgressBar" parent="VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-step = 0.1
-show_percentage = false
 
-[node name="StatsContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
+[node name="StatsContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="WPMLabel" type="Label" parent="VBoxContainer/StatsContainer"]
+[node name="WPMLabel" type="Label" parent="StatsContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "WPM: 0"
-horizontal_alignment = 1
 
-[node name="AccuracyLabel" type="Label" parent="VBoxContainer/StatsContainer"]
+[node name="AccuracyLabel" type="Label" parent="StatsContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Accuracy: 100.0%"
-horizontal_alignment = 1
 
-[node name="MistakesLabel" type="Label" parent="VBoxContainer/StatsContainer"]
+[node name="MistakesLabel" type="Label" parent="StatsContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Mistakes: 0"
-horizontal_alignment = 1

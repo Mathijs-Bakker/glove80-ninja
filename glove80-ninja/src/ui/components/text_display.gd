@@ -113,24 +113,25 @@ func update_progress(user_input: String, char_index: int, mistakes: int) -> void
 
 ## OPTIMIZED: Update statistics display with batching
 func update_stats(wpm: float, accuracy: float, mistakes: int) -> void:
-	# Store stats for batched update
-	_pending_wpm = wpm
-	_pending_accuracy = accuracy
-	_pending_mistakes = mistakes
-
-	if not pending_stats_updates:
-		pending_stats_updates = true
-		stats_update_timer.start()
+	# Update stats immediately instead of batching to prevent flickering
+	if wpm_label:
+		wpm_label.text = "WPM: %.0f" % wpm
+	if accuracy_label:
+		accuracy_label.text = "Accuracy: %.1f%%" % accuracy
+	if mistakes_label:
+		mistakes_label.text = "Mistakes: %d" % mistakes
 
 
 ## Show visual feedback for correct typing
 func show_correct_feedback() -> void:
-	_flash_background(Color.GREEN.lerp(background_color, 0.7), 0.1)
+	# Disabled to prevent flickering and color accumulation
+	pass
 
 
 ## Show visual feedback for incorrect typing
 func show_incorrect_feedback() -> void:
-	_flash_background(Color.RED.lerp(background_color, 0.7), 0.2)
+	# Disabled to prevent flickering and color accumulation
+	pass
 
 
 ## Set cursor visibility
@@ -165,23 +166,23 @@ func _setup_cursor() -> void:
 
 
 func _setup_timers() -> void:
-	# Cursor blink timer
+	# Cursor blink timer (disabled to prevent flickering)
 	cursor_timer = Timer.new()
 	cursor_timer.wait_time = 1.0 / cursor_blink_speed
-	cursor_timer.autostart = true
+	cursor_timer.autostart = false  # Disabled to prevent flickering
 	cursor_timer.timeout.connect(_on_cursor_blink)
 	add_child(cursor_timer)
 
-	# OPTIMIZATION: Batched update timer (~60fps)
+	# OPTIMIZATION: Batched update timer (reduced frequency to prevent flickering)
 	update_timer = Timer.new()
-	update_timer.wait_time = 0.016  # ~60fps
+	update_timer.wait_time = 0.033  # 30fps instead of 60fps
 	update_timer.one_shot = true
 	update_timer.timeout.connect(_perform_batched_updates)
 	add_child(update_timer)
 
-	# OPTIMIZATION: Stats update timer (lower frequency)
+	# OPTIMIZATION: Stats update timer (much lower frequency to prevent flickering)
 	stats_update_timer = Timer.new()
-	stats_update_timer.wait_time = 0.1  # 10fps for stats
+	stats_update_timer.wait_time = 0.5  # 2fps instead of 10fps
 	stats_update_timer.one_shot = true
 	stats_update_timer.timeout.connect(_perform_stats_update)
 	add_child(stats_update_timer)
@@ -200,7 +201,7 @@ func _apply_initial_styling() -> void:
 		sample_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		sample_label.add_theme_constant_override("line_spacing", 0)
 		sample_label.visible = true
-		sample_label.modulate = Color.WHITE
+		# Remove modulate to prevent color accumulation
 
 		_setup_character_overlays()
 
@@ -337,29 +338,23 @@ func _setup_character_overlays() -> void:
 
 # OPTIMIZATION: Batched update system
 
-var _pending_wpm: float = 0.0
-var _pending_accuracy: float = 0.0
-var _pending_mistakes: int = 0
-
 func _perform_batched_updates() -> void:
 	if not cache_valid:
 		_rebuild_position_cache()
 
 	_update_character_colors_optimized()
 	_update_cursor_position_optimized()
-	_update_progress_bar()
+
+	# Update progress bar immediately instead of in batch to prevent flickering
+	if progress_bar and show_progress and current_text.length() > 0:
+		var progress = float(current_index) / float(current_text.length()) * 100.0
+		progress_bar.value = progress
 
 	pending_updates = false
 
 
 func _perform_stats_update() -> void:
-	if wpm_label:
-		wpm_label.text = "WPM: %.0f" % _pending_wpm
-	if accuracy_label:
-		accuracy_label.text = "Accuracy: %.1f%%" % _pending_accuracy
-	if mistakes_label:
-		mistakes_label.text = "Mistakes: %d" % _pending_mistakes
-
+	# Stats are now updated immediately, this method kept for compatibility
 	pending_stats_updates = false
 
 
@@ -425,8 +420,6 @@ func _update_character_colors_optimized() -> void:
 		return
 
 	# Only update changed characters instead of recreating everything
-	var changes_made = false
-
 	# Check for new errors or corrections
 	for i in range(min(current_input.length(), current_text.length())):
 		var is_error = current_input[i] != current_text[i]
@@ -435,11 +428,9 @@ func _update_character_colors_optimized() -> void:
 		if is_error and not has_overlay:
 			# Add error overlay
 			_add_error_overlay(i)
-			changes_made = true
 		elif not is_error and has_overlay:
 			# Remove error overlay (character was corrected)
 			_remove_error_overlay(i)
-			changes_made = true
 
 	# Remove overlays for positions beyond current input
 	var positions_to_remove = []
@@ -449,7 +440,6 @@ func _update_character_colors_optimized() -> void:
 
 	for pos in positions_to_remove:
 		_remove_error_overlay(pos)
-		changes_made = true
 
 
 func _add_error_overlay(pos: int) -> void:
@@ -548,19 +538,16 @@ func _update_cursor_position_optimized() -> void:
 
 
 func _update_progress_bar() -> void:
-	if not progress_bar or not show_progress:
-		return
-
-	if current_text.length() > 0:
-		var progress = float(current_index) / float(current_text.length()) * 100.0
-		progress_bar.value = progress
+	# Progress bar is now updated immediately in _perform_batched_updates
+	# This method kept for compatibility
+	pass
 
 
 func _update_display_colors() -> void:
 	if sample_label:
 		sample_label.add_theme_color_override("font_color", pending_color)
 
-	modulate = Color.WHITE
+	# Remove modulate to prevent color accumulation
 	_update_display()
 
 
@@ -575,12 +562,9 @@ func _reset_container_positions() -> void:
 		cursor_container.position = Vector2.ZERO
 
 
-func _flash_background(color: Color, duration: float) -> void:
-	var original_modulate = modulate
-	modulate = color
-
-	var tween = create_tween()
-	tween.tween_property(self, "modulate", original_modulate, duration)
+func _flash_background(_color: Color, _duration: float) -> void:
+	# Disabled to prevent color accumulation and flickering
+	pass
 
 
 # Signal handlers
@@ -590,9 +574,8 @@ func _on_cursor_moved() -> void:
 
 
 func _on_cursor_blink() -> void:
-	if typing_cursor and show_cursor:
-		# TypingCursor handles blinking automatically through its _process method
-		pass
+	# Disabled to prevent flickering
+	pass
 
 
 func _on_config_changed(setting_name: String, _new_value) -> void:

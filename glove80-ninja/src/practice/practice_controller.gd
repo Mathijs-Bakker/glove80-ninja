@@ -7,7 +7,7 @@ signal exercise_completed(results: Dictionary)
 signal settings_requested()
 
 # Configuration - Set which display type to use
-const USE_RICH_TEXT_DISPLAY: bool = true  # Set to false to use original TextDisplay
+const USE_RICH_TEXT_DISPLAY: bool = false  # Set to true to use RichTextDisplay
 
 # Services
 var config_service: ConfigService

@@ -39,6 +39,7 @@ grow_vertical = 2
 mouse_filter = 1
 theme = ExtResource("2_8ne8b")
 text = "Sample text will appear here..."
+autowrap_mode = 3
 
 [node name="ColorOverlayContainer" type="Control" parent="VBoxContainer/SampleContainer"]
 layout_mode = 1

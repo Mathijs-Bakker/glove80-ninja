@@ -6,6 +6,8 @@
 [ext_resource type="FontFile" uid="uid://b5slrqkdeex8r" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-Italic.ttf" id="4_u7cj8"]
 
 [resource]
+Label/font_sizes/font_size = 24
+Label/fonts/font = ExtResource("1_50bnw")
 LineEdit/font_sizes/font_size = 67
 LineEdit/fonts/font = ExtResource("1_50bnw")
 RichTextLabel/font_sizes/bold_font_size = 24

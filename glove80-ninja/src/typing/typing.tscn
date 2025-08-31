@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvy1puekiteqi"]
+
+[ext_resource type="Script" uid="uid://d368ainx1goxm" path="res://src/typing/typing_controller.gd" id="1_1gqw4"]
+
+[node name="Typing" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1gqw4")
+
+[node name="TextLayer" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.128
+anchor_top = 0.257
+anchor_right = 0.885
+anchor_bottom = 0.513
+offset_left = 0.23999
+offset_top = 0.440002
+offset_right = 0.799927
+offset_bottom = -0.0400391
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CursorLayer" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.128
+anchor_top = 0.257
+anchor_right = 0.885
+anchor_bottom = 0.513
+offset_left = 0.23999
+offset_top = 0.440002
+offset_right = 0.799927
+offset_bottom = -0.0400391
+grow_horizontal = 2
+grow_vertical = 2

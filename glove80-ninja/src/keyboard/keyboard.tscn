@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bnvts66d5keto"]
+
+[ext_resource type="Texture2D" uid="uid://dr34hpfwqqx1f" path="res://src/keyboard/assets/keyboard.svg" id="1_dgjec"]
+
+[node name="Keyboard" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Keyboard" type="Sprite2D" parent="."]
+position = Vector2(946, 561)
+texture = ExtResource("1_dgjec")

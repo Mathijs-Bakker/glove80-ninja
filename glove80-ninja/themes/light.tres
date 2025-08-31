@@ -1,0 +1,28 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://b1tdp8euh5a6e"]
+
+[ext_resource type="FontFile" uid="uid://oofw660lk3mw" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf" id="1_75eb8"]
+[ext_resource type="FontFile" uid="uid://bedpb6igfvpjb" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-Bold.ttf" id="2_vhl38"]
+[ext_resource type="FontFile" uid="uid://ces7ks37q00jy" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-BoldItalic.ttf" id="3_jtsux"]
+[ext_resource type="FontFile" uid="uid://b5slrqkdeex8r" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-Italic.ttf" id="4_qub42"]
+
+[resource]
+Label/font_sizes/font_size = 30
+Label/fonts/font = ExtResource("1_75eb8")
+LineEdit/font_sizes/font_size = 30
+LineEdit/fonts/font = ExtResource("1_75eb8")
+RichTextLabel/font_sizes/bold_font_size = 24
+RichTextLabel/font_sizes/bold_italics_font_size = 24
+RichTextLabel/font_sizes/italics_font_size = 24
+RichTextLabel/font_sizes/mono_font_size = 24
+RichTextLabel/font_sizes/normal_font_size = 24
+RichTextLabel/fonts/bold_font = ExtResource("2_vhl38")
+RichTextLabel/fonts/bold_italics_font = ExtResource("3_jtsux")
+RichTextLabel/fonts/italics_font = ExtResource("4_qub42")
+RichTextLabel/fonts/mono_font = ExtResource("1_75eb8")
+RichTextLabel/fonts/normal_font = ExtResource("1_75eb8")
+correct_char/base_type = &"Label"
+correct_char/colors/font_color = Color(0.92549, 0.921569, 0.929412, 1)
+incorrect_char/base_type = &"Label"
+incorrect_char/colors/font_color = Color(0.882353, 0, 0, 1)
+pending_char/base_type = &"Label"
+pending_char/colors/font_color = Color(0.473976, 0.473976, 0.473976, 1)

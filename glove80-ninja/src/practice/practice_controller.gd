@@ -1,4 +1,4 @@
-class_name PracticeControllerRefactored
+class_name PracticeController
 extends Control
 
 
@@ -6,17 +6,18 @@ signal exercise_started()
 signal exercise_completed(results: Dictionary)
 signal settings_requested()
 
-# Configuration - Set which display type to use
-const USE_RICH_TEXT_DISPLAY: bool = false  # Set to true to use RichTextDisplay
-
 # Services
 var config_service: ConfigService
 var user_service: UserService
 
 # Components
-var text_display: Control  # Can be TextDisplay or RichTextDisplay
+var text_display: Control
 var input_handler: InputHandler
 var session_manager: SessionManager
+
+# Rewrite
+var typing: TypingController
+@onready var typing_container: Control = $TypingContainer
 
 # UI References
 @onready var settings_button: Button = $HeaderContainer/SettingsButton
@@ -119,20 +120,11 @@ func _setup_ui() -> void:
 func _setup_components() -> void:
 	Log.info("[PracticeController][_setup_components] Setting up components")
 
-	# Create text display component based on configuration
 	Log.info("[PracticeController][_setup_components] Loading display scene")
-	var text_display_scene = null
-	var scene_type = "Unknown"
-	var scene_path = ""
+	var scene_path = "res://src/ui/components/text_display.tscn"
+	var scene_type = "TextDisplay"
+	var text_display_scene = load(scene_path)
 
-	if USE_RICH_TEXT_DISPLAY:
-		scene_path = "res://src/ui/components/rich_text_display.tscn"
-		scene_type = "RichTextDisplay"
-	else:
-		scene_path = "res://src/ui/components/text_display.tscn"
-		scene_type = "TextDisplay"
-
-	text_display_scene = load(scene_path)
 	if text_display_scene:
 		Log.info("[PracticeController][_setup_components] %s scene loaded successfully" % scene_type)
 		text_display = text_display_scene.instantiate()
@@ -298,6 +290,9 @@ func _on_character_typed(character: String, is_correct: bool, char_position: int
 	if not is_active or not current_exercise:
 		return
 
+	if char_position >= current_exercise.get_text().length():
+		return
+
 	# Update exercise with typed character
 	current_exercise.process_character(character, is_correct, char_position)
 
@@ -381,4 +376,4 @@ func _input(event: InputEvent) -> void:
 		return
 
 	# Delegate input handling to input handler component
-	input_handler.handle_input(event)
+	input_handler.handle_keyboard_input(event)

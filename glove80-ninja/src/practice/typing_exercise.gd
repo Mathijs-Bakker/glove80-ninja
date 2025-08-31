@@ -35,16 +35,14 @@ var corrections_made: int = 0
 var mistake_positions: Array = []
 var keystroke_timings: Array = []
 
-# Text providers (using static methods, no instance needed)
-
 
 ## Initialize exercise with optional parameters
-func initialize(config: Dictionary = {}) -> void:
-	exercise_id = config.get("id", _generate_exercise_id())
-	exercise_type = config.get("type", "random")
-	difficulty_level = config.get("difficulty", "beginner")
-	target_wpm = config.get("target_wpm", 0.0)
-	target_accuracy = config.get("target_accuracy", 90.0)
+func initialize(p_config: Dictionary = {}) -> void:
+	exercise_id = p_config.get("id", _generate_exercise_id())
+	exercise_type = p_config.get("type", "random")
+	difficulty_level = p_config.get("difficulty", "beginner")
+	target_wpm = p_config.get("target_wpm", 0.0)
+	target_accuracy = p_config.get("target_accuracy", 90.0)
 
 	# TextProvider uses static methods, no instance needed
 
@@ -53,9 +51,9 @@ func initialize(config: Dictionary = {}) -> void:
 		"random":
 			load_random_text()
 		"lesson":
-			load_lesson_text(config.get("lesson_id", ""))
+			load_lesson_text(p_config.get("lesson_id", ""))
 		"custom":
-			load_custom_text(config.get("custom_text", ""))
+			load_custom_text(p_config.get("custom_text", ""))
 
 
 ## Load a random text sample
@@ -65,8 +63,8 @@ func load_random_text() -> void:
 
 
 ## Load text from a specific lesson
-func load_lesson_text(lesson_id: String) -> void:
-	original_text = TextProvider.get_lesson_text(lesson_id)
+func load_lesson_text(p_lesson_id: String) -> void:
+	original_text = TextProvider.get_lesson_text(p_lesson_id)
 	if original_text.is_empty():
 		load_random_text()  # Fallback to random
 	else:
@@ -74,12 +72,12 @@ func load_lesson_text(lesson_id: String) -> void:
 
 
 ## Load custom text provided by user
-func load_custom_text(custom_text: String) -> void:
-	if custom_text.is_empty():
+func load_custom_text(p_custom_text: String) -> void:
+	if p_custom_text.is_empty():
 		load_random_text()
 		return
 
-	original_text = custom_text
+	original_text = p_custom_text
 	_process_text()
 
 
@@ -104,7 +102,7 @@ func start_exercise() -> void:
 
 
 ## Process a character input from the user
-func process_character(character: String, is_correct: bool, position: int) -> void:
+func process_character(p_character: String, p_is_correct: bool, p_position: int) -> void:
 	if not is_started:
 		start_exercise()
 
@@ -114,14 +112,14 @@ func process_character(character: String, is_correct: bool, position: int) -> vo
 	# Record keystroke timing
 	var current_time = Time.get_ticks_msec()
 	keystroke_timings.append({
-		"character": character,
+		"character": p_character,
 		"time": current_time,
-		"position": position,
-		"is_correct": is_correct
+		"position": p_position,
+		"is_correct": p_is_correct
 	})
 
 	# Handle backspace
-	if character == "":  # Backspace indicator
+	if p_character == "":  # Backspace indicator
 		if current_position > 0:
 			corrections_made += 1
 			current_position -= 1
@@ -131,14 +129,14 @@ func process_character(character: String, is_correct: bool, position: int) -> vo
 
 	# Process regular character
 	total_characters_typed += 1
-	user_input += character
-	current_position = position + 1
+	user_input += p_character
+	current_position = p_position + 1
 
-	if is_correct:
+	if p_is_correct:
 		correct_characters += 1
 	else:
 		incorrect_characters += 1
-		mistake_positions.append(position)
+		mistake_positions.append(p_position)
 
 	# Check if exercise is complete
 	if current_position >= processed_text.length():

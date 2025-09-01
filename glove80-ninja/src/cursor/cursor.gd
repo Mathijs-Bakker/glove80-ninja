@@ -4,7 +4,6 @@ class_name TypingCursor
 ## Ultra-simple cursor for testing - always draws a blue block
 
 signal cursor_moved
-signal cursor_style_changed
 
 @export var character: String = "A":
 	set(value):
@@ -78,28 +77,23 @@ func _draw():
 
 	match cursor_style:
 		"block":
-			# Solid filled block
 			draw_rect(Rect2(cursor_pos, size), colors.block)
 			draw_string(font, text_pos, character, HORIZONTAL_ALIGNMENT_LEFT, -1, text_font_size, Color.WHITE)
 
 		"box":
-			# Outlined box
 			draw_rect(Rect2(cursor_pos, size), colors.box, false, 2)
 			draw_string(font, text_pos, character, HORIZONTAL_ALIGNMENT_LEFT, -1, text_font_size, colors.box)
 
 		"line":
-			# Draw character at exact same position as block cursor (perfect alignment)
 			draw_string(font, text_pos, character, HORIZONTAL_ALIGNMENT_LEFT, -1, text_font_size, colors.line)
-			# Draw thin vertical line at the left edge of the character position
 			draw_line(cursor_pos, cursor_pos + Vector2(0, size.y), colors.line, 1)  # Thinner line (width 1)
 
 		"underline":
-			# Underline at bottom
 			draw_line(cursor_pos + Vector2(0, size.y - 2), cursor_pos + Vector2(size.x, size.y - 2), colors.underline, 2)
 			draw_string(font, text_pos, character, HORIZONTAL_ALIGNMENT_LEFT, -1, text_font_size, Color.WHITE)
 
 		_:
-			# Default to block if unknown style
+			# Default to block 
 			draw_rect(Rect2(cursor_pos, size), colors.block)
 			draw_string(font, text_pos, character, HORIZONTAL_ALIGNMENT_LEFT, -1, text_font_size, Color.WHITE)
 

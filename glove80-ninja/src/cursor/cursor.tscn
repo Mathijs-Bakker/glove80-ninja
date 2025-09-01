@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bwo0332nbt41j"]
 
-[ext_resource type="Script" uid="uid://q1as50nye5di" path="res://src/cursor/cursor.gd" id="1_2ukjv"]
+[ext_resource type="Script" path="res://src/cursor/cursor.gd" id="1_2ukjv"]
 
 [node name="Cursor" type="Control"]
 layout_mode = 3

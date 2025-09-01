@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ccsp6o2bce2j8"]
 
-[ext_resource type="Script" path="res://src/main/main_rewrite.gd" id="1_3eh75"]
+[ext_resource type="Script" uid="uid://qp232mitcip5" path="res://src/main/main_rewrite.gd" id="1_3eh75"]
 
 [node name="Main" type="Control"]
 layout_mode = 3

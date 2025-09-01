@@ -7,47 +7,74 @@ extends Node
 
 # var _config_service: ConfigService
 var _text: String
-# var theme: Theme
+var _font: Font
+var theme: Theme
 
 
 func _ready() -> void:
-	# theme = load("res://themes/dark.tres")
-	_render_text()
-
+	var max_width := _text_layer.size.x
+	_render_text(max_width)
 
 func initialize(p_text: String) -> void:
 	_text = p_text
-	_text = "abcd efg abcd xyz abcdefghij klm no p qrst uvw xyz abcd efg abcd xyz abcdefghij klm no p qrst uvw xyz abcd efg abcd xyz abcdefghij klm no p qrst uvw xyz"
+	_text = "abc defgh ij klm nopq rstuvw xyz ab cdefghijklmnop qr stvwuxyz abc defgh ij klm nopq rstuvw xyz ab cdefghijklmnop qr stvwuxyz"
 
-
-func _render_text() -> void:
+func _render_text(p_max_width: float) -> void:
 	if _text.is_empty():
 		return
-	
-	var last_position: Vector2 = Vector2(0.0, 0.0)
 
-	for i in _text.length():
-		var c = _text[i]
+	var font_size := 60
+	_font = preload("res://assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf")
+	var line_height := _font.get_height(font_size)
 
-		var label := Label.new()
-		var font_metrics = get_font_metrics(label, c)
+	var cursor_x := 0.0
+	var cursor_y := 0.0
 
-		if c == "\n":
-			last_position.x = 0.0
-			last_position.y += font_metrics.y
-			continue
+	# First handle manual newlines
+	var lines := _text.split("\n", false)
 
-		label.text = c
+	for line in lines:
+		var words := line.split(" ", false)
 
-		label.add_theme_font_size_override("font_metrics", 60)
-		label.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		for word_index in words.size():
+			var word := words[word_index]
 
-		# positioning:
-		label.position.x = last_position.x
-		last_position.x += font_metrics.x
-		label.custom_minimum_size = Vector2(font_metrics.x, font_metrics.y)
+			# measure full word width (including punctuation etc.)
+			var word_width := 0.0
+			for c in word:
+				word_width += _font.get_char_size(c.unicode_at(0), font_size).x
 
-		_text_layer.add_child(label)  
+			var space_width := _font.get_char_size(" ".unicode_at(0), font_size).x
+			if word_index < words.size() - 1:
+				word_width += space_width
+
+			# wrap if needed
+			if cursor_x + word_width > p_max_width:
+				cursor_x = 0.0
+				cursor_y += line_height
+
+			# render word
+			for c in word:
+				var label := Label.new()
+				label.text = c
+				label.add_theme_font_override("font", _font)
+				label.add_theme_font_size_override("font_size", font_size)
+				label.set_anchors_preset(Control.PRESET_TOP_LEFT)
+
+				var char_width := _font.get_char_size(c.unicode_at(0), font_size).x
+				label.position = Vector2(cursor_x, cursor_y)
+				label.custom_minimum_size = Vector2(char_width, line_height)
+
+				_text_layer.add_child(label)
+				cursor_x += char_width
+
+			# add space
+			if word_index < words.size() - 1:
+				cursor_x += space_width
+
+		# manual line break -> reset x and move y down
+		cursor_x = 0.0
+		cursor_y += line_height
 
 
 func get_font_metrics(p_label: Label, p_character: String) -> Vector2:

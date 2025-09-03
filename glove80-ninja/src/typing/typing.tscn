@@ -1,21 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://bvy1puekiteqi"]
+[gd_scene load_steps=4 format=3 uid="uid://bvy1puekiteqi"]
 
-[ext_resource type="Script" uid="uid://cuiir5cnqpp50" path="res://src/typing/text_renderer.gd" id="1_1gqw4"]
+[ext_resource type="Script" uid="uid://cfgmsomvy050y" path="res://src/typing/text_renderer.gd" id="1_1gqw4"]
+[ext_resource type="Script" uid="uid://fek3knx4nxkr" path="res://src/typing/typing_controller.gd" id="1_swlhx"]
+[ext_resource type="PackedScene" uid="uid://bwo0332nbt41j" path="res://src/cursor/cursor.tscn" id="3_smgfq"]
 
-[sub_resource type="GDScript" id="GDScript_1gqw4"]
-script/source = "extends Control
-"
-
-[node name="Typing" type="Control"]
+[node name="TypingController" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = SubResource("GDScript_1gqw4")
+script = ExtResource("1_swlhx")
 
-[node name="TextRenderer" type="Control" parent="."]
+[node name="TextRenderer" type="Control" parent="." node_paths=PackedStringArray("_typing_controller")]
 layout_mode = 1
 anchor_left = 0.128
 anchor_top = 0.257
@@ -28,16 +26,6 @@ offset_bottom = -0.0400391
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1gqw4")
+_typing_controller = NodePath("..")
 
-[node name="CursorRenderer" type="Control" parent="."]
-layout_mode = 1
-anchor_left = 0.128
-anchor_top = 0.257
-anchor_right = 0.885
-anchor_bottom = 0.513
-offset_left = 0.23999
-offset_top = 0.440002
-offset_right = 0.799927
-offset_bottom = -0.0400391
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Cursor" parent="." instance=ExtResource("3_smgfq")]

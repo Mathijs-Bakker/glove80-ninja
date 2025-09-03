@@ -22,6 +22,7 @@ boot_splash/minimum_display_time=30
 [autoload]
 
 Log="*res://addons/logger/logger.gd"
+CursorPosition="*res://src/typing/autoload/cursor_position.gd"
 
 [display]
 

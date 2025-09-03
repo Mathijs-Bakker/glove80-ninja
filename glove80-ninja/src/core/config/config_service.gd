@@ -320,7 +320,7 @@ func _save_user_config() -> bool:
 	return success
 
 
-func _is_user_setting(p_setting_name: String) -> bool:
+func _is_rser_setting(p_setting_name: String) -> bool:
 	var is_user = DEFAULT_USER_CONFIG.has(p_setting_name) or not DEFAULT_APP_CONFIG.has(p_setting_name)
 	Log.info("[ConfigService][_is_user_setting] Setting %s is user setting: %s" % [p_setting_name, is_user])
 	return is_user

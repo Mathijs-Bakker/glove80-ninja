@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cgag1gd7bsmae"]
 
 [ext_resource type="Script" uid="uid://di2o1pgxmslw2" path="res://src/ui/components/text_display.gd" id="1_1a2b3c"]
-[ext_resource type="Theme" path="res://themes/dark.tres" id="2_8ne8b"]
+[ext_resource type="Theme" uid="uid://kcben5y0d2o6" path="res://themes/dark.tres" id="2_8ne8b"]
 
 [node name="TextDisplay" type="Control"]
 layout_mode = 3

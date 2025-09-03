@@ -1,12 +1,14 @@
 [gd_scene load_steps=2 format=3 uid="uid://bvju6sxwa7me2"]
 
-[ext_resource type="Script" path="res://src/settings/settings_controller.gd" id="1_settings_controller"]
+[ext_resource type="Script" uid="uid://b3mjc6unmcbtm" path="res://src/settings/settings_controller.gd" id="1_settings_controller"]
 
 [node name="SettingsController" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_settings_controller")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -18,15 +20,13 @@ offset_left = 40.0
 offset_top = 40.0
 offset_right = -40.0
 offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="TitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 text = "Settings"
 horizontal_alignment = 1
-add_theme_font_size_override("font_size", 24)
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
-layout_mode = 2
 
 [node name="SettingsContainer" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -91,7 +91,6 @@ vertical_alignment = 1
 [node name="SoundVolumeSlider" type="HSlider" parent="VBoxContainer/SettingsContainer/SoundVolumeContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-max_value = 100.0
 value = 80.0
 
 [node name="TypingSoundsContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer"]
@@ -133,13 +132,13 @@ alignment = 1
 
 [node name="SaveButton" type="Button" parent="VBoxContainer/ButtonContainer"]
 layout_mode = 2
-text = "Save"
 disabled = true
+text = "Save"
 
 [node name="CancelButton" type="Button" parent="VBoxContainer/ButtonContainer"]
 layout_mode = 2
-text = "Cancel"
 disabled = true
+text = "Cancel"
 
 [node name="ResetButton" type="Button" parent="VBoxContainer/ButtonContainer"]
 layout_mode = 2

@@ -17,7 +17,7 @@ func _init(p_controller: TypingController) -> void:
 func _input(event: InputEvent) -> void:
 	print(event)
 	if event is InputEventKey and event.pressed:
-		if not _typing_controller.is_active:
+		# if not _typing_controller.is_active:
 			return
 	_handle_keyboard_input(event)
 

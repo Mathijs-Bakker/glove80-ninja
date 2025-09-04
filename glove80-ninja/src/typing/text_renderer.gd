@@ -11,10 +11,19 @@ var _cursor: Vector2
 @export var _typing_controller: TypingController 
 
 
+
 func _ready() -> void:
-    _text = _typing_controller.get_target_text() 
-    print("Text: %s" % _text)
+    # _text = _typing_controller.get_target_text() 
+    # print("Text: %s" % _text)
+    _typing_controller.start_new_practice.connect(on_start_practice)
     CursorPosition.moved.connect(_update_text)
+
+    # _render_text()
+
+
+func on_start_practice() -> void:
+    _text = _typing_controller.get_target_text() 
+    remove_labels()
     _render_text()
 
 

@@ -15,10 +15,7 @@ signal update
 # Practice Data
 var _target_text: String = "Not initialized"
 var cursor_idx: int
-# var prev_position: int
 var chars_label_data: Array[CharacterData]
-
-# var _cursor_position: CursorPosition
 
 # State
 var is_activated: bool = true  # Todo: Should be false
@@ -30,12 +27,6 @@ func _ready() -> void:
 	var text = "Hello, this is a test. Wrapping should keep punctuation attached, like word, or 'word-up'. Hello, this is a test. Wrapping should keep punctuation attached, like word, or word-up."
 	initalize(text)
 	start_new_practice.emit()
-
-
-# func _setup() -> void:
-# 	_key_input_handler = KeyInputHandler.new(self)
-# 	_key_input_handler.name = "KeyInputHandler"
-# 	add_child(_key_input_handler)
 
 
 func _setup_signals() -> void:

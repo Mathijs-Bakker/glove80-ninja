@@ -7,6 +7,7 @@ var _font_size: int
 var _has_validated: bool
 
 var _cursor: Vector2
+var char_label_names: Array[String]
 
 @export var _typing_ctrl: TypingController
 
@@ -15,7 +16,7 @@ func _ready() -> void:
 	# _text = _typing_ctrl.get_target_text()
 	# print("Text: %s" % _text)
 	_typing_ctrl.start_new_practice.connect(on_start_practice)
-	_typing_ctrl.update_position.connect(_update_text)
+	_typing_ctrl.update.connect(_update_text)
 
 	# _render_text()
 
@@ -28,6 +29,19 @@ func on_start_practice() -> void:
 
 func _update_text() -> void:
 	print("_update_text()")
+
+	var cursor_idx = _typing_ctrl.cursor_idx - 1
+	var char_data = _typing_ctrl.chars_label_data[cursor_idx]
+
+	var label_name = char_label_names[cursor_idx]
+
+	var label = get_node(label_name)
+	print(label_name, char_data.is_correct)
+
+	if char_data.is_correct:
+		label.set_theme_type_variation("correct_char")
+	else:
+		label.set_theme_type_variation("incorrect_char")
 
 	# for i in _typing_ctrl.char_data.size():
 	#   await get_tree().create_timer(0.1).timeout
@@ -85,10 +99,21 @@ func _render_text() -> void:
 
 		_has_validated = true
 
+	var count = 0
+	var prefix_name = "CharLabel_"
+
 	for data in _typing_ctrl.chars_label_data:
+		var label_name = prefix_name + str(count)
+		char_label_names.append(label_name)
+
 		_create_char_label(
-			data._value, data._position, data._label_size, data._line_height, data.is_correct
+			label_name,
+			data._value,
+			data._position,
+			data._label_size,
+			data._line_height,
 		)
+		count += 1
 
 
 func _measure_word(p_word: String, p_font_size: int) -> float:
@@ -99,14 +124,18 @@ func _measure_word(p_word: String, p_font_size: int) -> float:
 
 
 func _create_char_label(
-	p_char: String, p_pos: Vector2, p_size: Vector2, p_line_height: float, p_is_wrong: bool
+	p_name: String,
+	p_char: String,
+	p_pos: Vector2,
+	p_size: Vector2,
+	p_line_height: float,
 ) -> void:
 	var label := Label.new()
+	label.name = p_name
 	label.text = p_char
 	label.add_theme_font_override("font", _font)
 	label.add_theme_font_size_override("font_size", _font_size)
-	if p_is_wrong:
-		label.set_theme_type_variation("incorrect_char")
+	label.set_theme_type_variation("pending_char")
 	label.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	label.position = p_pos
 	label.custom_minimum_size = Vector2(p_size.x, p_line_height)

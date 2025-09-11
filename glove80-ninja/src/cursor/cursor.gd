@@ -37,7 +37,7 @@ var text_font_size: int
 
 
 func _ready():
-	_typing_ctrl.update_position.connect(_update_cursor_position)
+	_typing_ctrl.update.connect(_update_cursor_position)
 	_update_cursor_size()
 	set_font_and_size(ConfigData.font, ConfigData.font_size)
 	queue_redraw()
@@ -65,7 +65,7 @@ func _update_cursor_size():
 
 
 func _draw():
-	print(_typing_ctrl.current_position)
+	print(_typing_ctrl.cursor_idx)
 	if not is_active or not font:
 		print("font is nil")
 		return
@@ -163,8 +163,8 @@ func _update_cursor_position() -> void:
 
 	# if current_index < current_text.length():
 	var text = _typing_ctrl.get_target_text()
-	if _typing_ctrl.current_position < text.length():
-		var current_char = text[_typing_ctrl.current_position]
+	if _typing_ctrl.cursor_idx < text.length():
+		var current_char = text[_typing_ctrl.cursor_idx]
 		character = current_char
 	else:
 		# At end of text, could show a completion indicator or space
@@ -172,7 +172,7 @@ func _update_cursor_position() -> void:
 
 	# Calculate cursor position by measuring actual text width up to current position
 	# var cursor_x = _calculate_accurate_cursor_position()
-	var cursor_x = _typing_ctrl.chars_label_data[_typing_ctrl.current_position]._label_size.x
+	var cursor_x = _typing_ctrl.chars_label_data[_typing_ctrl.cursor_idx]._label_size.x
 	print("cursor_x: %s" % cursor_x)
 
 	# Get Label's text rendering position to match exactly

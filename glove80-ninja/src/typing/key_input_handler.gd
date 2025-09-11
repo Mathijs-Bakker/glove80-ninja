@@ -61,7 +61,7 @@ func _handle_backspace() -> bool:
 	var allow_backspace = _forgive_errors
 	# if not allow_backspace or current_position <= 0:
 	# if not allow_backspace or CursorPosition.get_idx().current <= 0:
-	if not allow_backspace or _typing_ctrl.current_position <= 0:
+	if not allow_backspace or _typing_ctrl.cursor_idx <= 0:
 		return true
 
 	# _update_last_input_time()
@@ -126,13 +126,13 @@ func _handle_character_input(p_key_event: InputEventKey) -> bool:
 	# total_keystrokes += 1
 
 	# Check if we can accept more input
-	if _typing_ctrl.current_position >= _typing_ctrl.get_target_text().length():
+	if _typing_ctrl.cursor_idx >= _typing_ctrl.get_target_text().length():
 		# input_error.emit("overflow", {"position": current_position, "character": character})
 		print("Overflow")
 		return true
 
 	# Get expected character
-	var expected_char = _typing_ctrl.get_target_text()[_typing_ctrl.current_position]
+	var expected_char = _typing_ctrl.get_target_text()[_typing_ctrl.cursor_idx]
 	var is_correct = _is_character_correct(character, expected_char)
 
 	# Process the character
@@ -145,18 +145,18 @@ func _handle_character_input(p_key_event: InputEventKey) -> bool:
 			print("Input Completed")
 		else:
 			print("KeyInputHandler -> is_correct")
-			_typing_ctrl.current_position += 1
+			_typing_ctrl.cursor_idx += 1
 	else:
 		# mistakes_count += 1
 		# In replace mode, we still advance but mark as incorrect
 		# current_input += character
-		_typing_ctrl.current_position += 1
+		_typing_ctrl.cursor_idx += 1
 		print("KeyInputHandler -> Mistake")
 
+	print("is correct %s" % is_correct)
 	# Emit character typed signal
-	character_typed.emit(character, is_correct, _typing_ctrl.current_position - 1)
-	_typing_ctrl.update_position.emit()
-	print("input handler")
+	character_typed.emit(character, is_correct, _typing_ctrl.cursor_idx - 1)
+	# character_typed.emit(character, is_correct, _typing_ctrl.cursor_idx)
 
 	return true
 
@@ -175,4 +175,4 @@ func _is_character_correct(p_input_char: String, p_expected_char: String) -> boo
 
 func _is_input_complete() -> bool:
 	var text_length = _typing_ctrl.get_target_text().length()
-	return _typing_ctrl.current_position >= text_length
+	return _typing_ctrl.cursor_idx >= text_length

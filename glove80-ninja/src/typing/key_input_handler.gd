@@ -12,7 +12,6 @@ var _space_skips_words: bool = false
 
 
 func _input(event: InputEvent) -> void:
-	# print(event)
 	# if event is InputEventKey and event.pressed:
 	# if event is InputEventKey:
 	# if not _typing_ctrl.is_active:

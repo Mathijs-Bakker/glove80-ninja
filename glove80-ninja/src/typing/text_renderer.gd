@@ -13,12 +13,8 @@ var char_label_names: Array[String]
 
 
 func _ready() -> void:
-	# _text = _typing_ctrl.get_target_text()
-	# print("Text: %s" % _text)
 	_typing_ctrl.start_new_practice.connect(on_start_practice)
 	_typing_ctrl.update.connect(_update_text)
-
-	# _render_text()
 
 
 func on_start_practice() -> void:
@@ -30,7 +26,7 @@ func on_start_practice() -> void:
 func _update_text() -> void:
 	print("_update_text()")
 
-	var cursor_idx = _typing_ctrl.cursor_idx - 1
+	var cursor_idx = _typing_ctrl.cursor_idx - 1  # cursor index has been advanced. This can become an issue with backspace
 	var char_data = _typing_ctrl.chars_label_data[cursor_idx]
 
 	var label_name = char_label_names[cursor_idx]
@@ -42,13 +38,6 @@ func _update_text() -> void:
 		label.set_theme_type_variation("correct_char")
 	else:
 		label.set_theme_type_variation("incorrect_char")
-
-	# for i in _typing_ctrl.char_data.size():
-	#   await get_tree().create_timer(0.1).timeout
-	#   _typing_ctrl.char_data[i].is_wrong = true
-
-	#   _render_text()
-	#   print(i)
 
 
 func _render_text() -> void:

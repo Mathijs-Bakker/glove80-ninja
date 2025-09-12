@@ -42,7 +42,5 @@ func get_target_text() -> String:
 
 
 func _on_character_input(p_char: String, p_is_correct: bool, p_position: int) -> void:
-	print("typing ctrl - on char input, is_correct: %s" % p_is_correct)
-	print("typing ctrl - on char input, pos %s" % p_position)
 	chars_label_data[p_position].is_correct = p_is_correct
 	update.emit()

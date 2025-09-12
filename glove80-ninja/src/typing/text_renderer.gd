@@ -1,5 +1,6 @@
-class_name TextRenderer
-extends Control
+class_name TextRenderer extends Control
+
+signal reset
 
 var _text: String
 var _font: Font
@@ -15,6 +16,8 @@ var char_label_names: Array[String]
 func _ready() -> void:
 	_typing_ctrl.start_new_practice.connect(on_start_practice)
 	_typing_ctrl.update.connect(_update_text)
+	_font_size = 40
+	_font = preload("res://assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf")
 
 
 func on_start_practice() -> void:
@@ -24,15 +27,12 @@ func on_start_practice() -> void:
 
 
 func _update_text() -> void:
-	print("_update_text()")
-
 	var cursor_idx = _typing_ctrl.cursor_idx - 1  # cursor index has been advanced. This can become an issue with backspace
 	var char_data = _typing_ctrl.chars_label_data[cursor_idx]
 
 	var label_name = char_label_names[cursor_idx]
 
 	var label = get_node(label_name)
-	print(label_name, char_data.is_correct)
 
 	if char_data.is_correct:
 		label.set_theme_type_variation("correct_char")
@@ -103,6 +103,8 @@ func _render_text() -> void:
 			data._line_height,
 		)
 		count += 1
+
+	reset.emit()
 
 
 func _measure_word(p_word: String, p_font_size: int) -> float:

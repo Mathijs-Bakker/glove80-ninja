@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bvy1puekiteqi"]
 
 [ext_resource type="Script" uid="uid://cfgmsomvy050y" path="res://src/typing/text_renderer.gd" id="1_1gqw4"]
-[ext_resource type="Script" path="res://src/typing/typing_controller.gd" id="1_swlhx"]
+[ext_resource type="Script" uid="uid://fek3knx4nxkr" path="res://src/typing/typing_controller.gd" id="1_swlhx"]
 [ext_resource type="Script" uid="uid://cxffsh3ejejf2" path="res://src/typing/key_input_handler.gd" id="2_w572t"]
 [ext_resource type="PackedScene" uid="uid://bwo0332nbt41j" path="res://src/cursor/cursor.tscn" id="3_smgfq"]
 
@@ -26,10 +26,10 @@ anchor_left = 0.102
 anchor_top = 0.257
 anchor_right = 0.885
 anchor_bottom = 0.513
-offset_left = 0.23999
-offset_top = 0.440002
-offset_right = 0.799927
-offset_bottom = -0.0400391
+offset_left = 4.16
+offset_top = 2.44
+offset_right = 0.800049
+offset_bottom = 0.959961
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1gqw4")
@@ -38,4 +38,3 @@ _typing_ctrl = NodePath("..")
 [node name="Cursor" parent="." node_paths=PackedStringArray("_typing_ctrl", "_text_renderer") instance=ExtResource("3_smgfq")]
 _typing_ctrl = NodePath("..")
 _text_renderer = NodePath("../TextRenderer")
-font_size = 40

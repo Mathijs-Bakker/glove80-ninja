@@ -127,7 +127,6 @@ func _handle_character_input(p_key_event: InputEventKey) -> bool:
 	# Check if we can accept more input
 	if _typing_ctrl.cursor_idx >= _typing_ctrl.get_target_text().length():
 		# input_error.emit("overflow", {"position": current_position, "character": character})
-		print("Overflow")
 		return true
 
 	# Get expected character
@@ -143,16 +142,13 @@ func _handle_character_input(p_key_event: InputEventKey) -> bool:
 			# input_completed.emit()
 			print("Input Completed")
 		else:
-			print("KeyInputHandler -> is_correct")
 			_typing_ctrl.cursor_idx += 1
 	else:
 		# mistakes_count += 1
 		# In replace mode, we still advance but mark as incorrect
 		# current_input += character
 		_typing_ctrl.cursor_idx += 1
-		print("KeyInputHandler -> Mistake")
 
-	print("is correct %s" % is_correct)
 	# Emit character typed signal
 	character_typed.emit(character, is_correct, _typing_ctrl.cursor_idx - 1)
 	# character_typed.emit(character, is_correct, _typing_ctrl.cursor_idx)

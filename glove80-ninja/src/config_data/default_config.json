@@ -1,0 +1,19 @@
+{
+  "profile": {
+    "theme": "dark",
+    "language": "en",
+    "keyboard": "default"
+  },
+  "typing": {
+    "stop_cursor_on_error": true,
+    "forgive_errors": false,
+    "space_skips_words": false,
+    "whitespace": "show",
+    "cursor_shape": "block",
+    "font_path": "pres://assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf",
+    "font_size": 40,
+    "play_sounds": false,
+    "sound_volume": 80,
+    "sounds_theme": "default"
+  }
+}

@@ -1,0 +1,161 @@
+[gd_scene load_steps=14 format=3 uid="uid://bfmiyek72frl7"]
+
+[ext_resource type="Script" uid="uid://cyiktspvojnua" path="res://src/main_menu/main_menu.gd" id="1_amn4d"]
+[ext_resource type="Theme" uid="uid://kcben5y0d2o6" path="res://themes/dark.tres" id="1_e0prm"]
+[ext_resource type="PackedScene" uid="uid://dv33jjwn2p3x8" path="res://src/profile/profile.tscn" id="2_abxxg"]
+[ext_resource type="Texture2D" uid="uid://ck22qg6csv8uh" path="res://assets/menu/profile.svg" id="2_amn4d"]
+[ext_resource type="PackedScene" uid="uid://bvju6sxwa7me2" path="res://src/settings/settings_controller.tscn" id="2_ramr7"]
+[ext_resource type="PackedScene" uid="uid://yuyvsspa0qtp" path="res://src/layout_settings/layouts.tscn" id="3_vccap"]
+[ext_resource type="Texture2D" uid="uid://bap06qxivdpd4" path="res://assets/menu/fonts.svg" id="4_axgno"]
+[ext_resource type="Texture2D" uid="uid://bqlgwhdery2b5" path="res://assets/menu/ practice.svg" id="4_b2bbe"]
+[ext_resource type="Texture2D" uid="uid://dy5lwqe0q4783" path="res://assets/menu/theme.svg" id="4_bk001"]
+[ext_resource type="Texture2D" uid="uid://fhqt4bfp6rbt" path="res://assets/menu/stats.svg" id="5_b2bbe"]
+[ext_resource type="Texture2D" uid="uid://c031lnwp0es0k" path="res://assets/menu/settings.svg" id="5_no1ax"]
+[ext_resource type="Texture2D" uid="uid://bts22ic7jfghn" path="res://assets/menu/full_screen.svg" id="6_bh353"]
+[ext_resource type="Texture2D" uid="uid://dcv3f80q8bsuf" path="res://assets/menu/Tekengebied 1.png" id="10_bh353"]
+
+[node name="Main Menu" type="Control" node_paths=PackedStringArray("_username", "_practice_btn", "_profile_btn", "_settings_btn", "_layouts_btn")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_amn4d")
+_username = NodePath("VBoxContainer/UserProfile/UserName")
+_practice_btn = NodePath("VBoxContainer/Practice")
+_profile_btn = NodePath("VBoxContainer/Profile")
+_settings_btn = NodePath("VBoxContainer/Settings")
+_layouts_btn = NodePath("VBoxContainer/Layouts")
+_profile_scn = ExtResource("2_abxxg")
+_settings_scn = ExtResource("2_ramr7")
+_layouts_scn = ExtResource("3_vccap")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+offset_left = 1715.0
+offset_top = 76.0
+offset_right = 1844.0
+offset_bottom = 371.0
+
+[node name="UserProfile" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/UserProfile"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_e0prm")
+theme_type_variation = &"menu_button"
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/UserProfile"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -45.0
+offset_right = 32.0
+offset_bottom = 19.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_amn4d")
+expand_mode = 1
+
+[node name="UserName" type="Label" parent="VBoxContainer/UserProfile"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -35.0
+offset_right = 42.0
+offset_bottom = -13.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "UserName"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Theme" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"menu_button"
+texture_normal = ExtResource("4_bk001")
+
+[node name="Type" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"menu_button"
+texture_normal = ExtResource("4_axgno")
+
+[node name="FullScreen" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"menu_button"
+texture_normal = ExtResource("6_bh353")
+
+[node name="Practice" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"menu_button"
+text = "Practice"
+icon = ExtResource("4_b2bbe")
+alignment = 0
+expand_icon = true
+
+[node name="Profile" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"menu_button"
+text = "Profile"
+icon = ExtResource("5_b2bbe")
+alignment = 0
+expand_icon = true
+
+[node name="Settings" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"menu_button"
+text = "Settings"
+icon = ExtResource("5_no1ax")
+alignment = 0
+expand_icon = true
+
+[node name="Layouts" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"menu_button"
+text = "Layouts"
+icon = ExtResource("10_bh353")
+alignment = 0
+expand_icon = true
+
+[node name="Themes Sub" type="Control" parent="."]
+visible = false
+anchors_preset = 0
+offset_left = 43.0
+offset_top = 130.0
+offset_right = 144.0
+offset_bottom = 321.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Themes Sub"]
+layout_mode = 0
+offset_right = 123.0
+offset_bottom = 186.0
+
+[node name="Dark" type="Button" parent="Themes Sub/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"sub_menu_button"
+text = "Dark"
+
+[node name="Light" type="Button" parent="Themes Sub/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"sub_menu_button"
+text = "Light"
+
+[connection signal="pressed" from="VBoxContainer/Practice" to="." method="on_practice_btn"]
+[connection signal="pressed" from="VBoxContainer/Profile" to="." method="on_profile_btn"]
+[connection signal="pressed" from="VBoxContainer/Settings" to="." method="on_setting_btn"]
+[connection signal="pressed" from="VBoxContainer/Layouts" to="." method="on_layouts_btn"]

@@ -1,17 +1,183 @@
-[gd_scene load_steps=2 format=3 uid="uid://bvju6sxwa7me2"]
+[gd_scene load_steps=5 format=3 uid="uid://bvju6sxwa7me2"]
 
-[ext_resource type="Script" uid="uid://b3mjc6unmcbtm" path="res://src/settings/settings_controller.gd" id="1_settings_controller"]
+[ext_resource type="Theme" uid="uid://kcben5y0d2o6" path="res://themes/dark.tres" id="1_g837a"]
+[ext_resource type="Script" uid="uid://sbybedqw1870" path="res://src/settings/typing.gd" id="2_nev6n"]
+[ext_resource type="ButtonGroup" uid="uid://bnehai7jn20dn" path="res://src/settings/cursor_shape_btn_group.tres" id="3_30pip"]
+[ext_resource type="ButtonGroup" uid="uid://7d6iq2p7tx5b" path="res://src/settings/whitespace_btn_group.tres" id="4_f2wgr"]
 
 [node name="SettingsController" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 0
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme = ExtResource("1_g837a")
+
+[node name="BG" type="Label" parent="."]
+layout_mode = 0
+offset_right = 1678.0
+offset_bottom = 1078.0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="." node_paths=PackedStringArray("stop_cursor_on_error_btn", "forgive_errors_btn")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 295.0
+offset_top = 193.0
+offset_right = 1434.0
+offset_bottom = 784.0
 grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_settings_controller")
+script = ExtResource("2_nev6n")
+stop_cursor_on_error_btn = NodePath("Stop Cursor on Error/Stop Cursor")
+forgive_errors_btn = NodePath("Forgive Errors/Forgive")
+
+[node name="Label" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Typing options
+These are the typing assists which help your preserve your concentration and keep the flow 
+by automatically correcting your errors."
+
+[node name="Spacer2" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Stop Cursor on Error" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Stop Cursor" type="CheckBox" parent="VBoxContainer2/Stop Cursor on Error"]
+layout_mode = 2
+
+[node name="Stop cursor on error" type="Label" parent="VBoxContainer2/Stop Cursor on Error"]
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "Stop cursor on error"
+
+[node name="Label2" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+text = "If enabled, the text cursor stops advancing until the right key is pressed at the current position. 
+If disabled, all errors will be accumulated in the text input field and must be cleared with the delete key."
+
+[node name="Spacer" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Forgive Errors" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Forgive" type="CheckBox" parent="VBoxContainer2/Forgive Errors"]
+layout_mode = 2
+
+[node name="Forgive errors" type="Label" parent="VBoxContainer2/Forgive Errors"]
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "Forgive errors"
+
+[node name="Label3" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+text = "If enabled, the text input field will forgive some kinds of errors by automatically fixing them.
+These are errors such as typing a wrong character or skipping a character."
+
+[node name="Spacer3" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Space skips words" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Space skips" type="CheckBox" parent="VBoxContainer2/Space skips words"]
+layout_mode = 2
+
+[node name="Space skips words" type="Label" parent="VBoxContainer2/Space skips words"]
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "Space skips words"
+
+[node name="Label4" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+text = "If enabled, pressing the space key in the middle of a word will skip the remaining characters
+of the word and position cursor at the beginning of the next word."
+
+[node name="Spacer4" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label5" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "Text appearance"
+
+[node name="Spacer5" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label6" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "Font:"
+
+[node name="Font" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="MenuButton" type="MenuButton" parent="VBoxContainer2/Font"]
+layout_mode = 2
+item_count = 2
+popup/item_0/text = "Foo"
+popup/item_0/id = 0
+popup/item_1/text = "Bar"
+popup/item_1/id = 1
+
+[node name="Whitespace" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Whitespace" type="Label" parent="VBoxContainer2/Whitespace"]
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "Whitespace:"
+
+[node name="CheckBox" type="CheckButton" parent="VBoxContainer2/Whitespace"]
+layout_mode = 2
+button_group = ExtResource("4_f2wgr")
+text = "Show"
+
+[node name="CheckBox2" type="CheckButton" parent="VBoxContainer2/Whitespace"]
+layout_mode = 2
+button_group = ExtResource("4_f2wgr")
+text = "Bar"
+
+[node name="CheckBox3" type="CheckButton" parent="VBoxContainer2/Whitespace"]
+layout_mode = 2
+button_group = ExtResource("4_f2wgr")
+text = "Bullet"
+
+[node name="Cursor Shape" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label4" type="Label" parent="VBoxContainer2/Cursor Shape"]
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "Cursor shape:"
+
+[node name="Block - btn" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
+layout_mode = 2
+button_group = ExtResource("3_30pip")
+text = "Block"
+
+[node name="Boxm - btn" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
+layout_mode = 2
+button_group = ExtResource("3_30pip")
+text = "Box"
+
+[node name="Line - btn" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
+layout_mode = 2
+button_group = ExtResource("3_30pip")
+text = "Line"
+
+[node name="Underline - btn" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
+layout_mode = 2
+button_group = ExtResource("3_30pip")
+text = "Underline"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

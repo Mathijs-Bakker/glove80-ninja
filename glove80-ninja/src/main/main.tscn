@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://ccsp6o2bce2j8"]
+[gd_scene load_steps=9 format=3 uid="uid://ccsp6o2bce2j8"]
 
 [ext_resource type="Script" uid="uid://qp232mitcip5" path="res://src/main/main_rewrite.gd" id="1_3eh75"]
 [ext_resource type="Theme" uid="uid://kcben5y0d2o6" path="res://themes/dark.tres" id="1_3s6yk"]
+[ext_resource type="Script" uid="uid://b5r8wc6bfac78" path="res://src/autoload/app_manager.gd" id="3_ab7mr"]
+[ext_resource type="Script" uid="uid://7suiojwmaf1e" path="res://src/autoload/config_service.gd" id="4_djufw"]
+[ext_resource type="Script" uid="uid://ckh5nl3s804as" path="res://src/autoload/data_manager.gd" id="4_jqarl"]
+[ext_resource type="Script" uid="uid://ddco3x8nkv5uk" path="res://src/autoload/user_service.gd" id="5_jkpqq"]
+[ext_resource type="PackedScene" uid="uid://bvy1puekiteqi" path="res://src/typing/typing.tscn" id="7_frqgp"]
+[ext_resource type="PackedScene" uid="uid://bfmiyek72frl7" path="res://src/main_menu/main_menu.tscn" id="8_frqgp"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -13,7 +19,40 @@ grow_vertical = 2
 theme = ExtResource("1_3s6yk")
 script = ExtResource("1_3eh75")
 
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AppManager" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_ab7mr")
+
+[node name="DataManager" type="Control" parent="AppManager"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_jqarl")
+
+[node name="ConfigService" type="Control" parent="AppManager"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_djufw")
+
+[node name="UserService" type="Control" parent="AppManager"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_jkpqq")
+
 [node name="MainContainer" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -74,34 +113,8 @@ text = "v1.0.0"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="LoadingOverlay" type="ColorRect" parent="."]
-visible = false
+[node name="TypingController" parent="." instance=ExtResource("7_frqgp")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.8)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="LoadingOverlay"]
+[node name="Main Menu" parent="." instance=ExtResource("8_frqgp")]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -50.0
-offset_right = 150.0
-offset_bottom = 50.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="LoadingLabel" type="Label" parent="LoadingOverlay/VBoxContainer"]
-layout_mode = 2
-text = "Loading..."
-horizontal_alignment = 1
-
-[node name="ProgressBar" type="ProgressBar" parent="LoadingOverlay/VBoxContainer"]
-layout_mode = 2

@@ -1,11 +1,419 @@
-[gd_scene load_steps=2 format=3 uid="uid://qikcgumari3"]
+[gd_scene load_steps=3 format=3 uid="uid://qikcgumari3"]
 
+[ext_resource type="Theme" uid="uid://bgt2yfkiemxns" path="res://src/keyboard/keyboard.tres" id="1_7xq6o"]
 [ext_resource type="Texture2D" uid="uid://dr34hpfwqqx1f" path="res://src/keyboard/assets/keyboard.svg" id="1_dgjec"]
 
 [node name="Keyboard" type="Control"]
 layout_mode = 3
 anchors_preset = 0
+theme = ExtResource("1_7xq6o")
 
 [node name="Keyboard" type="Sprite2D" parent="."]
 position = Vector2(946, 561)
 texture = ExtResource("1_dgjec")
+
+[node name="Label3" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1217.0
+offset_top = 187.0
+offset_right = 1262.0
+offset_bottom = 232.0
+text = "Q"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label4" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1269.0
+offset_top = 187.0
+offset_right = 1314.0
+offset_bottom = 232.0
+text = "L"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label5" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1320.0
+offset_top = 187.0
+offset_right = 1365.0
+offset_bottom = 232.0
+text = "D"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label6" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1372.0
+offset_top = 187.0
+offset_right = 1417.0
+offset_bottom = 232.0
+text = "P"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label7" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1425.0
+offset_top = 206.0
+offset_right = 1470.0
+offset_bottom = 251.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label8" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1477.0
+offset_top = 206.0
+offset_right = 1522.0
+offset_bottom = 251.0
+text = "down"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label9" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1217.0
+offset_top = 238.0
+offset_right = 1262.0
+offset_bottom = 283.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label10" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1269.0
+offset_top = 238.0
+offset_right = 1314.0
+offset_bottom = 283.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label11" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1320.0
+offset_top = 238.0
+offset_right = 1365.0
+offset_bottom = 283.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label12" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1372.0
+offset_top = 238.0
+offset_right = 1417.0
+offset_bottom = 283.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label13" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1425.0
+offset_top = 257.0
+offset_right = 1470.0
+offset_bottom = 302.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label14" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1477.0
+offset_top = 257.0
+offset_right = 1522.0
+offset_bottom = 302.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label15" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1217.0
+offset_top = 289.0
+offset_right = 1262.0
+offset_bottom = 334.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label16" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1269.0
+offset_top = 289.0
+offset_right = 1314.0
+offset_bottom = 334.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label17" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1320.0
+offset_top = 289.0
+offset_right = 1365.0
+offset_bottom = 334.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label18" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1372.0
+offset_top = 289.0
+offset_right = 1417.0
+offset_bottom = 334.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label19" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1425.0
+offset_top = 308.0
+offset_right = 1470.0
+offset_bottom = 353.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label20" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1477.0
+offset_top = 308.0
+offset_right = 1522.0
+offset_bottom = 353.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label21" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1217.0
+offset_top = 341.0
+offset_right = 1262.0
+offset_bottom = 386.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label22" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1269.0
+offset_top = 341.0
+offset_right = 1314.0
+offset_bottom = 386.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label23" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1320.0
+offset_top = 341.0
+offset_right = 1365.0
+offset_bottom = 386.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label27" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1041.0
+offset_top = 448.0
+offset_right = 1086.0
+offset_bottom = 493.0
+rotation = -0.563418
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label33" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1092.0
+offset_top = 416.0
+offset_right = 1137.0
+offset_bottom = 461.0
+rotation = -0.563418
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label39" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1144.0
+offset_top = 389.0
+offset_right = 1189.0
+offset_bottom = 434.0
+rotation = -0.563418
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label40" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1089.0
+offset_top = 484.0
+offset_right = 1134.0
+offset_bottom = 529.0
+rotation = -0.563418
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label41" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1141.0
+offset_top = 455.0
+offset_right = 1186.0
+offset_bottom = 500.0
+rotation = -0.563418
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label42" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1193.0
+offset_top = 426.0
+offset_right = 1238.0
+offset_bottom = 471.0
+rotation = -0.563418
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label24" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1372.0
+offset_top = 341.0
+offset_right = 1417.0
+offset_bottom = 386.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label25" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1425.0
+offset_top = 360.0
+offset_right = 1470.0
+offset_bottom = 405.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label26" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1477.0
+offset_top = 360.0
+offset_right = 1522.0
+offset_bottom = 405.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label28" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1269.0
+offset_top = 393.0
+offset_right = 1314.0
+offset_bottom = 438.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label29" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1320.0
+offset_top = 393.0
+offset_right = 1365.0
+offset_bottom = 438.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label30" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1372.0
+offset_top = 393.0
+offset_right = 1417.0
+offset_bottom = 438.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label31" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1425.0
+offset_top = 412.0
+offset_right = 1470.0
+offset_bottom = 457.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label32" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1477.0
+offset_top = 412.0
+offset_right = 1522.0
+offset_bottom = 457.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label34" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1269.0
+offset_top = 134.0
+offset_right = 1314.0
+offset_bottom = 179.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label35" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1320.0
+offset_top = 134.0
+offset_right = 1365.0
+offset_bottom = 179.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label36" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1372.0
+offset_top = 134.0
+offset_right = 1417.0
+offset_bottom = 179.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label37" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1425.0
+offset_top = 153.0
+offset_right = 1470.0
+offset_bottom = 198.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label38" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1477.0
+offset_top = 153.0
+offset_right = 1522.0
+offset_bottom = 198.0
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1

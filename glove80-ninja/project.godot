@@ -22,7 +22,11 @@ boot_splash/minimum_display_time=30
 [autoload]
 
 Log="*res://addons/logger/logger.gd"
-ConfigData="*res://src/core/config/autoload/config_data.gd"
+ConfigData="*res://src/autoload/config_data.gd"
+DataManager="*res://src/autoload/data_manager.gd"
+UserService="*res://src/autoload/user_service.gd"
+ConfigService="*res://src/autoload/config_service.gd"
+AppManager="*res://src/autoload/app_manager.gd"
 
 [display]
 

@@ -1,13 +1,26 @@
-[gd_resource type="Theme" load_steps=5 format=3 uid="uid://kcben5y0d2o6"]
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://kcben5y0d2o6"]
 
 [ext_resource type="FontFile" uid="uid://oofw660lk3mw" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf" id="1_31u0f"]
 [ext_resource type="FontFile" uid="uid://bedpb6igfvpjb" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-Bold.ttf" id="2_8ens0"]
 [ext_resource type="FontFile" uid="uid://ces7ks37q00jy" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-BoldItalic.ttf" id="3_lqjdd"]
 [ext_resource type="FontFile" uid="uid://b5slrqkdeex8r" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-Italic.ttf" id="4_3usbu"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lqjdd"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_31u0f"]
+bg_color = Color(0.246588, 0.246588, 0.246588, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ens0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ens0"]
+
 [resource]
-Label/font_sizes/font_size = 30
+HeaderLarge/font_sizes/font_size = 28
+Label/colors/font_color = Color(0.611765, 0.584314, 0.584314, 1)
+Label/font_sizes/font_size = 26
 Label/fonts/font = ExtResource("1_31u0f")
+Label/styles/normal = SubResource("StyleBoxFlat_lqjdd")
 LineEdit/font_sizes/font_size = 30
 LineEdit/fonts/font = ExtResource("1_31u0f")
 RichTextLabel/font_sizes/bold_font_size = 24
@@ -20,6 +33,8 @@ RichTextLabel/fonts/bold_italics_font = ExtResource("3_lqjdd")
 RichTextLabel/fonts/italics_font = ExtResource("4_3usbu")
 RichTextLabel/fonts/mono_font = ExtResource("1_31u0f")
 RichTextLabel/fonts/normal_font = ExtResource("1_31u0f")
+SettingsLabel/base_type = &"Label"
+SettingsLabel/font_sizes/font_size = 47
 correct_char/base_type = &"Label"
 correct_char/colors/font_color = Color(0.458824, 0.443137, 0.443137, 1)
 cursor/base_type = &"Label"
@@ -28,5 +43,15 @@ cursor/colors/block_font_color = Color(0.2, 0.2, 0.2, 1)
 cursor/colors/font_color = Color(0.623529, 0.6, 0.6, 1)
 incorrect_char/base_type = &"Label"
 incorrect_char/colors/font_color = Color(0.662745, 0.294118, 0.270588, 1)
+menu_button/base_type = &"Button"
+menu_button/colors/font_color = Color(0.623529, 0.6, 0.6, 1)
+menu_button/colors/icon_normal_color = Color(0.623529, 0.6, 0.6, 1)
+menu_button/constants/icon_max_width = 24
+menu_button/font_sizes/font_size = 20
+menu_button/styles/focus = SubResource("StyleBoxFlat_31u0f")
+menu_button/styles/normal = SubResource("StyleBoxEmpty_8ens0")
 pending_char/base_type = &"Label"
 pending_char/colors/font_color = Color(0.623529, 0.6, 0.6, 1)
+sub_menu_button/base_type = &"Button"
+sub_menu_button/font_sizes/font_size = 20
+sub_menu_button/styles/normal = SubResource("StyleBoxFlat_8ens0")

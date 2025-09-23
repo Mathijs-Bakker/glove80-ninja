@@ -10,6 +10,15 @@ bg_color = Color(0.2, 0.2, 0.2, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3usbu"]
 bg_color = Color(0.2, 0.2, 0.2, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.33333334, 0.33333334, 0.33333334, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_31u0f"]
 bg_color = Color(0.246588, 0.246588, 0.246588, 1)
@@ -57,6 +66,8 @@ menu_button/styles/focus = SubResource("StyleBoxFlat_31u0f")
 menu_button/styles/normal = SubResource("StyleBoxEmpty_8ens0")
 pending_char/base_type = &"Label"
 pending_char/colors/font_color = Color(0.623529, 0.6, 0.6, 1)
+stats_value/base_type = &"Label"
+stats_value/font_sizes/font_size = 50
 sub_menu_button/base_type = &"Button"
 sub_menu_button/font_sizes/font_size = 20
 sub_menu_button/styles/normal = SubResource("StyleBoxFlat_8ens0")

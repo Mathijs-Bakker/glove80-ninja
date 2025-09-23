@@ -22,10 +22,12 @@ const DEFAULT_PROFILE = {
 	"preferences": {"preferred_lessons": [], "difficulty_level": "beginner"}
 }
 
-const Stats = {  # enum like
+const Stats = {
+	"TOTAL_TIME_TYPED": "total_time_typed",
+	"TOTAL_SESSIONS": "total_sessions",
 	"TOTAL_WORDS_TYPED": "total_words_typed",
 	"TOTAL_CHARS_TYPED": "total_characters_typed",
-	"AVG_WPM": "average_wpm",
+	"AVERAGE_WPM": "average_wpm",
 	"BEST_WPM": "best_wpm",
 	"AVERAGE_ACCURACY": "average_accuracy",
 	"BEST_ACCURACY": "best_accuracy",
@@ -380,15 +382,14 @@ class ProfileStats:
 	var sessions_completed: int = 0
 
 	func load_from_profile(p_profile: Dictionary) -> void:
-		Log.info("[UserService.ProfileStats][load_from_profile] Loading profile statistics")
-		total_words_typed = p_profile.get("total_words_typed", 0)
-		total_characters_typed = p_profile.get("total_characters_typed", 0)
-		average_wpm = p_profile.get("average_wpm", 0.0)
-		best_wpm = p_profile.get("best_wpm", 0.0)
-		average_accuracy = p_profile.get("average_accuracy", 0.0)
-		best_accuracy = p_profile.get("best_accuracy", 0.0)
-		total_mistakes = p_profile.get("total_mistakes", 0)
-		sessions_completed = p_profile.get("sessions_completed", 0)
+		total_words_typed = p_profile.get(Stats.TOTAL_WORDS_TYPED, 0)
+		total_characters_typed = p_profile.get(Stats.TOTAL_CHARS_TYPED, 0)
+		average_wpm = p_profile.get(Stats.AVERAGE_WPM, 0.0)
+		best_wpm = p_profile.get(Stats.BEST_WPM, 0.0)
+		average_accuracy = p_profile.get(Stats.AVERAGE_ACCURACY, 0.0)
+		best_accuracy = p_profile.get(Stats.BEST_ACCURACY, 0.0)
+		total_mistakes = p_profile.get(Stats.TOTAL_MISTAKES, 0)
+		sessions_completed = p_profile.get(Stats.SESSIONS_COMPLETED, 0)
 		(
 			Log
 			. info(

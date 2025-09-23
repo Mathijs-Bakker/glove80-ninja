@@ -14,12 +14,23 @@ const DEFAULT_PROFILE = {
 	"username": "Typist",
 	"created_date": "",
 	"last_login_date": "",
-	# "level": 1,
-	# "experience": 0,
+	"level": 1,
+	"experience": 0,
 	"total_sessions": 0,
 	"total_time_typed": 0,
-	# "achievements": [],
+	"achievements": [],
 	"preferences": {"preferred_lessons": [], "difficulty_level": "beginner"}
+}
+
+const Stats = {  # enum like
+	"TOTAL_WORDS_TYPED": "total_words_typed",
+	"TOTAL_CHARS_TYPED": "total_characters_typed",
+	"AVG_WPM": "average_wpm",
+	"BEST_WPM": "best_wpm",
+	"AVERAGE_ACCURACY": "average_accuracy",
+	"BEST_ACCURACY": "best_accuracy",
+	"TOTAL_MISTAKES": "total_mistakes",
+	"SESSIONS_COMPLETED": "sessions_completed",
 }
 
 # @export var DataManager: DataManager

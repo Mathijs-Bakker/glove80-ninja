@@ -17,9 +17,9 @@ var _layouts: Node
 
 
 func _ready() -> void:
-	AppManager.app_initialized.connect(set_username)
-	UserService.profile_loaded.connect(set_username)
-	UserService.profile_saved.connect(set_username)
+	AppManager.app_initialized.connect(get_username)
+	UserService.profile_loaded.connect(get_username)
+	UserService.profile_saved.connect(get_username)
 
 	_profile = _profile_scn.instantiate()
 	add_child(_profile)
@@ -34,17 +34,16 @@ func _ready() -> void:
 	_layouts.hide()
 
 
-func set_username() -> void:
-	# username.text = "Init"
+func get_username() -> void:
 	var username = UserService.get_profile().get("username")
 	var dict = UserService.get_profile()
-	# if name.is_empty() or name == null:
+
 	if username == null:
-		Log.info("ERROR")
-		for key_value in dict:  # shorthand
-			print(key_value, ":", dict[key_value])
+		Log.Error("[main menu][get_username] Error fetching username")
 	else:
 		_username.text = username
+		for key_value in dict:  # shorthand
+			print(key_value, ":", dict[key_value])
 
 
 func on_practice_btn() -> void:

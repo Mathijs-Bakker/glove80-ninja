@@ -10,12 +10,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_nor5o")
-_all_time_time = NodePath("HBoxContainer2/Time/Label2")
-_all_time_lessons = NodePath("HBoxContainer2/Lessons/Label2")
-_all_time_top_speed = NodePath("HBoxContainer2/Top speed/Label2")
-_all_time_avg_speed = NodePath("HBoxContainer2/Average speed/Label2")
-_all_time_top_accuracy = NodePath("HBoxContainer2/Top Accuracy/Label2")
-_all_time_avg_accuracy = NodePath("HBoxContainer2/Average accuracy/Label2")
+_all_time_time = NodePath("HBoxContainer2/Time/AT Time")
+_all_time_lessons = NodePath("HBoxContainer2/Sessions/AT Sessions")
+_all_time_top_speed = NodePath("HBoxContainer2/Best speed/AT Best Speed")
+_all_time_avg_speed = NodePath("HBoxContainer2/Average speed/AT AVG Speed")
+_all_time_top_accuracy = NodePath("HBoxContainer2/Best Accuracy/AT Best Accuracy")
+_all_time_avg_accuracy = NodePath("HBoxContainer2/Average accuracy/AT AVG Accuracy")
 
 [node name="BG" type="Label" parent="."]
 layout_mode = 0
@@ -30,18 +30,18 @@ offset_right = 384.0
 offset_bottom = 140.0
 text = "All Time Statistics"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
 layout_mode = 0
 offset_left = 89.0
-offset_top = 148.0
+offset_top = 142.0
 offset_right = 1663.0
-offset_bottom = 269.0
+offset_bottom = 263.0
 
-[node name="Time" type="Panel" parent="HBoxContainer"]
+[node name="Time" type="Panel" parent="HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="HBoxContainer/Time"]
+[node name="Header" type="Label" parent="HBoxContainer2/Time"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -51,7 +51,233 @@ offset_top = 19.0
 offset_right = 20.0
 offset_bottom = 42.0
 grow_horizontal = 2
-text = "Time"
+text = "Time:"
+horizontal_alignment = 1
+
+[node name="AT Time" type="Label" parent="HBoxContainer2/Time"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "00:00:00"
+horizontal_alignment = 1
+
+[node name="Separator" type="Control" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Sessions" type="Panel" parent="HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="HBoxContainer2/Sessions"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -33.0
+offset_top = 19.0
+offset_right = 33.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Sessions:"
+horizontal_alignment = 1
+
+[node name="AT Sessions" type="Label" parent="HBoxContainer2/Sessions"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "0"
+horizontal_alignment = 1
+
+[node name="Separator2" type="Control" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Best speed" type="Panel" parent="HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="HBoxContainer2/Best speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -42.0
+offset_top = 19.0
+offset_right = 42.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Best speed:"
+horizontal_alignment = 1
+
+[node name="AT Best Speed" type="Label" parent="HBoxContainer2/Best speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "N/A"
+horizontal_alignment = 1
+
+[node name="Separator3" type="Control" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Average speed" type="Panel" parent="HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="HBoxContainer2/Average speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -59.0
+offset_top = 19.0
+offset_right = 59.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Average speed:"
+horizontal_alignment = 1
+
+[node name="AT AVG Speed" type="Label" parent="HBoxContainer2/Average speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "N/A"
+horizontal_alignment = 1
+
+[node name="Separator4" type="Control" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Best Accuracy" type="Panel" parent="HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="HBoxContainer2/Best Accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -53.0
+offset_top = 19.0
+offset_right = 53.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Bset accuracy:"
+horizontal_alignment = 1
+
+[node name="AT Best Accuracy" type="Label" parent="HBoxContainer2/Best Accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "N/A"
+horizontal_alignment = 1
+
+[node name="Separator5" type="Control" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Average accuracy" type="Panel" parent="HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HBoxContainer2/Average accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -70.0
+offset_top = 19.0
+offset_right = 70.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Average accuracy:"
+horizontal_alignment = 1
+
+[node name="AT AVG Accuracy" type="Label" parent="HBoxContainer2/Average accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "N/A"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 340.0
+offset_right = 384.0
+offset_bottom = 372.0
+text = "Statistics for Today"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 380.0
+offset_right = 1663.0
+offset_bottom = 501.0
+
+[node name="Time" type="Panel" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="HBoxContainer/Time"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 19.0
+offset_right = 20.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Time:"
 horizontal_alignment = 1
 
 [node name="Label2" type="Label" parent="HBoxContainer/Time"]
@@ -64,7 +290,7 @@ offset_top = 64.0
 offset_right = 32.0
 offset_bottom = 87.0
 grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
+theme_type_variation = &"stats_value"
 text = "00:00:00"
 horizontal_alignment = 1
 
@@ -73,11 +299,11 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Lessons" type="Panel" parent="HBoxContainer"]
+[node name="Sessions" type="Panel" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="HBoxContainer/Lessons"]
+[node name="Header" type="Label" parent="HBoxContainer/Sessions"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -87,10 +313,10 @@ offset_top = 19.0
 offset_right = 33.0
 offset_bottom = 42.0
 grow_horizontal = 2
-text = "Lessons:"
+text = "Sessions:"
 horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="HBoxContainer/Lessons"]
+[node name="Value" type="Label" parent="HBoxContainer/Sessions"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -100,7 +326,7 @@ offset_top = 64.0
 offset_right = 32.0
 offset_bottom = 87.0
 grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
+theme_type_variation = &"stats_value"
 text = "0"
 horizontal_alignment = 1
 
@@ -113,7 +339,7 @@ size_flags_horizontal = 0
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="HBoxContainer/Top speed"]
+[node name="Header" type="Label" parent="HBoxContainer/Top speed"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -123,7 +349,7 @@ offset_top = 19.0
 offset_right = 42.0
 offset_bottom = 42.0
 grow_horizontal = 2
-text = "Top speed:"
+text = "Best speed:"
 horizontal_alignment = 1
 
 [node name="Label2" type="Label" parent="HBoxContainer/Top speed"]
@@ -136,7 +362,7 @@ offset_top = 64.0
 offset_right = 32.0
 offset_bottom = 87.0
 grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
+theme_type_variation = &"stats_value"
 text = "0 wpm"
 horizontal_alignment = 1
 
@@ -149,7 +375,7 @@ size_flags_horizontal = 0
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="HBoxContainer/Average speed"]
+[node name="Header" type="Label" parent="HBoxContainer/Average speed"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -172,7 +398,7 @@ offset_top = 64.0
 offset_right = 32.0
 offset_bottom = 87.0
 grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
+theme_type_variation = &"stats_value"
 text = "0 wpm"
 horizontal_alignment = 1
 
@@ -185,7 +411,7 @@ size_flags_horizontal = 0
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="HBoxContainer/Top Accuracy"]
+[node name="Header" type="Label" parent="HBoxContainer/Top Accuracy"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -195,7 +421,7 @@ offset_top = 19.0
 offset_right = 53.0
 offset_bottom = 42.0
 grow_horizontal = 2
-text = "Top accuracy:"
+text = "Best accuracy:"
 horizontal_alignment = 1
 
 [node name="Label2" type="Label" parent="HBoxContainer/Top Accuracy"]
@@ -208,7 +434,7 @@ offset_top = 64.0
 offset_right = 32.0
 offset_bottom = 87.0
 grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
+theme_type_variation = &"stats_value"
 text = "0%"
 horizontal_alignment = 1
 
@@ -244,232 +470,6 @@ offset_top = 64.0
 offset_right = 32.0
 offset_bottom = 87.0
 grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
+theme_type_variation = &"stats_value"
 text = "0%"
-horizontal_alignment = 1
-
-[node name="Label2" type="Label" parent="."]
-layout_mode = 0
-offset_left = 90.0
-offset_top = 340.0
-offset_right = 384.0
-offset_bottom = 372.0
-text = "Statistics for Today"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 89.0
-offset_top = 380.0
-offset_right = 1663.0
-offset_bottom = 501.0
-
-[node name="Time" type="Panel" parent="HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="HBoxContainer2/Time"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_top = 19.0
-offset_right = 20.0
-offset_bottom = 42.0
-grow_horizontal = 2
-text = "Time"
-horizontal_alignment = 1
-
-[node name="Label2" type="Label" parent="HBoxContainer2/Time"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -32.0
-offset_top = 64.0
-offset_right = 32.0
-offset_bottom = 87.0
-grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
-text = "00:00:00"
-horizontal_alignment = 1
-
-[node name="Separator" type="Control" parent="HBoxContainer2"]
-custom_minimum_size = Vector2(10, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="Lessons" type="Panel" parent="HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="HBoxContainer2/Lessons"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -33.0
-offset_top = 19.0
-offset_right = 33.0
-offset_bottom = 42.0
-grow_horizontal = 2
-text = "Lessons:"
-horizontal_alignment = 1
-
-[node name="Label2" type="Label" parent="HBoxContainer2/Lessons"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -32.0
-offset_top = 64.0
-offset_right = 32.0
-offset_bottom = 87.0
-grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
-text = "0"
-horizontal_alignment = 1
-
-[node name="Separator2" type="Control" parent="HBoxContainer2"]
-custom_minimum_size = Vector2(10, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="Top speed" type="Panel" parent="HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="HBoxContainer2/Top speed"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -42.0
-offset_top = 19.0
-offset_right = 42.0
-offset_bottom = 42.0
-grow_horizontal = 2
-text = "Top speed:"
-horizontal_alignment = 1
-
-[node name="Label2" type="Label" parent="HBoxContainer2/Top speed"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -32.0
-offset_top = 64.0
-offset_right = 32.0
-offset_bottom = 87.0
-grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
-text = "N/A"
-horizontal_alignment = 1
-
-[node name="Separator3" type="Control" parent="HBoxContainer2"]
-custom_minimum_size = Vector2(10, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="Average speed" type="Panel" parent="HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="HBoxContainer2/Average speed"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -59.0
-offset_top = 19.0
-offset_right = 59.0
-offset_bottom = 42.0
-grow_horizontal = 2
-text = "Average speed:"
-horizontal_alignment = 1
-
-[node name="Label2" type="Label" parent="HBoxContainer2/Average speed"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -32.0
-offset_top = 64.0
-offset_right = 32.0
-offset_bottom = 87.0
-grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
-text = "N/A"
-horizontal_alignment = 1
-
-[node name="Separator4" type="Control" parent="HBoxContainer2"]
-custom_minimum_size = Vector2(10, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="Top Accuracy" type="Panel" parent="HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="HBoxContainer2/Top Accuracy"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -53.0
-offset_top = 19.0
-offset_right = 53.0
-offset_bottom = 42.0
-grow_horizontal = 2
-text = "Top accuracy:"
-horizontal_alignment = 1
-
-[node name="Label2" type="Label" parent="HBoxContainer2/Top Accuracy"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -32.0
-offset_top = 64.0
-offset_right = 32.0
-offset_bottom = 87.0
-grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
-text = "N/A"
-horizontal_alignment = 1
-
-[node name="Separator5" type="Control" parent="HBoxContainer2"]
-custom_minimum_size = Vector2(10, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="Average accuracy" type="Panel" parent="HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="HBoxContainer2/Average accuracy"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -70.0
-offset_top = 19.0
-offset_right = 70.0
-offset_bottom = 42.0
-grow_horizontal = 2
-text = "Average accuracy:"
-horizontal_alignment = 1
-
-[node name="Label2" type="Label" parent="HBoxContainer2/Average accuracy"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -32.0
-offset_top = 64.0
-offset_right = 32.0
-offset_bottom = 87.0
-grow_horizontal = 2
-theme_type_variation = &"HeaderLarge"
-text = "N/A"
 horizontal_alignment = 1

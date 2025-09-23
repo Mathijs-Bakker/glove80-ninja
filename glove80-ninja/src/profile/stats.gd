@@ -20,12 +20,18 @@ func set_stats() -> void:
 	if dict == null:
 		Log.Error("[profile][set_stats] Error fetching stats")
 	else:
-		_all_time_time.text = format_duration(dict.get("total_time_typed"))
-		_all_time_lessons.text = str(int(dict.get("total_sessions")))
-		_all_time_top_speed.text = ("%s wpm" % String.num(dict.get("best_wpm"), 1))
-		_all_time_avg_speed.text = ("%s wpm" % String.num(dict.get("average_wpm"), 1))
-		_all_time_top_accuracy.text = ("%s wpm" % String.num(dict.get("best_accuracy"), 1))
-		_all_time_avg_accuracy.text = ("%s wpm" % String.num(dict.get("average_accuracy"), 1))
+		_all_time_time.text = format_duration(dict.get(UserService.Stats.TOTAL_TIME_TYPED))
+		_all_time_lessons.text = str(int(dict.get(UserService.Stats.TOTAL_SESSIONS)))
+		_all_time_top_speed.text = ("%swpm" % String.num(dict.get(UserService.Stats.BEST_WPM), 1))
+		_all_time_avg_speed.text = (
+			"%swpm" % String.num(dict.get(UserService.Stats.AVERAGE_WPM), 1)
+		)
+		_all_time_top_accuracy.text = (
+			"%swpm" % String.num(dict.get(UserService.Stats.BEST_ACCURACY), 1)
+		)
+		_all_time_avg_accuracy.text = (
+			"%swpm" % String.num(dict.get(UserService.Stats.AVERAGE_ACCURACY), 1)
+		)
 
 		for key_value in dict:  # shorthand
 			print(key_value, ":", dict[key_value])

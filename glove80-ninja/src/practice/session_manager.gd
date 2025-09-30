@@ -4,7 +4,7 @@ extends RefCounted
 ## Manages typing sessions with statistics tracking and user service integration
 ## Handles session lifecycle, performance metrics, and achievement checking
 
-signal session_started()
+signal session_started
 signal session_completed(results: Dictionary)
 signal stats_updated(stats: Dictionary)
 signal milestone_reached(milestone: String, value: float)
@@ -95,7 +95,9 @@ func restart_session() -> void:
 
 
 ## Update session with real-time input data
-func update_with_input(character: String, is_correct: bool, position: int, total_text_length: int) -> void:
+func update_with_input(
+	character: String, is_correct: bool, position: int, total_text_length: int
+) -> void:
 	if not is_session_active:
 		return
 
@@ -129,6 +131,7 @@ func is_active() -> bool:
 
 
 # Private methods
+
 
 func _setup_stats_timer(p_parent_node: Node) -> void:
 	stats_timer = Timer.new()
@@ -175,13 +178,19 @@ func _check_milestones() -> void:
 
 	# Check WPM milestones
 	for milestone_wpm in [10, 20, 30, 40, 50, 60, 70, 80]:
-		if wpm >= milestone_wpm and not performance_tracker.has_reached_milestone("wpm_%d" % milestone_wpm):
+		if (
+			wpm >= milestone_wpm
+			and not performance_tracker.has_reached_milestone("wpm_%d" % milestone_wpm)
+		):
 			performance_tracker.mark_milestone("wpm_%d" % milestone_wpm)
 			milestone_reached.emit("wpm", milestone_wpm)
 
 	# Check accuracy milestones
 	for milestone_acc in [90, 95, 98, 99]:
-		if accuracy >= milestone_acc and not performance_tracker.has_reached_milestone("accuracy_%d" % milestone_acc):
+		if (
+			accuracy >= milestone_acc
+			and not performance_tracker.has_reached_milestone("accuracy_%d" % milestone_acc)
+		):
 			performance_tracker.mark_milestone("accuracy_%d" % milestone_acc)
 			milestone_reached.emit("accuracy", milestone_acc)
 
@@ -193,6 +202,7 @@ func _on_stats_timer_timeout() -> void:
 
 
 # Inner classes for better organization
+
 
 class SessionStats:
 	var total_keystrokes: int = 0
@@ -275,11 +285,9 @@ class PerformanceTracker:
 
 		if current_time - last_sample_time >= sample_interval:
 			var progress_percent = (float(position) / float(total_length)) * 100.0
-			progress_points.append({
-				"time": current_time,
-				"progress": progress_percent,
-				"position": position
-			})
+			progress_points.append(
+				{"time": current_time, "progress": progress_percent, "position": position}
+			)
 			last_sample_time = current_time
 
 	func record_performance_sample(wpm: float, accuracy: float) -> void:

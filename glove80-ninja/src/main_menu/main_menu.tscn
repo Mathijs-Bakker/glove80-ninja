@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bfmiyek72frl7"]
+[gd_scene load_steps=16 format=3 uid="uid://bfmiyek72frl7"]
 
 [ext_resource type="Script" uid="uid://cnsybue83envj" path="res://src/main_menu/main_menu.gd" id="1_amn4d"]
 [ext_resource type="Theme" uid="uid://kcben5y0d2o6" path="res://themes/dark.tres" id="1_e0prm"]
@@ -14,6 +14,8 @@
 [ext_resource type="Texture2D" uid="uid://c031lnwp0es0k" path="res://assets/menu/settings.svg" id="5_no1ax"]
 [ext_resource type="Texture2D" uid="uid://bts22ic7jfghn" path="res://assets/menu/full_screen.svg" id="6_bh353"]
 [ext_resource type="Texture2D" uid="uid://dcv3f80q8bsuf" path="res://assets/menu/Tekengebied 1.png" id="10_bh353"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_plxga"]
 
 [node name="Main Menu" type="Control" node_paths=PackedStringArray("_username")]
 layout_mode = 3
@@ -76,6 +78,7 @@ offset_right = 42.0
 offset_bottom = -13.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_plxga")
 text = "UserName"
 horizontal_alignment = 1
 

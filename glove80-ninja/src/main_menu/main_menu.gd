@@ -36,7 +36,7 @@ func _ready() -> void:
 
 
 func get_username() -> void:
-	var username = UserService.get_profile().get("username")
+	var username = UserService.get_profile().get(UserService.PROFILE.USERNAME)
 	var dict = UserService.get_profile()
 
 	if username == null:

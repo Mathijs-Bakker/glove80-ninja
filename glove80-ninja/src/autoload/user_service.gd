@@ -11,11 +11,11 @@ const PROFILE_PATH = "user://data/profiles/default_profile.json"
 
 # Default profile structure
 const DEFAULT_PROFILE = {
-	"username": "Default",
-	"created_date": "",
-	"last_login_date": "",
-	"level": 0,
-	"experience": 0,
+	PROFILE.USERNAME: "New user",
+	PROFILE.CREATED_DATE: "",
+	PROFILE.LAST_LOGIN_DATE: "",
+	PROFILE.LEVEL: 0,
+	PROFILE.EXPERIENCE: 0,
 	Stats.ALL_TIME_TIME_TYPED: 0.0,
 	Stats.ALL_TIME_BEST_WPM: 0.0,
 	Stats.ALL_TIME_AVERAGE_WPM: 0.0,
@@ -27,6 +27,14 @@ const DEFAULT_PROFILE = {
 	Stats.TODAY_AVERAGE_ACCURACY: 0.0,
 	"achievements": [],
 	"preferences": {"preferred_lessons": [], "difficulty_level": "beginner"}
+}
+
+const PROFILE = {
+	"USERNAME": "username",
+	"CREATED_DATE": "created_date",
+	"LAST_LOGIN_DATE": "last_login_date",
+	"LEVEL": "level",
+	"EXPERIENCE": "experience",
 }
 
 const Stats = {
@@ -66,18 +74,18 @@ func load_profile() -> void:
 	_current_profile = DataManager.load_json(PROFILE_PATH, DEFAULT_PROFILE)
 
 	# Set creation date if not exists
-	if _current_profile["created_date"].is_empty():
-		_current_profile["created_date"] = Time.get_date_string_from_system()
+	if _current_profile[PROFILE.CREATED_DATE].is_empty():
+		_current_profile[PROFILE.CREATED_DATE] = Time.get_date_string_from_system()
 		Log.info("[UserService][load_profile] Set creation date for new profile")
 
-	_current_profile["last_login_date"] = Time.get_date_string_from_system()
+	_current_profile[PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
 	Log.info("[UserService][load_profile] Updated last login date")
 
 	_profile_stats.load_from_profile(_current_profile)
 	Log.info(
 		(
 			"[UserService][load_profile] Profile loaded successfully for user: %s"
-			% _current_profile["username"]
+			% _current_profile[PROFILE.USERNAME]
 		)
 	)
 	profile_loaded.emit()
@@ -86,7 +94,7 @@ func load_profile() -> void:
 ## Save user profile to file
 func save_profile() -> bool:
 	Log.info("[UserService][save_profile] Saving user profile")
-	_current_profile["last_login_date"] = Time.get_date_string_from_system()
+	_current_profile[PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
 	_profile_stats.save_to_profile(_current_profile)
 
 	var success = DataManager.save_json(PROFILE_PATH, _current_profile)
@@ -144,8 +152,8 @@ func get_profile() -> Dictionary:
 ## Update username
 func set_username(p_new_username: String) -> void:
 	Log.info("[UserService][set_username] Setting username to: %s" % p_new_username)
-	var old_username = _current_profile["username"]
-	_current_profile["username"] = p_new_username
+	var old_username = _current_profile[PROFILE.USERNAME]
+	_current_profile[PROFILE.USERNAME] = p_new_username
 	save_profile()
 	Log.info(
 		(
@@ -204,7 +212,7 @@ func reset_profile() -> void:
 		Log.warn("[UserService][reset_profile] Failed to create backup before reset")
 
 	_current_profile = DEFAULT_PROFILE.duplicate(true)
-	_current_profile["created_date"] = Time.get_date_string_from_system()
+	_current_profile[PROFILE.CREATED_DATE] = Time.get_date_string_from_system()
 	_profile_stats = ProfileStats.new()
 	save_profile()
 	Log.info("[UserService][reset_profile] Profile reset complete")
@@ -237,7 +245,7 @@ func import_profile(p_import_path: String) -> bool:
 		return false
 
 	# Validate required fields
-	var required_fields = ["username"]
+	var required_fields = [PROFILE.USERNAME]
 	if not DataManager.validate_json_schema(imported_profile, required_fields):
 		Log.error("[UserService][import_profile] Import file missing required fields")
 		return false
@@ -250,7 +258,7 @@ func import_profile(p_import_path: String) -> bool:
 		Log.info(
 			(
 				"[UserService][import_profile] Profile imported successfully for user: %s"
-				% _current_profile["username"]
+				% _current_profile[PROFILE.USERNAME]
 			)
 		)
 	else:

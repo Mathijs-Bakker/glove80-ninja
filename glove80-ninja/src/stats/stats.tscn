@@ -1,0 +1,481 @@
+[gd_scene load_steps=2 format=3 uid="uid://dv33jjwn2p3x8"]
+
+[ext_resource type="Script" uid="uid://qfouhoe3c42e" path="res://src/stats/stats.gd" id="1_qyu6f"]
+
+[node name="Profile" type="Control" node_paths=PackedStringArray("_all_time_time", "_all_time_lessons", "_all_time_top_speed", "_all_time_avg_speed", "_all_time_top_accuracy", "_all_time_avg_accuracy", "_today_time", "_today_lessons", "_today_top_speed", "_today_avg_speed", "_today_top_accuracy", "_today_avg_accuracy")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qyu6f")
+_all_time_time = NodePath("All Time Stats/Time/AT Time")
+_all_time_lessons = NodePath("All Time Stats/Sessions/AT Sessions")
+_all_time_top_speed = NodePath("All Time Stats/Best speed/AT Best Speed")
+_all_time_avg_speed = NodePath("All Time Stats/Average speed/AT AVG Speed")
+_all_time_top_accuracy = NodePath("All Time Stats/Best Accuracy/AT Best Accuracy")
+_all_time_avg_accuracy = NodePath("All Time Stats/Average accuracy/AT AVG Accuracy")
+_today_time = NodePath("Today Stats/Time/Today Time")
+_today_lessons = NodePath("Today Stats/Sessions/Today Sessions")
+_today_top_speed = NodePath("Today Stats/Best speed/Today Best Speed")
+_today_avg_speed = NodePath("Today Stats/Average speed/Today AVG Speed")
+_today_top_accuracy = NodePath("Today Stats/Best Accuracy/Today Best Accuracy")
+_today_avg_accuracy = NodePath("Today Stats/Average accuracy/Today AVG Accuracy")
+
+[node name="BG" type="Label" parent="."]
+layout_mode = 0
+offset_right = 1678.0
+offset_bottom = 1078.0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 108.0
+offset_right = 384.0
+offset_bottom = 140.0
+text = "All Time Statistics"
+
+[node name="All Time Stats" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 142.0
+offset_right = 1663.0
+offset_bottom = 263.0
+
+[node name="Time" type="Panel" parent="All Time Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="All Time Stats/Time"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 19.0
+offset_right = 20.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Time:"
+horizontal_alignment = 1
+
+[node name="AT Time" type="Label" parent="All Time Stats/Time"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "00:00:00"
+horizontal_alignment = 1
+
+[node name="Separator" type="Control" parent="All Time Stats"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Sessions" type="Panel" parent="All Time Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="All Time Stats/Sessions"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -33.0
+offset_top = 19.0
+offset_right = 33.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Sessions:"
+horizontal_alignment = 1
+
+[node name="AT Sessions" type="Label" parent="All Time Stats/Sessions"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "0"
+horizontal_alignment = 1
+
+[node name="Separator2" type="Control" parent="All Time Stats"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Best speed" type="Panel" parent="All Time Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="All Time Stats/Best speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -42.0
+offset_top = 19.0
+offset_right = 42.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Best speed:"
+horizontal_alignment = 1
+
+[node name="AT Best Speed" type="Label" parent="All Time Stats/Best speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "N/A"
+horizontal_alignment = 1
+
+[node name="Separator3" type="Control" parent="All Time Stats"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Average speed" type="Panel" parent="All Time Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="All Time Stats/Average speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -59.0
+offset_top = 19.0
+offset_right = 59.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Average speed:"
+horizontal_alignment = 1
+
+[node name="AT AVG Speed" type="Label" parent="All Time Stats/Average speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "N/A"
+horizontal_alignment = 1
+
+[node name="Separator4" type="Control" parent="All Time Stats"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Best Accuracy" type="Panel" parent="All Time Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="All Time Stats/Best Accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -53.0
+offset_top = 19.0
+offset_right = 53.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Best accuracy:"
+horizontal_alignment = 1
+
+[node name="AT Best Accuracy" type="Label" parent="All Time Stats/Best Accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "N/A"
+horizontal_alignment = 1
+
+[node name="Separator5" type="Control" parent="All Time Stats"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Average accuracy" type="Panel" parent="All Time Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="All Time Stats/Average accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -70.0
+offset_top = 19.0
+offset_right = 70.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Average accuracy:"
+horizontal_alignment = 1
+
+[node name="AT AVG Accuracy" type="Label" parent="All Time Stats/Average accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "N/A"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 340.0
+offset_right = 384.0
+offset_bottom = 372.0
+text = "Statistics for Today"
+
+[node name="Today Stats" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 380.0
+offset_right = 1663.0
+offset_bottom = 501.0
+
+[node name="Time" type="Panel" parent="Today Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="Today Stats/Time"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 19.0
+offset_right = 20.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Time:"
+horizontal_alignment = 1
+
+[node name="Today Time" type="Label" parent="Today Stats/Time"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "00:00:00"
+horizontal_alignment = 1
+
+[node name="Separator" type="Control" parent="Today Stats"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Sessions" type="Panel" parent="Today Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="Today Stats/Sessions"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -33.0
+offset_top = 19.0
+offset_right = 33.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Sessions:"
+horizontal_alignment = 1
+
+[node name="Today Sessions" type="Label" parent="Today Stats/Sessions"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "0"
+horizontal_alignment = 1
+
+[node name="Separator2" type="Control" parent="Today Stats"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Best speed" type="Panel" parent="Today Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="Today Stats/Best speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -42.0
+offset_top = 19.0
+offset_right = 42.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Best speed:"
+horizontal_alignment = 1
+
+[node name="Today Best Speed" type="Label" parent="Today Stats/Best speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "0 wpm"
+horizontal_alignment = 1
+
+[node name="Separator3" type="Control" parent="Today Stats"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Average speed" type="Panel" parent="Today Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="Today Stats/Average speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -59.0
+offset_top = 19.0
+offset_right = 59.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Average speed:"
+horizontal_alignment = 1
+
+[node name="Today AVG Speed" type="Label" parent="Today Stats/Average speed"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "0 wpm"
+horizontal_alignment = 1
+
+[node name="Separator4" type="Control" parent="Today Stats"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Best Accuracy" type="Panel" parent="Today Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="Today Stats/Best Accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -53.0
+offset_top = 19.0
+offset_right = 53.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Best accuracy:"
+horizontal_alignment = 1
+
+[node name="Today Best Accuracy" type="Label" parent="Today Stats/Best Accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "0%"
+horizontal_alignment = 1
+
+[node name="Separator5" type="Control" parent="Today Stats"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Average accuracy" type="Panel" parent="Today Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Today Stats/Average accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -70.0
+offset_top = 19.0
+offset_right = 70.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Average accuracy:"
+horizontal_alignment = 1
+
+[node name="Today AVG Accuracy" type="Label" parent="Today Stats/Average accuracy"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_type_variation = &"stats_value"
+text = "0%"
+horizontal_alignment = 1

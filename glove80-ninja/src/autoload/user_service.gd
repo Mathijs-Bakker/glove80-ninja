@@ -16,6 +16,11 @@ const DEFAULT_PROFILE = {
 	PROFILE.LAST_LOGIN_DATE: "",
 	PROFILE.LEVEL: 0,
 	PROFILE.EXPERIENCE: 0,
+	SETTINGS.STOP_CURSOR_ON_ERROR: true,
+	SETTINGS.FORGIVE_ERRORS: false,
+	SETTINGS.SPACE_SKIPS_WORDS: false,
+	SETTINGS.SHOW_WHITESPACE: "bullet",
+	SETTINGS.CURSOR_SHAPE: "block",
 	Stats.ALL_TIME_TIME_TYPED: 0.0,
 	Stats.ALL_TIME_BEST_WPM: 0.0,
 	Stats.ALL_TIME_AVERAGE_WPM: 0.0,
@@ -35,6 +40,14 @@ const PROFILE = {
 	"LAST_LOGIN_DATE": "last_login_date",
 	"LEVEL": "level",
 	"EXPERIENCE": "experience",
+}
+
+const SETTINGS = {
+	"STOP_CURSOR_ON_ERROR": "stop_cursor_on_error",
+	"FORGIVE_ERRORS": "forgive_errors",
+	"SPACE_SKIPS_WORDS": "space_skip_words",
+	"SHOW_WHITESPACE": "show_whitespace",
+	"CURSOR_SHAPE": "cursor_shape"
 }
 
 const Stats = {

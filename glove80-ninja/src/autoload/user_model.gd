@@ -1,5 +1,9 @@
 extends Node
 
+const DEFAULT_USERS = {USERS.USER_IDS: [], USERS.LAST_LOGGED_IN: null}
+
+const USERS = {"USER_IDS": "user_ids", "LAST_LOGGED_IN": "last_logged_in"}
+
 # Default profile structure
 const DEFAULT_PROFILE = {
 	PROFILE.USERNAME: "New user",

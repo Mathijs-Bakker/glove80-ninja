@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bvju6sxwa7me2"]
 
 [ext_resource type="Theme" uid="uid://kcben5y0d2o6" path="res://themes/dark.tres" id="1_g837a"]
-[ext_resource type="Script" uid="uid://sbybedqw1870" path="res://src/settings/typing.gd" id="2_nev6n"]
+[ext_resource type="Script" uid="uid://xkdb4kxyxrdb" path="res://src/settings/typing.gd" id="2_nev6n"]
 [ext_resource type="ButtonGroup" uid="uid://bnehai7jn20dn" path="res://src/settings/cursor_shape_btn_group.tres" id="3_30pip"]
 [ext_resource type="ButtonGroup" uid="uid://7d6iq2p7tx5b" path="res://src/settings/whitespace_btn_group.tres" id="4_f2wgr"]
 
@@ -17,7 +17,7 @@ layout_mode = 0
 offset_right = 1678.0
 offset_bottom = 1078.0
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="." node_paths=PackedStringArray("stop_cursor_on_error_btn", "forgive_errors_btn")]
+[node name="VBoxContainer2" type="VBoxContainer" parent="." node_paths=PackedStringArray("stop_cursor_on_error_btn", "forgive_errors_btn", "space_skips_words_btn")]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -30,6 +30,9 @@ grow_horizontal = 2
 script = ExtResource("2_nev6n")
 stop_cursor_on_error_btn = NodePath("Stop Cursor on Error/Stop Cursor")
 forgive_errors_btn = NodePath("Forgive Errors/Forgive")
+space_skips_words_btn = NodePath("Space skips words/Space skips")
+whitespace_btn_group = ExtResource("4_f2wgr")
+cursor_shape_btn_group = ExtResource("3_30pip")
 
 [node name="Label" type="Label" parent="VBoxContainer2"]
 layout_mode = 2
@@ -130,17 +133,17 @@ layout_mode = 2
 theme_type_variation = &"HeaderLarge"
 text = "Whitespace:"
 
-[node name="CheckBox" type="CheckButton" parent="VBoxContainer2/Whitespace"]
+[node name="show" type="CheckButton" parent="VBoxContainer2/Whitespace"]
 layout_mode = 2
 button_group = ExtResource("4_f2wgr")
 text = "Show"
 
-[node name="CheckBox2" type="CheckButton" parent="VBoxContainer2/Whitespace"]
+[node name="bar" type="CheckButton" parent="VBoxContainer2/Whitespace"]
 layout_mode = 2
 button_group = ExtResource("4_f2wgr")
 text = "Bar"
 
-[node name="CheckBox3" type="CheckButton" parent="VBoxContainer2/Whitespace"]
+[node name="bullet" type="CheckButton" parent="VBoxContainer2/Whitespace"]
 layout_mode = 2
 button_group = ExtResource("4_f2wgr")
 text = "Bullet"
@@ -153,22 +156,22 @@ layout_mode = 2
 theme_type_variation = &"HeaderLarge"
 text = "Cursor shape:"
 
-[node name="Block - btn" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
+[node name="block" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
 layout_mode = 2
 button_group = ExtResource("3_30pip")
 text = "Block"
 
-[node name="Boxm - btn" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
+[node name="box" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
 layout_mode = 2
 button_group = ExtResource("3_30pip")
 text = "Box"
 
-[node name="Line - btn" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
+[node name="line" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
 layout_mode = 2
 button_group = ExtResource("3_30pip")
 text = "Line"
 
-[node name="Underline - btn" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
+[node name="underline" type="CheckButton" parent="VBoxContainer2/Cursor Shape"]
 layout_mode = 2
 button_group = ExtResource("3_30pip")
 text = "Underline"

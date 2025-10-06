@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bontr55blyh36"]
 
-[ext_resource type="Script" path="res://src/user_profile/user_profile.gd" id="1_n7k32"]
+[ext_resource type="Script" uid="uid://mhbsx0c6etl2" path="res://src/user_profile/user_profile.gd" id="1_n7k32"]
 
 [node name="UserProfile" type="Control" node_paths=PackedStringArray("_username_lbl")]
 layout_mode = 3

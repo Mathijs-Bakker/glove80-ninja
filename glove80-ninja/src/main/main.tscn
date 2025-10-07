@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://qp232mitcip5" path="res://src/main/main_rewrite.gd" id="1_3eh75"]
 [ext_resource type="Theme" uid="uid://kcben5y0d2o6" path="res://themes/dark.tres" id="1_3s6yk"]
-[ext_resource type="Script" uid="uid://nqwub6eb8xot" path="res://src/autoload/app_manager.gd" id="3_ab7mr"]
+[ext_resource type="Script" uid="uid://b5r8wc6bfac78" path="res://src/autoload/app_manager.gd" id="3_ab7mr"]
 [ext_resource type="Script" uid="uid://7suiojwmaf1e" path="res://src/autoload/config_service.gd" id="4_djufw"]
-[ext_resource type="Script" uid="uid://cci3ykub0g8v0" path="res://src/autoload/data_manager.gd" id="4_jqarl"]
-[ext_resource type="Script" uid="uid://crn01ru3vsecg" path="res://src/autoload/user_service.gd" id="5_jkpqq"]
+[ext_resource type="Script" uid="uid://ckh5nl3s804as" path="res://src/autoload/data_manager.gd" id="4_jqarl"]
+[ext_resource type="Script" uid="uid://ddco3x8nkv5uk" path="res://src/autoload/user_service.gd" id="5_jkpqq"]
 [ext_resource type="PackedScene" uid="uid://bvy1puekiteqi" path="res://src/typing/typing.tscn" id="7_frqgp"]
 [ext_resource type="PackedScene" uid="uid://bfmiyek72frl7" path="res://src/main_menu/main_menu.tscn" id="8_frqgp"]
 

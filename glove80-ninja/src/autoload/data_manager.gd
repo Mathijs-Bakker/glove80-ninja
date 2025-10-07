@@ -3,11 +3,11 @@ extends Control
 ## Unified data management service that handles file operations and path management
 
 # Base directories
-const DATA_DIR = "user://data/"
-# const CONFIG_DIR = "user://data/config/"
-# const PROFILES_DIR = "user://data/profiles/"
-# const STATS_DIR = "user://data/statistics/"
-# const CACHE_DIR = "user://cache/"
+const USER_DATA_DIR = "user://data/"
+const CONFIG_DIR = "user://data/config/"
+const PROFILES_DIR = "user://data/profiles/"
+const STATS_DIR = "user://data/statistics/"
+const CACHE_DIR = "user://cache/"
 const BACKUPS_DIR = "user://cache/backups/"
 
 # Specific file paths
@@ -97,8 +97,7 @@ func load_json(p_path: String, p_default_data: Dictionary = {}) -> Dictionary:
 func ensure_directories_exist() -> void:
 	Log.info("[DataManager][ensure_directories_exist] Ensuring all necessary directories exist")
 
-	# var directories = [DATA_DIR, CONFIG_DIR, PROFILES_DIR, STATS_DIR, CACHE_DIR, BACKUPS_DIR]
-	var directories = [DATA_DIR, BACKUPS_DIR]
+	var directories = [USER_DATA_DIR, CONFIG_DIR, PROFILES_DIR, STATS_DIR, CACHE_DIR, BACKUPS_DIR]
 
 	var created_count = 0
 	for dir_path in directories:
@@ -143,22 +142,23 @@ func get_backup_path(p_original_path: String) -> String:
 	return backup_path
 
 
-# func get_user_profile_path(p_username: String) -> String:
-# 	var profile_path = PROFILES_DIR.path_join("%s_profile.json" % p_username.to_lower())
-# 	Log.info(
-# 		(
-# 			"[DataManager][get_user_profile_path] Generated profile path for %s: %s"
-# 			% [p_username, profile_path]
-# 		)
-# 	)
-# 	return profile_path
+func get_user_profile_path(p_username: String) -> String:
+	var profile_path = PROFILES_DIR.path_join("%s_profile.json" % p_username.to_lower())
+	Log.info(
+		(
+			"[DataManager][get_user_profile_path] Generated profile path for %s: %s"
+			% [p_username, profile_path]
+		)
+	)
+	return profile_path
 
-# func get_temp_path(p_prefix: String = "temp") -> String:
-# 	var timestamp = Time.get_unix_time_from_system()
-# 	var random_id = randi() % 10000
-# 	var temp_path = CACHE_DIR.path_join("%s_%d_%d.tmp" % [p_prefix, timestamp, random_id])
-# 	Log.info("[DataManager][get_temp_path] Generated temp path: %s" % temp_path)
-# 	return temp_path
+
+func get_temp_path(p_prefix: String = "temp") -> String:
+	var timestamp = Time.get_unix_time_from_system()
+	var random_id = randi() % 10000
+	var temp_path = CACHE_DIR.path_join("%s_%d_%d.tmp" % [p_prefix, timestamp, random_id])
+	Log.info("[DataManager][get_temp_path] Generated temp path: %s" % temp_path)
+	return temp_path
 
 
 func is_valid_user_data_path(p_path: String) -> bool:

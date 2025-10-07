@@ -10,7 +10,7 @@ func _ready() -> void:
 
 
 func _set_username() -> void:
-	_username_lbl.text = UserService.get_profile().get(User.PROFILE.USERNAME)
+	_username_lbl.text = UserService.get_profile().get("username")
 
 
 func on_save_button() -> void:

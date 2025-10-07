@@ -7,15 +7,10 @@ signal profile_saved
 signal stats_updated
 signal achievement_unlocked(p_achievement_id: String)
 
-const PATH = "user://data/"
-const USERS_PATH = "user://data/users.json"
-const USER_PROFILE_PATH = "user://data/user_"
-# const PROFILE_PATH = "user://data/profiles/default_profile.json"
+const PROFILE_PATH = "user://data/profiles/default_profile.json"
 
 # @export var DataManager: DataManager
 
-var profile_path: String
-var _current_user_id: int
 var _current_profile: Dictionary = {}
 var _session_stats: SessionStats
 var _profile_stats: ProfileStats
@@ -26,41 +21,19 @@ func initialize() -> void:
 	Log.info("[UserService][initialize] Initializing user service")
 	_session_stats = SessionStats.new()
 	_profile_stats = ProfileStats.new()
-	fetch_last_logged_in_user()
-	load_profile(_current_user_id)
+	load_profile()
 	Log.info("[UserService][initialize] User service initialized successfully")
 
 
-func fetch_last_logged_in_user() -> void:
-	Log.info("[UserService][fetch_last_logged_in_user]")
-	var users = DataManager.load_json(USERS_PATH, User.DEFAULT_USERS)
-	var _last_logged_in = users.get(User.USERS.LAST_LOGGED_IN)
-
-	if _last_logged_in == null:
-		Log.info("[UserService][fetch_last_logged_in_user] Found no existing users.")
-		_current_user_id = 0
-		DataManager.save_json(USERS_PATH, User.DEFAULT_USERS)
-		return
-
-	_current_user_id = _last_logged_in
-
-
-func _create_profile_path(p_user_id) -> String:
-	var prepend_path = "user://data/user_"
-	return prepend_path + str(p_user_id) + "/user_profile.json"
-
-
 ## Load user profile from file
-func load_profile(p_user_id) -> void:
-	profile_path = _create_profile_path(p_user_id)
-	Log.info("[UserService][load_profile] Loading user profile from: %s" % profile_path)
-	_current_profile = DataManager.load_json(profile_path, User.DEFAULT_PROFILE)
+func load_profile() -> void:
+	Log.info("[UserService][load_profile] Loading user profile from: %s" % PROFILE_PATH)
+	_current_profile = DataManager.load_json(PROFILE_PATH, User.DEFAULT_PROFILE)
 
-	# Set creation date if not exists (new user)
+	# Set creation date if not exists
 	if _current_profile[User.PROFILE.CREATED_DATE].is_empty():
 		_current_profile[User.PROFILE.CREATED_DATE] = Time.get_date_string_from_system()
 		Log.info("[UserService][load_profile] Set creation date for new profile")
-		save_profile()
 
 	_current_profile[User.PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
 	Log.info("[UserService][load_profile] Updated last login date")
@@ -81,7 +54,7 @@ func save_profile() -> bool:
 	_current_profile[User.PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
 	_profile_stats.save_to_profile(_current_profile)
 
-	var success = DataManager.save_json(profile_path, _current_profile)
+	var success = DataManager.save_json(PROFILE_PATH, _current_profile)
 	if success:
 		Log.info("[UserService][save_profile] User profile saved successfully")
 		profile_saved.emit()
@@ -97,10 +70,10 @@ func start_session() -> void:
 	_session_stats.start_session()
 	# _current_profile["total_sessions"] += 1
 	# Log.info(
-	#   (
-	#       "[UserService][start_session] Session started, total sessions: %d"
-	#       % _current_profile["total_sessions"]
-	#   )
+	# 	(
+	# 		"[UserService][start_session] Session started, total sessions: %d"
+	# 		% _current_profile["total_sessions"]
+	# 	)
 	# )
 
 
@@ -189,7 +162,7 @@ func get_achievements() -> Array:
 ## Reset profile to defaults (for testing or new user)
 func reset_profile() -> void:
 	Log.info("[UserService][reset_profile] Resetting profile to defaults")
-	var backup_created = DataManager.create_backup(profile_path)
+	var backup_created = DataManager.create_backup(PROFILE_PATH)
 	if backup_created:
 		Log.info("[UserService][reset_profile] Profile backup created before reset")
 	else:

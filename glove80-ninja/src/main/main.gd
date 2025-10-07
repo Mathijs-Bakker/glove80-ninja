@@ -4,7 +4,7 @@ class_name Main
 ## Refactored main scene that uses the new architecture
 ## Uses AppManager for service management and proper dependency injection
 
-signal scene_ready
+signal scene_ready()
 
 # Core components
 var app_manager: AppManager
@@ -18,12 +18,9 @@ var loading_screen: Control
 @onready var footer_container: HBoxContainer = $MainContainer/FooterContainer
 
 # Navigation buttons
-@onready
-var practice_button: Button = $MainContainer/HeaderContainer/NavigationContainer/PracticeButton
-@onready
-var settings_button: Button = $MainContainer/HeaderContainer/NavigationContainer/SettingsButton
-@onready
-var profile_button: Button = $MainContainer/HeaderContainer/NavigationContainer/ProfileButton
+@onready var practice_button: Button = $MainContainer/HeaderContainer/NavigationContainer/PracticeButton
+@onready var settings_button: Button = $MainContainer/HeaderContainer/NavigationContainer/SettingsButton
+@onready var profile_button: Button = $MainContainer/HeaderContainer/NavigationContainer/ProfileButton
 
 # Status display
 @onready var status_label: Label = $MainContainer/FooterContainer/StatusLabel
@@ -124,7 +121,7 @@ func quit_application() -> void:
 
 	if app_manager:
 		Log.info("[Main][quit_application] Shutting down AppManager")
-		app_manager.shutdown_gracefully()
+		app_manager.shutdown_app()
 		await app_manager.app_shutting_down
 		Log.info("[Main][quit_application] AppManager shutdown complete")
 
@@ -133,7 +130,6 @@ func quit_application() -> void:
 
 
 # Private methods
-
 
 func _setup_ui() -> void:
 	Log.info("[Main][_setup_ui] Setting up UI components")
@@ -259,9 +255,7 @@ func _update_ui_state() -> void:
 
 
 func _update_navigation_state() -> void:
-	Log.info(
-		"[Main][_update_navigation_state] Updating navigation state for scene: %s" % current_scene
-	)
+	Log.info("[Main][_update_navigation_state] Updating navigation state for scene: %s" % current_scene)
 	# Update button states based on current scene
 	if practice_button:
 		practice_button.disabled = (current_scene == "practice")
@@ -283,7 +277,6 @@ func _update_status(p_message: String) -> void:
 
 # Signal handlers
 
-
 func _on_app_initialized() -> void:
 	Log.info("[Main][_on_app_initialized] Application initialized successfully")
 	_update_ui_state()
@@ -300,7 +293,6 @@ func _on_app_shutting_down() -> void:
 
 
 # Input handling
-
 
 func _input(p_event: InputEvent) -> void:
 	if not p_event is InputEventKey:

@@ -106,25 +106,19 @@ func update_stats(wpm: float, accuracy: float, mistakes: int) -> void:
 	_pending_accuracy = accuracy
 	_pending_mistakes = mistakes
 
-	# Update stats immediately instead of batching to prevent flickering
-	if wpm_label:
-		wpm_label.text = "WPM: %.0f" % wpm
-	if accuracy_label:
-		accuracy_label.text = "Accuracy: %.1f%%" % accuracy
-	if mistakes_label:
-		mistakes_label.text = "Mistakes: %d" % mistakes
+	if not pending_stats_updates:
+		pending_stats_updates = true
+		stats_update_timer.start()
 
 
 ## Show visual feedback for correct typing
 func show_correct_feedback() -> void:
-	# Disabled to prevent flickering and color accumulation
-	pass
+	_flash_background(Color.GREEN.lerp(background_color, 0.7), 0.1)
 
 
 ## Show visual feedback for incorrect typing
 func show_incorrect_feedback() -> void:
-	# Disabled to prevent flickering and color accumulation
-	pass
+	_flash_background(Color.RED.lerp(background_color, 0.7), 0.2)
 
 
 ## Set cursor visibility
@@ -162,23 +156,23 @@ func _setup_cursor() -> void:
 
 
 func _setup_timers() -> void:
-	# Cursor blink timer (disabled to prevent flickering)
+	# Cursor blink timer
 	cursor_timer = Timer.new()
 	cursor_timer.wait_time = 1.0 / cursor_blink_speed
-	cursor_timer.autostart = false  # Disabled to prevent flickering
+	cursor_timer.autostart = true
 	cursor_timer.timeout.connect(_on_cursor_blink)
 	add_child(cursor_timer)
 
-	# Batched update timer (reduced frequency to prevent flickering)
+	# Batched update timer (~60fps)
 	update_timer = Timer.new()
-	update_timer.wait_time = 0.033  # 30fps instead of 60fps
+	update_timer.wait_time = 0.016
 	update_timer.one_shot = true
 	update_timer.timeout.connect(_perform_batched_updates)
 	add_child(update_timer)
 
-	# Stats update timer (much lower frequency to prevent flickering)
+	# Stats update timer (lower frequency)
 	stats_update_timer = Timer.new()
-	stats_update_timer.wait_time = 0.5  # 2fps instead of 10fps
+	stats_update_timer.wait_time = 0.1
 	stats_update_timer.one_shot = true
 	stats_update_timer.timeout.connect(_perform_stats_update)
 	add_child(stats_update_timer)
@@ -277,15 +271,18 @@ func _update_display() -> void:
 func _perform_batched_updates() -> void:
 	_update_text_with_colors_optimized()
 	_update_cursor_position()
-	# Update progress bar immediately instead of in batch to prevent flickering
-	if progress_bar and show_progress and current_text.length() > 0:
-		var progress = float(current_index) / float(current_text.length()) * 100.0
-		progress_bar.value = progress
+	_update_progress_bar()
 	pending_updates = false
 
 
 func _perform_stats_update() -> void:
-	# Stats are now updated immediately, this method kept for compatibility
+	if wpm_label:
+		wpm_label.text = "WPM: %.0f" % _pending_wpm
+	if accuracy_label:
+		accuracy_label.text = "Accuracy: %.1f%%" % _pending_accuracy
+	if mistakes_label:
+		mistakes_label.text = "Mistakes: %d" % _pending_mistakes
+
 	pending_stats_updates = false
 
 
@@ -317,29 +314,29 @@ func _rebuild_bbcode() -> void:
 
 	# Process each character with appropriate coloring
 	for i in range(current_text.length()):
-		var character = current_text[i]
+		var char = current_text[i]
 
 		# Escape BBCode special characters
-		character = _escape_bbcode_char(character)
+		char = _escape_bbcode_char(char)
 
 		if i < current_input.length():
 			# Character has been typed
 			if current_input[i] == current_text[i]:
 				# Correct character
-				bbcode_parts.append("[color=%s]%s[/color]" % [correct_color, character])
+				bbcode_parts.append("[color=%s]%s[/color]" % [correct_color, char])
 			else:
 				# Incorrect character
-				bbcode_parts.append("[color=%s]%s[/color]" % [incorrect_color, character])
+				bbcode_parts.append("[color=%s]%s[/color]" % [incorrect_color, char])
 		else:
 			# Character not yet typed
-			bbcode_parts.append("[color=%s]%s[/color]" % [pending_color, character])
+			bbcode_parts.append("[color=%s]%s[/color]" % [pending_color, char])
 
 	cached_bbcode = "".join(bbcode_parts)
 
 
-func _escape_bbcode_char(character: String) -> String:
+func _escape_bbcode_char(char: String) -> String:
 	# Escape special BBCode characters
-	match character:
+	match char:
 		"[":
 			return "\\["
 		"]":
@@ -349,7 +346,7 @@ func _escape_bbcode_char(character: String) -> String:
 		"\t":
 			return "    "  # Convert tabs to spaces for consistent display
 		_:
-			return character
+			return char
 
 
 func _update_cursor_position() -> void:
@@ -393,9 +390,12 @@ func _estimate_cursor_position(font: Font, font_size: int) -> Vector2:
 
 
 func _update_progress_bar() -> void:
-	# Progress bar is now updated immediately in _perform_batched_updates
-	# This method kept for compatibility
-	pass
+	if not progress_bar or not show_progress:
+		return
+
+	if current_text.length() > 0:
+		var progress = float(current_index) / float(current_text.length()) * 100.0
+		progress_bar.value = progress
 
 
 # Utility methods
@@ -417,9 +417,12 @@ func _color_to_bbcode(color: Color) -> String:
 		return "#%02x%02x%02x" % [int(color.r * 255), int(color.g * 255), int(color.b * 255)]
 
 
-func _flash_background(_color: Color, _duration: float) -> void:
-	# Disabled to prevent color accumulation and flickering
-	pass
+func _flash_background(color: Color, duration: float) -> void:
+	var original_modulate = modulate
+	modulate = color
+
+	var tween = create_tween()
+	tween.tween_property(self, "modulate", original_modulate, duration)
 
 
 # Signal handlers
@@ -429,8 +432,9 @@ func _on_cursor_moved() -> void:
 
 
 func _on_cursor_blink() -> void:
-	# Disabled to prevent flickering
-	pass
+	if typing_cursor and show_cursor:
+		# TypingCursor handles blinking automatically
+		pass
 
 
 func _on_config_changed(setting_name: String, _new_value) -> void:

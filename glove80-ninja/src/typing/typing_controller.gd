@@ -7,14 +7,14 @@ extends Control
 # Fontsize
 
 signal start_new_practice
-signal update
+signal update_position
 
 @export var _text_renderer: Control
 @export var _key_input_handler: KeyInputHandler
 
 # Practice Data
 var _target_text: String = "Not initialized"
-var cursor_idx: int
+var current_position: int
 # var prev_position: int
 var chars_label_data: Array[CharacterData]
 
@@ -51,7 +51,5 @@ func get_target_text() -> String:
 
 
 func _on_character_input(p_char: String, p_is_correct: bool, p_position: int) -> void:
-	print("typing ctrl - on char input, is_correct: %s" % p_is_correct)
-	print("typing ctrl - on char input, pos %s" % p_position)
 	chars_label_data[p_position].is_correct = p_is_correct
-	update.emit()
+	update_position.emit()

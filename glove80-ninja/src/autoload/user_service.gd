@@ -14,34 +14,25 @@ const DEFAULT_PROFILE = {
 	"username": "Typist",
 	"created_date": "",
 	"last_login_date": "",
-	"level": 0,
+	"level": 1,
 	"experience": 0,
-	Stats.ALL_TIME_TIME_TYPED: 0.0,
-	Stats.ALL_TIME_BEST_WPM: 0.0,
-	Stats.ALL_TIME_AVERAGE_WPM: 0.0,
-	Stats.ALL_TIME_AVERAGE_ACCURACY: 0.0,
-	Stats.ALL_TIME_SESSIONS_COMPLETED: 0.0,
-	Stats.TODAY_TIME_TYPED: 0.0,
-	Stats.TODAY_BEST_WPM: 0.0,
-	Stats.TODAY_BEST_ACCURACY: 0.0,
-	Stats.TODAY_AVERAGE_ACCURACY: 0.0,
+	"total_sessions": 0,
+	"total_time_typed": 0,
 	"achievements": [],
 	"preferences": {"preferred_lessons": [], "difficulty_level": "beginner"}
 }
 
 const Stats = {
-	"ALL_TIME_TIME_TYPED": "all_time_time_typed",
-	"ALL_TIME_BEST_WPM": "all_time_best_wpm",
-	"ALL_TIME_AVERAGE_WPM": "all_time_average_wpm",
-	"ALL_TIME_BEST_ACCURACY": "all_time_best_accuracy",
-	"ALL_TIME_AVERAGE_ACCURACY": "all_time_average_accuracy",
-	"ALL_TIME_SESSIONS_COMPLETED": "all_time_sessions_completed",
-	"TODAY_TIME_TYPED": "today_time_typed",
-	"TODAY_BEST_WPM": "today_best_wpm",
-	"TODAY_AVERAGE_WPM": "today_average_wpm",
-	"TODAY_BEST_ACCURACY": "today_best_accuracy",
-	"TODAY_AVERAGE_ACCURACY": "today_average_accuracy",
-	"TODAY_SESSIONS_COMPLETED": "today_sessions_completed",
+	"TOTAL_TIME_TYPED": "total_time_typed",
+	"TOTAL_SESSIONS": "total_sessions",
+	"TOTAL_WORDS_TYPED": "total_words_typed",
+	"TOTAL_CHARS_TYPED": "total_characters_typed",
+	"AVERAGE_WPM": "average_wpm",
+	"BEST_WPM": "best_wpm",
+	"AVERAGE_ACCURACY": "average_accuracy",
+	"BEST_ACCURACY": "best_accuracy",
+	"TOTAL_MISTAKES": "total_mistakes",
+	"SESSIONS_COMPLETED": "sessions_completed",
 }
 
 # @export var DataManager: DataManager
@@ -103,13 +94,13 @@ func save_profile() -> bool:
 func start_session() -> void:
 	Log.info("[UserService][start_session] Starting new typing session")
 	_session_stats.start_session()
-	# _current_profile["total_sessions"] += 1
-	# Log.info(
-	# 	(
-	# 		"[UserService][start_session] Session started, total sessions: %d"
-	# 		% _current_profile["total_sessions"]
-	# 	)
-	# )
+	_current_profile["total_sessions"] += 1
+	Log.info(
+		(
+			"[UserService][start_session] Session started, total sessions: %d"
+			% _current_profile["total_sessions"]
+		)
+	)
 
 
 ## End current typing session and update profile
@@ -391,14 +382,14 @@ class ProfileStats:
 	var sessions_completed: int = 0
 
 	func load_from_profile(p_profile: Dictionary) -> void:
-		# total_words_typed = p_profile.get(Stats.ALL_TIME_WORDS_TYPED, 0)
-		# total_characters_typed = p_profile.get(Stats.ALL_TIME_CHARS_TYPED, 0)
-		average_wpm = p_profile.get(Stats.ALL_TIME_AVERAGE_WPM, 0.0)
-		best_wpm = p_profile.get(Stats.ALL_TIME_BEST_WPM, 0.0)
-		average_accuracy = p_profile.get(Stats.ALL_TIME_AVERAGE_ACCURACY, 0.0)
-		best_accuracy = p_profile.get(Stats.ALL_TIME_BEST_ACCURACY, 0.0)
-		# total_mistakes = p_profile.get(Stats.ALL_TIME_MISTAKES, 0)
-		sessions_completed = p_profile.get(Stats.ALL_TIME_SESSIONS_COMPLETED, 0)
+		total_words_typed = p_profile.get(Stats.TOTAL_WORDS_TYPED, 0)
+		total_characters_typed = p_profile.get(Stats.TOTAL_CHARS_TYPED, 0)
+		average_wpm = p_profile.get(Stats.AVERAGE_WPM, 0.0)
+		best_wpm = p_profile.get(Stats.BEST_WPM, 0.0)
+		average_accuracy = p_profile.get(Stats.AVERAGE_ACCURACY, 0.0)
+		best_accuracy = p_profile.get(Stats.BEST_ACCURACY, 0.0)
+		total_mistakes = p_profile.get(Stats.TOTAL_MISTAKES, 0)
+		sessions_completed = p_profile.get(Stats.SESSIONS_COMPLETED, 0)
 		(
 			Log
 			. info(
@@ -434,8 +425,7 @@ class ProfileStats:
 		var session_mistakes = p_session_results.get("mistakes", 0)
 
 		total_characters_typed += session_characters
-		var word = 5.0
-		total_words_typed += int(session_characters / word)
+		total_words_typed += int(session_characters / 5.0)
 		total_mistakes += session_mistakes
 		sessions_completed += 1
 

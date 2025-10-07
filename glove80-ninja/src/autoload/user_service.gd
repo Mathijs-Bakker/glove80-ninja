@@ -9,6 +9,62 @@ signal achievement_unlocked(p_achievement_id: String)
 
 const PROFILE_PATH = "user://data/profiles/default_profile.json"
 
+# Default profile structure
+const DEFAULT_PROFILE = {
+	PROFILE.USERNAME: "New user",
+	PROFILE.CREATED_DATE: "",
+	PROFILE.LAST_LOGIN_DATE: "",
+	PROFILE.LEVEL: 0,
+	PROFILE.EXPERIENCE: 0,
+	SETTINGS.STOP_CURSOR_ON_ERROR: true,
+	SETTINGS.FORGIVE_ERRORS: false,
+	SETTINGS.SPACE_SKIPS_WORDS: false,
+	SETTINGS.SHOW_WHITESPACE: "bullet",
+	SETTINGS.CURSOR_SHAPE: "block",
+	Stats.ALL_TIME_TIME_TYPED: 0.0,
+	Stats.ALL_TIME_BEST_WPM: 0.0,
+	Stats.ALL_TIME_AVERAGE_WPM: 0.0,
+	Stats.ALL_TIME_AVERAGE_ACCURACY: 0.0,
+	Stats.ALL_TIME_SESSIONS_COMPLETED: 0.0,
+	Stats.TODAY_TIME_TYPED: 0.0,
+	Stats.TODAY_BEST_WPM: 0.0,
+	Stats.TODAY_BEST_ACCURACY: 0.0,
+	Stats.TODAY_AVERAGE_ACCURACY: 0.0,
+	"achievements": [],
+	"preferences": {"preferred_lessons": [], "difficulty_level": "beginner"}
+}
+
+const PROFILE = {
+	"USERNAME": "username",
+	"CREATED_DATE": "created_date",
+	"LAST_LOGIN_DATE": "last_login_date",
+	"LEVEL": "level",
+	"EXPERIENCE": "experience",
+}
+
+const SETTINGS = {
+	"STOP_CURSOR_ON_ERROR": "stop_cursor_on_error",
+	"FORGIVE_ERRORS": "forgive_errors",
+	"SPACE_SKIPS_WORDS": "space_skip_words",
+	"SHOW_WHITESPACE": "show_whitespace",
+	"CURSOR_SHAPE": "cursor_shape"
+}
+
+const Stats = {
+	"ALL_TIME_TIME_TYPED": "all_time_time_typed",
+	"ALL_TIME_BEST_WPM": "all_time_best_wpm",
+	"ALL_TIME_AVERAGE_WPM": "all_time_average_wpm",
+	"ALL_TIME_BEST_ACCURACY": "all_time_best_accuracy",
+	"ALL_TIME_AVERAGE_ACCURACY": "all_time_average_accuracy",
+	"ALL_TIME_SESSIONS_COMPLETED": "all_time_sessions_completed",
+	"TODAY_TIME_TYPED": "today_time_typed",
+	"TODAY_BEST_WPM": "today_best_wpm",
+	"TODAY_AVERAGE_WPM": "today_average_wpm",
+	"TODAY_BEST_ACCURACY": "today_best_accuracy",
+	"TODAY_AVERAGE_ACCURACY": "today_average_accuracy",
+	"TODAY_SESSIONS_COMPLETED": "today_sessions_completed",
+}
+
 # @export var DataManager: DataManager
 
 var _current_profile: Dictionary = {}
@@ -28,21 +84,21 @@ func initialize() -> void:
 ## Load user profile from file
 func load_profile() -> void:
 	Log.info("[UserService][load_profile] Loading user profile from: %s" % PROFILE_PATH)
-	_current_profile = DataManager.load_json(PROFILE_PATH, User.DEFAULT_PROFILE)
+	_current_profile = DataManager.load_json(PROFILE_PATH, DEFAULT_PROFILE)
 
 	# Set creation date if not exists
-	if _current_profile[User.PROFILE.CREATED_DATE].is_empty():
-		_current_profile[User.PROFILE.CREATED_DATE] = Time.get_date_string_from_system()
+	if _current_profile[PROFILE.CREATED_DATE].is_empty():
+		_current_profile[PROFILE.CREATED_DATE] = Time.get_date_string_from_system()
 		Log.info("[UserService][load_profile] Set creation date for new profile")
 
-	_current_profile[User.PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
+	_current_profile[PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
 	Log.info("[UserService][load_profile] Updated last login date")
 
 	_profile_stats.load_from_profile(_current_profile)
 	Log.info(
 		(
 			"[UserService][load_profile] Profile loaded successfully for user: %s"
-			% _current_profile[User.PROFILE.USERNAME]
+			% _current_profile[PROFILE.USERNAME]
 		)
 	)
 	profile_loaded.emit()
@@ -51,7 +107,7 @@ func load_profile() -> void:
 ## Save user profile to file
 func save_profile() -> bool:
 	Log.info("[UserService][save_profile] Saving user profile")
-	_current_profile[User.PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
+	_current_profile[PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
 	_profile_stats.save_to_profile(_current_profile)
 
 	var success = DataManager.save_json(PROFILE_PATH, _current_profile)
@@ -109,8 +165,8 @@ func get_profile() -> Dictionary:
 ## Update username
 func set_username(p_new_username: String) -> void:
 	Log.info("[UserService][set_username] Setting username to: %s" % p_new_username)
-	var old_username = _current_profile[User.PROFILE.USERNAME]
-	_current_profile[User.PROFILE.USERNAME] = p_new_username
+	var old_username = _current_profile[PROFILE.USERNAME]
+	_current_profile[PROFILE.USERNAME] = p_new_username
 	save_profile()
 	Log.info(
 		(
@@ -168,8 +224,8 @@ func reset_profile() -> void:
 	else:
 		Log.warn("[UserService][reset_profile] Failed to create backup before reset")
 
-	_current_profile = User.DEFAULT_PROFILE.duplicate(true)
-	_current_profile[User.PROFILE.CREATED_DATE] = Time.get_date_string_from_system()
+	_current_profile = DEFAULT_PROFILE.duplicate(true)
+	_current_profile[PROFILE.CREATED_DATE] = Time.get_date_string_from_system()
 	_profile_stats = ProfileStats.new()
 	save_profile()
 	Log.info("[UserService][reset_profile] Profile reset complete")
@@ -202,7 +258,7 @@ func import_profile(p_import_path: String) -> bool:
 		return false
 
 	# Validate required fields
-	var required_fields = [User.PROFILE.USERNAME]
+	var required_fields = [PROFILE.USERNAME]
 	if not DataManager.validate_json_schema(imported_profile, required_fields):
 		Log.error("[UserService][import_profile] Import file missing required fields")
 		return false
@@ -215,7 +271,7 @@ func import_profile(p_import_path: String) -> bool:
 		Log.info(
 			(
 				"[UserService][import_profile] Profile imported successfully for user: %s"
-				% _current_profile[User.PROFILE.USERNAME]
+				% _current_profile[PROFILE.USERNAME]
 			)
 		)
 	else:
@@ -356,14 +412,14 @@ class ProfileStats:
 	var sessions_completed: int = 0
 
 	func load_from_profile(p_profile: Dictionary) -> void:
-		# total_words_typed = p_profile.get(STATS.ALL_TIME_WORDS_TYPED, 0)
-		# total_characters_typed = p_profile.get(STATS.ALL_TIME_CHARS_TYPED, 0)
-		average_wpm = p_profile.get(User.STATS.ALL_TIME_AVERAGE_WPM, 0.0)
-		best_wpm = p_profile.get(User.STATS.ALL_TIME_BEST_WPM, 0.0)
-		average_accuracy = p_profile.get(User.STATS.ALL_TIME_AVERAGE_ACCURACY, 0.0)
-		best_accuracy = p_profile.get(User.STATS.ALL_TIME_BEST_ACCURACY, 0.0)
-		# total_mistakes = p_profile.get(STATS.ALL_TIME_MISTAKES, 0)
-		sessions_completed = p_profile.get(User.STATS.ALL_TIME_SESSIONS_COMPLETED, 0)
+		# total_words_typed = p_profile.get(Stats.ALL_TIME_WORDS_TYPED, 0)
+		# total_characters_typed = p_profile.get(Stats.ALL_TIME_CHARS_TYPED, 0)
+		average_wpm = p_profile.get(Stats.ALL_TIME_AVERAGE_WPM, 0.0)
+		best_wpm = p_profile.get(Stats.ALL_TIME_BEST_WPM, 0.0)
+		average_accuracy = p_profile.get(Stats.ALL_TIME_AVERAGE_ACCURACY, 0.0)
+		best_accuracy = p_profile.get(Stats.ALL_TIME_BEST_ACCURACY, 0.0)
+		# total_mistakes = p_profile.get(Stats.ALL_TIME_MISTAKES, 0)
+		sessions_completed = p_profile.get(Stats.ALL_TIME_SESSIONS_COMPLETED, 0)
 		(
 			Log
 			. info(
@@ -430,7 +486,7 @@ class ProfileStats:
 			Log
 			. info(
 				(
-					"[UserService.ProfileStats][update_with_session] STATS updated - New best WPM: %s (%.1f), New best accuracy: %s (%.1f%%)"
+					"[UserService.ProfileStats][update_with_session] Stats updated - New best WPM: %s (%.1f), New best accuracy: %s (%.1f%%)"
 					% [new_best_wpm, best_wpm, new_best_accuracy, best_accuracy]
 				)
 			)

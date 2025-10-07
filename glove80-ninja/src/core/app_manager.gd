@@ -2,6 +2,7 @@ class_name AppManager
 extends Node
 
 ## Central application manager that handles service initialization and coordination
+## Replaces multiple autoloads with a single, well-organized service container
 
 signal app_initialized()
 signal services_ready()
@@ -120,12 +121,14 @@ func shutdown_app() -> void:
 		user_service.save_profile()
 		Log.info("[AppManager][shutdown_app] User profile saved on shutdown")
 
+	# Clean up temporary files
 	_cleanup_temp_files()
 
 	Log.info("[AppManager][shutdown_app] Shutdown complete")
 
 
-func create_practice_controller() -> PracticeController:
+## Create a new PracticeController with proper dependency injection
+func create_practice_controller() -> PracticeControllerRefactored:
 	Log.info("[AppManager][create_practice_controller] Creating practice controller")
 	if not are_services_ready():
 		Log.error("[AppManager][create_practice_controller] Cannot create PracticeController: Services not ready")
@@ -142,6 +145,7 @@ func create_practice_controller() -> PracticeController:
 	return practice_controller
 
 
+## Create settings controller with dependency injection
 func create_settings_controller() -> Control:
 	Log.info("[AppManager][create_settings_controller] Creating settings controller")
 	if not config_service:
@@ -423,12 +427,12 @@ func _on_achievement_unlocked(p_achievement_id: String) -> void:
 
 func _apply_app_theme(p_theme_name: String) -> void:
 	Log.info("[AppManager][_apply_app_theme] Applying theme - %s" % p_theme_name)
-	# TODO: Implementation would apply theme to the entire application
+	# Implementation would apply theme to the entire application
 
 
 func _change_app_language(p_language_code: String) -> void:
 	Log.info("[AppManager][_change_app_language] Changing language - %s" % p_language_code)
-    # TODO: Implementation would change the application language
+	# Implementation would change the application language
 
 
 # Static convenience methods for global access

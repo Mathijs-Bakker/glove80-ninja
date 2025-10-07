@@ -11,7 +11,7 @@ const PROFILE_PATH = "user://data/profiles/default_profile.json"
 
 # Default profile structure
 const DEFAULT_PROFILE = {
-	"username": "Default",
+	"username": "Typist",
 	"created_date": "",
 	"last_login_date": "",
 	"level": 0,

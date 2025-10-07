@@ -2,13 +2,16 @@ extends Control
 
 @export var _username: Label
 
-@export var _user_profile_scn: PackedScene
-@export var _stats_scn: PackedScene
+@export var _practice_btn: Button
+@export var _profile_btn: Button
+@export var _settings_btn: Button
+@export var _layouts_btn: Button
+
+@export var _profile_scn: PackedScene
 @export var _settings_scn: PackedScene
 @export var _layouts_scn: PackedScene
 
-var _user_profile: Node
-var _stats: Node
+var _profile: Node
 var _settings: Node
 var _layouts: Node
 
@@ -18,13 +21,9 @@ func _ready() -> void:
 	UserService.profile_loaded.connect(get_username)
 	UserService.profile_saved.connect(get_username)
 
-	_user_profile = _user_profile_scn.instantiate()
-	add_child(_user_profile)
-	_user_profile.hide()
-
-	_stats = _stats_scn.instantiate()
-	add_child(_stats)
-	_stats.hide()
+	_profile = _profile_scn.instantiate()
+	add_child(_profile)
+	_profile.hide()
 
 	_settings = _settings_scn.instantiate()
 	add_child(_settings)
@@ -47,36 +46,25 @@ func get_username() -> void:
 			print(key_value, ":", dict[key_value])
 
 
-func on_user_profile_btn() -> void:
-	_user_profile.show()
-	_stats.hide()
-	_settings.hide()
-	_layouts.hide()
-
-
 func on_practice_btn() -> void:
-	_user_profile.hide()
-	_stats.hide()
+	_profile.hide()
 	_settings.hide()
 	_layouts.hide()
 
 
-func on_stats_btn() -> void:
-	_user_profile.hide()
-	_stats.show()
+func on_profile_btn() -> void:
+	_profile.show()
 	_settings.hide()
 	_layouts.hide()
 
 
 func on_setting_btn() -> void:
-	_user_profile.hide()
-	_stats.hide()
+	_profile.hide()
 	_settings.show()
 	_layouts.hide()
 
 
 func on_layouts_btn() -> void:
-	_user_profile.hide()
-	_stats.hide()
+	_profile.hide()
 	_settings.hide()
 	_layouts.show()

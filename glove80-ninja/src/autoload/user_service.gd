@@ -14,19 +14,21 @@ const USER_PROFILE_PATH = "user://data/user_"
 
 # @export var DataManager: DataManager
 
-var profile_path: String
+var _user_dir: String
+var _profile_path: String
 var _current_user_id: int
 var _current_profile: Dictionary = {}
 var _session_stats: SessionStats
-var _profile_stats: ProfileStats
+# var _profile_stats: ProfileStats
 
 
 ## Initialize the user service
 func initialize() -> void:
 	Log.info("[UserService][initialize] Initializing user service")
 	_session_stats = SessionStats.new()
-	_profile_stats = ProfileStats.new()
+	# _profile_stats = ProfileStats.new()
 	fetch_last_logged_in_user()
+	_user_dir = _fmt_user_dir()
 	load_profile(_current_user_id)
 	Log.info("[UserService][initialize] User service initialized successfully")
 
@@ -45,6 +47,16 @@ func fetch_last_logged_in_user() -> void:
 	_current_user_id = _last_logged_in
 
 
+func _fmt_user_dir() -> String:
+	var prepend_path = "user://data/user_"
+	return prepend_path + str(_current_user_id)
+
+
+## Returns the path of the current logged in user, for other services
+func get_user_dir_path() -> Dictionary:
+	return {"user_dir": _user_dir, "user_id": _current_user_id}
+
+
 func _create_profile_path(p_user_id) -> String:
 	var prepend_path = "user://data/user_"
 	return prepend_path + str(p_user_id) + "/user_profile.json"
@@ -52,9 +64,9 @@ func _create_profile_path(p_user_id) -> String:
 
 ## Load user profile from file
 func load_profile(p_user_id) -> void:
-	profile_path = _create_profile_path(p_user_id)
-	Log.info("[UserService][load_profile] Loading user profile from: %s" % profile_path)
-	_current_profile = DataManager.load_json(profile_path, User.DEFAULT_PROFILE)
+	_profile_path = _create_profile_path(p_user_id)
+	Log.info("[UserService][load_profile] Loading user profile from: %s" % _profile_path)
+	_current_profile = DataManager.load_json(_profile_path, User.DEFAULT_PROFILE)
 
 	# Set creation date if not exists (new user)
 	if _current_profile[User.PROFILE.CREATED_DATE].is_empty():
@@ -65,7 +77,7 @@ func load_profile(p_user_id) -> void:
 	_current_profile[User.PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
 	Log.info("[UserService][load_profile] Updated last login date")
 
-	_profile_stats.load_from_profile(_current_profile)
+	# _profile_stats.load_from_profile(_current_profile)
 	Log.info(
 		(
 			"[UserService][load_profile] Profile loaded successfully for user: %s"
@@ -79,9 +91,9 @@ func load_profile(p_user_id) -> void:
 func save_profile() -> bool:
 	Log.info("[UserService][save_profile] Saving user profile")
 	_current_profile[User.PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
-	_profile_stats.save_to_profile(_current_profile)
+	# _profile_stats.save_to_profile(_current_profile)
 
-	var success = DataManager.save_json(profile_path, _current_profile)
+	var success = DataManager.save_json(_profile_path, _current_profile)
 	if success:
 		Log.info("[UserService][save_profile] User profile saved successfully")
 		profile_saved.emit()
@@ -122,9 +134,9 @@ func get_session_stats() -> Dictionary:
 
 
 ## Get profile statistics
-func get_profile_stats() -> Dictionary:
-	Log.info("[UserService][get_profile_stats] Getting profile statistics")
-	return _profile_stats.get_stats()
+# func get_profile_stats() -> Dictionary:
+# Log.info("[UserService][get_profile_stats] Getting profile statistics")
+# return _profile_stats.get_stats()
 
 
 ## Get user profile data
@@ -189,7 +201,7 @@ func get_achievements() -> Array:
 ## Reset profile to defaults (for testing or new user)
 func reset_profile() -> void:
 	Log.info("[UserService][reset_profile] Resetting profile to defaults")
-	var backup_created = DataManager.create_backup(profile_path)
+	var backup_created = DataManager.create_backup(_profile_path)
 	if backup_created:
 		Log.info("[UserService][reset_profile] Profile backup created before reset")
 	else:
@@ -197,7 +209,7 @@ func reset_profile() -> void:
 
 	_current_profile = User.DEFAULT_PROFILE.duplicate(true)
 	_current_profile[User.PROFILE.CREATED_DATE] = Time.get_date_string_from_system()
-	_profile_stats = ProfileStats.new()
+	# _profile_stats = ProfileStats.new()
 	save_profile()
 	Log.info("[UserService][reset_profile] Profile reset complete")
 
@@ -235,7 +247,7 @@ func import_profile(p_import_path: String) -> bool:
 		return false
 
 	_current_profile = imported_profile
-	_profile_stats.load_from_profile(_current_profile)
+	# _profile_stats.load_from_profile(_current_profile)
 	var success = save_profile()
 
 	if success:
@@ -268,7 +280,7 @@ func _update_profile_from_session(p_session_results: Dictionary) -> void:
 		)
 	)
 
-	_profile_stats.update_with_session(p_session_results)
+	# _profile_stats.update_with_session(p_session_results)
 
 
 func _calculate_experience_gain(p_session_results: Dictionary) -> int:
@@ -371,106 +383,105 @@ class SessionStats:
 			"session_duration": (Time.get_ticks_msec() - start_time) / 1000.0 if is_active else 0.0
 		}
 
+# class ProfileStats:
+# 	var total_words_typed: int = 0
+# 	var total_characters_typed: int = 0
+# 	var average_wpm: float = 0.0
+# 	var best_wpm: float = 0.0
+# 	var average_accuracy: float = 0.0
+# 	var best_accuracy: float = 0.0
+# 	var total_mistakes: int = 0
+# 	var sessions_completed: int = 0
 
-class ProfileStats:
-	var total_words_typed: int = 0
-	var total_characters_typed: int = 0
-	var average_wpm: float = 0.0
-	var best_wpm: float = 0.0
-	var average_accuracy: float = 0.0
-	var best_accuracy: float = 0.0
-	var total_mistakes: int = 0
-	var sessions_completed: int = 0
+# 	func load_from_profile(p_profile: Dictionary) -> void:
+# 		# total_words_typed = p_profile.get(STATS.ALL_TIME_WORDS_TYPED, 0)
+# 		# total_characters_typed = p_profile.get(STATS.ALL_TIME_CHARS_TYPED, 0)
+# 		average_wpm = p_profile.get(User.STATS.ALL_TIME_AVERAGE_WPM, 0.0)
+# 		best_wpm = p_profile.get(User.STATS.ALL_TIME_BEST_WPM, 0.0)
+# 		average_accuracy = p_profile.get(User.STATS.ALL_TIME_AVERAGE_ACCURACY, 0.0)
+# 		best_accuracy = p_profile.get(User.STATS.ALL_TIME_BEST_ACCURACY, 0.0)
+# 		# total_mistakes = p_profile.get(STATS.ALL_TIME_MISTAKES, 0)
+# 		sessions_completed = p_profile.get(User.STATS.ALL_TIME_SESSIONS_COMPLETED, 0)
+# 		(
+# 			Log
+# 			. info(
+# 				(
+# 					"[UserService.ProfileStats][load_from_profile] Loaded stats - Sessions: %d, Best WPM: %.1f, Best Accuracy: %.1f%%"
+# 					% [sessions_completed, best_wpm, best_accuracy]
+# 				)
+# 			)
+# 		)
 
-	func load_from_profile(p_profile: Dictionary) -> void:
-		# total_words_typed = p_profile.get(STATS.ALL_TIME_WORDS_TYPED, 0)
-		# total_characters_typed = p_profile.get(STATS.ALL_TIME_CHARS_TYPED, 0)
-		average_wpm = p_profile.get(User.STATS.ALL_TIME_AVERAGE_WPM, 0.0)
-		best_wpm = p_profile.get(User.STATS.ALL_TIME_BEST_WPM, 0.0)
-		average_accuracy = p_profile.get(User.STATS.ALL_TIME_AVERAGE_ACCURACY, 0.0)
-		best_accuracy = p_profile.get(User.STATS.ALL_TIME_BEST_ACCURACY, 0.0)
-		# total_mistakes = p_profile.get(STATS.ALL_TIME_MISTAKES, 0)
-		sessions_completed = p_profile.get(User.STATS.ALL_TIME_SESSIONS_COMPLETED, 0)
-		(
-			Log
-			. info(
-				(
-					"[UserService.ProfileStats][load_from_profile] Loaded stats - Sessions: %d, Best WPM: %.1f, Best Accuracy: %.1f%%"
-					% [sessions_completed, best_wpm, best_accuracy]
-				)
-			)
-		)
+# 	func save_to_profile(p_profile: Dictionary) -> void:
+# 		Log.info("[UserService.ProfileStats][save_to_profile] Saving profile statistics")
+# 		p_profile["total_words_typed"] = total_words_typed
+# 		p_profile["total_characters_typed"] = total_characters_typed
+# 		p_profile["average_wpm"] = average_wpm
+# 		p_profile["best_wpm"] = best_wpm
+# 		p_profile["average_accuracy"] = average_accuracy
+# 		p_profile["best_accuracy"] = best_accuracy
+# 		p_profile["total_mistakes"] = total_mistakes
+# 		p_profile["sessions_completed"] = sessions_completed
 
-	func save_to_profile(p_profile: Dictionary) -> void:
-		Log.info("[UserService.ProfileStats][save_to_profile] Saving profile statistics")
-		p_profile["total_words_typed"] = total_words_typed
-		p_profile["total_characters_typed"] = total_characters_typed
-		p_profile["average_wpm"] = average_wpm
-		p_profile["best_wpm"] = best_wpm
-		p_profile["average_accuracy"] = average_accuracy
-		p_profile["best_accuracy"] = best_accuracy
-		p_profile["total_mistakes"] = total_mistakes
-		p_profile["sessions_completed"] = sessions_completed
+# 	func update_with_session(p_session_results: Dictionary) -> void:
+# 		(
+# 			Log
+# 			. info(
+# 				"[UserService.ProfileStats][update_with_session] Updating profile stats with session data"
+# 			)
+# 		)
 
-	func update_with_session(p_session_results: Dictionary) -> void:
-		(
-			Log
-			. info(
-				"[UserService.ProfileStats][update_with_session] Updating profile stats with session data"
-			)
-		)
+# 		var session_wpm = p_session_results.get("wpm", 0.0)
+# 		var session_accuracy = p_session_results.get("accuracy", 0.0)
+# 		var session_characters = p_session_results.get("characters_typed", 0)
+# 		var session_mistakes = p_session_results.get("mistakes", 0)
 
-		var session_wpm = p_session_results.get("wpm", 0.0)
-		var session_accuracy = p_session_results.get("accuracy", 0.0)
-		var session_characters = p_session_results.get("characters_typed", 0)
-		var session_mistakes = p_session_results.get("mistakes", 0)
+# 		total_characters_typed += session_characters
+# 		var word = 5.0
+# 		total_words_typed += int(session_characters / word)
+# 		total_mistakes += session_mistakes
+# 		sessions_completed += 1
 
-		total_characters_typed += session_characters
-		var word = 5.0
-		total_words_typed += int(session_characters / word)
-		total_mistakes += session_mistakes
-		sessions_completed += 1
+# 		# Update averages
+# 		if sessions_completed > 0:
+# 			average_wpm = (
+# 				(average_wpm * (sessions_completed - 1) + session_wpm) / sessions_completed
+# 			)
+# 			average_accuracy = (
+# 				(average_accuracy * (sessions_completed - 1) + session_accuracy)
+# 				/ sessions_completed
+# 			)
 
-		# Update averages
-		if sessions_completed > 0:
-			average_wpm = (
-				(average_wpm * (sessions_completed - 1) + session_wpm) / sessions_completed
-			)
-			average_accuracy = (
-				(average_accuracy * (sessions_completed - 1) + session_accuracy)
-				/ sessions_completed
-			)
+# 		# Update bests
+# 		var new_best_wpm = false
+# 		var new_best_accuracy = false
 
-		# Update bests
-		var new_best_wpm = false
-		var new_best_accuracy = false
+# 		if session_wpm > best_wpm:
+# 			best_wpm = session_wpm
+# 			new_best_wpm = true
 
-		if session_wpm > best_wpm:
-			best_wpm = session_wpm
-			new_best_wpm = true
+# 		if session_accuracy > best_accuracy:
+# 			best_accuracy = session_accuracy
+# 			new_best_accuracy = true
 
-		if session_accuracy > best_accuracy:
-			best_accuracy = session_accuracy
-			new_best_accuracy = true
+# 		(
+# 			Log
+# 			. info(
+# 				(
+# 					"[UserService.ProfileStats][update_with_session] STATS updated - New best WPM: %s (%.1f), New best accuracy: %s (%.1f%%)"
+# 					% [new_best_wpm, best_wpm, new_best_accuracy, best_accuracy]
+# 				)
+# 			)
+# 		)
 
-		(
-			Log
-			. info(
-				(
-					"[UserService.ProfileStats][update_with_session] STATS updated - New best WPM: %s (%.1f), New best accuracy: %s (%.1f%%)"
-					% [new_best_wpm, best_wpm, new_best_accuracy, best_accuracy]
-				)
-			)
-		)
-
-	func get_stats() -> Dictionary:
-		return {
-			"total_words_typed": total_words_typed,
-			"total_characters_typed": total_characters_typed,
-			"average_wpm": average_wpm,
-			"best_wpm": best_wpm,
-			"average_accuracy": average_accuracy,
-			"best_accuracy": best_accuracy,
-			"total_mistakes": total_mistakes,
-			"sessions_completed": sessions_completed
-		}
+# 	func get_stats() -> Dictionary:
+# 		return {
+# 			"total_words_typed": total_words_typed,
+# 			"total_characters_typed": total_characters_typed,
+# 			"average_wpm": average_wpm,
+# 			"best_wpm": best_wpm,
+# 			"average_accuracy": average_accuracy,
+# 			"best_accuracy": best_accuracy,
+# 			"total_mistakes": total_mistakes,
+# 			"sessions_completed": sessions_completed
+# 		}

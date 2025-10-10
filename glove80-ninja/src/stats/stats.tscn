@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dv33jjwn2p3x8"]
 
-[ext_resource type="Script" uid="uid://qfouhoe3c42e" path="res://src/stats/stats.gd" id="1_qyu6f"]
+[ext_resource type="Script" uid="uid://0ggrdubynd6f" path="res://src/stats/stats.gd" id="1_qyu6f"]
 
 [node name="Profile" type="Control" node_paths=PackedStringArray("_all_time_time", "_all_time_lessons", "_all_time_top_speed", "_all_time_avg_speed", "_all_time_top_accuracy", "_all_time_avg_accuracy", "_today_time", "_today_lessons", "_today_top_speed", "_today_avg_speed", "_today_top_accuracy", "_today_avg_accuracy")]
 layout_mode = 3

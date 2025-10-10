@@ -11,20 +11,8 @@ const DEFAULT_PROFILE = {
 	PROFILE.LAST_LOGIN_DATE: "",
 	PROFILE.LEVEL: 0,
 	PROFILE.EXPERIENCE: 0,
-	SETTINGS.STOP_CURSOR_ON_ERROR: true,
-	SETTINGS.FORGIVE_ERRORS: false,
-	SETTINGS.SPACE_SKIPS_WORDS: false,
-	SETTINGS.SHOW_WHITESPACE: "bullet",
-	SETTINGS.CURSOR_SHAPE: "block",
-	STATS.ALL_TIME_TIME_TYPED: 0.0,
-	STATS.ALL_TIME_BEST_WPM: 0.0,
-	STATS.ALL_TIME_AVERAGE_WPM: 0.0,
-	STATS.ALL_TIME_AVERAGE_ACCURACY: 0.0,
-	STATS.ALL_TIME_SESSIONS_COMPLETED: 0.0,
-	STATS.TODAY_TIME_TYPED: 0.0,
-	STATS.TODAY_BEST_WPM: 0.0,
-	STATS.TODAY_BEST_ACCURACY: 0.0,
-	STATS.TODAY_AVERAGE_ACCURACY: 0.0,
+	"language": "en",
+	"theme": "dark",
 	"achievements": [],
 	"preferences": {"preferred_lessons": [], "difficulty_level": "beginner"}
 }
@@ -37,12 +25,17 @@ const PROFILE = {
 	"EXPERIENCE": "experience",
 }
 
-const SETTINGS = {
-	"STOP_CURSOR_ON_ERROR": "stop_cursor_on_error",
-	"FORGIVE_ERRORS": "forgive_errors",
-	"SPACE_SKIPS_WORDS": "space_skip_words",
-	"SHOW_WHITESPACE": "show_whitespace",
-	"CURSOR_SHAPE": "cursor_shape"
+const DEFAULT_STATS = {
+	STATS.ALL_TIME_TIME_TYPED: 0.0,
+	STATS.ALL_TIME_BEST_WPM: 0.0,
+	STATS.ALL_TIME_AVERAGE_WPM: 0.0,
+	STATS.ALL_TIME_AVERAGE_ACCURACY: 0.0,
+	STATS.ALL_TIME_SESSIONS_COMPLETED: 0.0,
+	STATS.TODAY_TIME_TYPED: 0.0,
+	STATS.TODAY_BEST_WPM: 0.0,
+	STATS.TODAY_BEST_ACCURACY: 0.0,
+	STATS.TODAY_AVERAGE_ACCURACY: 0.0,
+	STATS.TODAY_SESSIONS_COMPLETED: 0.0,
 }
 
 const STATS = {
@@ -58,4 +51,26 @@ const STATS = {
 	"TODAY_BEST_ACCURACY": "today_best_accuracy",
 	"TODAY_AVERAGE_ACCURACY": "today_average_accuracy",
 	"TODAY_SESSIONS_COMPLETED": "today_sessions_completed",
+}
+
+const DEFAULT_USER_CONFIG = {
+	SETTINGS.STOP_CURSOR_ON_ERROR: true,
+	SETTINGS.FORGIVE_ERRORS: false,
+	SETTINGS.SPACE_SKIPS_WORDS: false,
+	SETTINGS.SHOW_WHITESPACE: "bullet",
+	SETTINGS.CURSOR_SHAPE: "block",
+	# "font_size": 40,
+	# "sound_volume": 80,
+	# "typing_sounds": true,
+	# "auto_save": true,
+	# "show_wpm": true,
+	# "show_accuracy": true
+}
+
+const SETTINGS = {
+	"STOP_CURSOR_ON_ERROR": "stop_cursor_on_error",
+	"FORGIVE_ERRORS": "forgive_errors",
+	"SPACE_SKIPS_WORDS": "space_skip_words",
+	"SHOW_WHITESPACE": "show_whitespace",
+	"CURSOR_SHAPE": "cursor_shape"
 }

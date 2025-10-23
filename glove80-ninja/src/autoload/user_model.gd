@@ -67,6 +67,8 @@ const DEFAULT_USER_CONFIG = {
 	# "show_accuracy": true
 }
 
+const APP_CONFIG = {"THEME": "theme", "FONT": "font"}
+
 const SETTINGS = {
 	"STOP_CURSOR_ON_ERROR": "stop_cursor_on_error",
 	"FORGIVE_ERRORS": "forgive_errors",

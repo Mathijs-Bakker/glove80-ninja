@@ -6,45 +6,46 @@ signal config_loaded
 signal config_saved
 signal setting_changed(p_setting_name: String, p_new_value)
 
-# Configuration file paths
-const APP_CONFIG_PATH = "user://data/config/app_config.json"
-const USER_CONFIG_PATH = "user://data/config/user_config.json"
-
-# Default configurations
-const DEFAULT_APP_CONFIG = {"app_version": "1.0.0", "debug_mode": false, "log_level": "INFO"}
-
-const DEFAULT_USER_CONFIG = {
-	"cursor_style": "block",
-	"theme": "dark",
-	"font_size": 40,
-	"sound_volume": 80,
-	"typing_sounds": true,
-	"language": "en",
-	# "auto_save": true,
-	# "show_wpm": true,
-	# "show_accuracy": true
-}
-
-# @export var DataManager: DataManager
+var _config_path: String
+var _user_config: UserConfig
 
 # Internal state
 var _app_config: Dictionary = {}
-var _user_config: Dictionary = {}
 var _unsaved_changes: Dictionary = {}
 var _is_loaded: bool = false
 
+# func _load_stats() -> void:
+# 	var user_data = UserService.get_user_dir_path()
+# 	_stats_path = _create_stats_path(user_data.get("user_id"))
+# 	Log.info("[StatsService][load_stats] Loading user stats from: %s" % _stats_path)
+# 	_stats = DataManager.load_json(_stats_path, User.DEFAULT_STATS)
+
+# 	if _stats[User.STATS.ALL_TIME_TIME_TYPED] == 0.0:
+# 		Log.info("[StatsService][load_profile] Set stats for new user")
+# 		# save_stats()
+# 		DataManager.save_json(_stats_path, User.DEFAULT_STATS)
+
 
 func _ready() -> void:
-	DataManager.ensure_directories_exist()
-	load_configs()
+	# load_configs()
+	UserService.profile_loaded.connect(_load_config)
+	_user_config = UserConfig.new()
 
 
-func load_configs() -> void:
-	_app_config = DataManager.load_json(APP_CONFIG_PATH, DEFAULT_APP_CONFIG)
-	_user_config = DataManager.load_json(USER_CONFIG_PATH, DEFAULT_USER_CONFIG)
+func _create_stats_path(p_user_id) -> String:
+	var prepend_path = "user://data/user_"
+	return prepend_path + str(p_user_id) + "/config.json"
 
-	_is_loaded = true
-	config_loaded.emit()
+
+func _load_config() -> void:
+	var user_data = UserService.get_user_dir_path()
+	_config_path = _create_stats_path(user_data.get("user_id"))
+	Log.info("[|ConfigService][load_config] Loading configuration from: %s" % _config_path)
+
+	var _dict = DataManager.load_json(_config_path, User.DEFAULT_USER_CONFIG)
+
+	# _is_loaded = true
+	# config_loaded.emit()
 
 
 ## Save all configurations
@@ -365,3 +366,68 @@ func _is_user_setting(p_setting_name: String) -> bool:
 		)
 	)
 	return is_user
+
+
+class UserConfig:
+	var uc = User.APP_CONFIG
+	var us = User.LESSONS_SETTING
+
+	var all_time_time_typed: float
+	var all_time_best_wpm: float
+	var all_time_average_wpm: float
+	var all_time_best_accuracy: float
+	var all_time_average_accuracy: float
+	var all_time_sessions_completed: float
+
+	var today_time_typed: float
+	var today_best_wpm: float
+	var today_average_wpm: float
+	var today_best_accuracy: float
+	var today_average_accuracy: float
+	var today_sessions_completed: float
+
+	func from_dict(p_stats: Dictionary) -> void:
+		all_time_time_typed = p_stats.get(User.STATS.ALL_TIME_TIME_TYPED, 0.0)
+		all_time_best_wpm = p_stats.get(User.STATS.ALL_TIME_BEST_WPM, 0.0)
+		all_time_average_wpm = p_stats.get(User.STATS.ALL_TIME_AVERAGE_WPM, 0.0)
+		all_time_best_accuracy = p_stats.get(User.STATS.ALL_TIME_BEST_ACCURACY, 0.0)
+		all_time_average_accuracy = p_stats.get(User.STATS.ALL_TIME_AVERAGE_ACCURACY, 0.0)
+		all_time_sessions_completed = p_stats.get(User.STATS.ALL_TIME_SESSIONS_COMPLETED, 0.0)
+		today_time_typed = p_stats.get(User.STATS.TODAY_TIME_TYPED, 0.0)
+		today_best_wpm = p_stats.get(User.STATS.TODAY_BEST_WPM, 0.0)
+		today_average_wpm = p_stats.get(User.STATS.TODAY_AVERAGE_WPM, 0.0)
+		today_best_accuracy = p_stats.get(User.STATS.TODAY_BEST_ACCURACY, 0.0)
+		today_average_accuracy = p_stats.get(User.STATS.TODAY_AVERAGE_ACCURACY, 0.0)
+		today_sessions_completed = p_stats.get(User.STATS.TODAY_SESSIONS_COMPLETED, 0.0)
+		Log.info("[StatsService.UserStats][from_dict] Stats loaded")
+
+	func to_dict(p_stats: Dictionary) -> void:
+		Log.info("[StatsService.ProfileStats][to_dict] Exporting statistics")
+		p_stats[us.ALL_TIME_TIME_TYPED] = all_time_time_typed
+		p_stats[us.ALL_TIME_BEST_WPM] = all_time_best_wpm
+		p_stats[us.ALL_TIME_AVERAGE_WPM] = all_time_average_wpm
+		p_stats[us.ALL_TIME_BEST_ACCURACY] = all_time_best_accuracy
+		p_stats[us.ALL_TIME_AVERAGE_ACCURACY] = all_time_average_accuracy
+		p_stats[us.ALL_TIME_SESSIONS_COMPLETED] = all_time_sessions_completed
+		p_stats[us.TODAY_TIME_TYPED] = today_time_typed
+		p_stats[us.TODAY_BEST_WPM] = today_best_wpm
+		p_stats[us.TODAY_AVERAGE_WPM] = today_average_wpm
+		p_stats[us.TODAY_BEST_ACCURACY] = today_best_accuracy
+		p_stats[us.TODAY_AVERAGE_ACCURACY] = today_average_accuracy
+		p_stats[us.TODAY_SESSIONS_COMPLETED] = today_sessions_completed
+
+	func get_stats() -> Dictionary:
+		return {
+			User.STATS.ALL_TIME_TIME_TYPED: all_time_time_typed,
+			User.STATS.ALL_TIME_BEST_WPM: all_time_best_wpm,
+			User.STATS.ALL_TIME_AVERAGE_WPM: all_time_average_wpm,
+			User.STATS.ALL_TIME_BEST_ACCURACY: all_time_best_accuracy,
+			User.STATS.ALL_TIME_AVERAGE_ACCURACY: all_time_average_accuracy,
+			User.STATS.ALL_TIME_SESSIONS_COMPLETED: all_time_sessions_completed,
+			User.STATS.TODAY_TIME_TYPED: today_time_typed,
+			User.STATS.TODAY_BEST_WPM: today_best_wpm,
+			User.STATS.TODAY_AVERAGE_WPM: today_average_wpm,
+			User.STATS.TODAY_BEST_ACCURACY: today_best_accuracy,
+			User.STATS.TODAY_AVERAGE_ACCURACY: today_average_accuracy,
+			User.STATS.TODAY_SESSIONS_COMPLETED: today_sessions_completed,
+		}

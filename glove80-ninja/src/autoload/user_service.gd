@@ -133,12 +133,6 @@ func get_session_stats() -> Dictionary:
 	return _session_stats.get_stats()
 
 
-## Get profile statistics
-# func get_profile_stats() -> Dictionary:
-# Log.info("[UserService][get_profile_stats] Getting profile statistics")
-# return _profile_stats.get_stats()
-
-
 ## Get user profile data
 func get_profile() -> Dictionary:
 	Log.info("[UserService][get_profile] Getting user profile data")
@@ -241,10 +235,10 @@ func import_profile(p_import_path: String) -> bool:
 		return false
 
 	# Validate required fields
-	var required_fields = [User.PROFILE.USERNAME]
-	if not DataManager.validate_json_schema(imported_profile, required_fields):
-		Log.error("[UserService][import_profile] Import file missing required fields")
-		return false
+	# var required_fields = [User.PROFILE.USERNAME]
+	# if not DataManager.validate_json_schema(imported_profile, required_fields):
+	# 	Log.error("[UserService][import_profile] Import file missing required fields")
+	# 	return false
 
 	_current_profile = imported_profile
 	# _profile_stats.load_from_profile(_current_profile)
@@ -334,9 +328,6 @@ func _check_for_achievements(p_session_results: Dictionary) -> void:
 			)
 		)
 	)
-
-
-# Inner classes for better organization
 
 
 class SessionStats:

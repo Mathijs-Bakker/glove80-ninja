@@ -7,8 +7,6 @@ const DATA_DIR = "user://data/"
 # const CONFIG_DIR = "user://data/config/"
 # const PROFILES_DIR = "user://data/profiles/"
 # const STATS_DIR = "user://data/statistics/"
-# const CACHE_DIR = "user://cache/"
-const BACKUPS_DIR = "user://cache/backups/"
 
 # Specific file paths
 const APP_CONFIG = "user://data/config/app_config.json"
@@ -98,7 +96,7 @@ func ensure_directories_exist() -> void:
 	Log.info("[DataManager][ensure_directories_exist] Ensuring all necessary directories exist")
 
 	# var directories = [DATA_DIR, CONFIG_DIR, PROFILES_DIR, STATS_DIR, CACHE_DIR, BACKUPS_DIR]
-	var directories = [DATA_DIR, BACKUPS_DIR]
+	var directories = [DATA_DIR]
 
 	var created_count = 0
 	for dir_path in directories:
@@ -114,190 +112,6 @@ func ensure_directories_exist() -> void:
 			)
 		)
 	)
-
-
-func create_backup(p_original_path: String) -> bool:
-	Log.info("[DataManager][create_backup] Creating backup of: %s" % p_original_path)
-
-	if not FileAccess.file_exists(p_original_path):
-		Log.error("[DataManager][create_backup] Original file does not exist: %s" % p_original_path)
-		return false
-
-	_create_directory_if_not_exists(BACKUPS_DIR)
-	var backup_path = get_backup_path(p_original_path)
-
-	var success = DirAccess.copy_absolute(p_original_path, backup_path) == OK
-	if success:
-		Log.info("[DataManager][create_backup] Backup created successfully: %s" % backup_path)
-	else:
-		Log.error("[DataManager][create_backup] Failed to create backup: %s" % backup_path)
-
-	return success
-
-
-func get_backup_path(p_original_path: String) -> String:
-	var timestamp = Time.get_datetime_string_from_system().replace(":", "-").replace(" ", "_")
-	var filename = p_original_path.get_file()
-	var backup_path = BACKUPS_DIR.path_join("%s.%s.backup" % [filename, timestamp])
-	Log.info("[DataManager][get_backup_path] Generated backup path: %s" % backup_path)
-	return backup_path
-
-
-# func get_user_profile_path(p_username: String) -> String:
-# 	var profile_path = PROFILES_DIR.path_join("%s_profile.json" % p_username.to_lower())
-# 	Log.info(
-# 		(
-# 			"[DataManager][get_user_profile_path] Generated profile path for %s: %s"
-# 			% [p_username, profile_path]
-# 		)
-# 	)
-# 	return profile_path
-
-# func get_temp_path(p_prefix: String = "temp") -> String:
-# 	var timestamp = Time.get_unix_time_from_system()
-# 	var random_id = randi() % 10000
-# 	var temp_path = CACHE_DIR.path_join("%s_%d_%d.tmp" % [p_prefix, timestamp, random_id])
-# 	Log.info("[DataManager][get_temp_path] Generated temp path: %s" % temp_path)
-# 	return temp_path
-
-
-func is_valid_user_data_path(p_path: String) -> bool:
-	var is_valid = p_path.begins_with("user://data/") or p_path.begins_with("user://cache/")
-	Log.info(
-		"[DataManager][is_valid_user_data_path] Path validation for %s: %s" % [p_path, is_valid]
-	)
-	return is_valid
-
-
-## List files in directory with extension filter
-func list_files(p_directory: String, p_extension_filter: String = "json") -> Array:
-	Log.info(
-		(
-			"[DataManager][list_files] Listing files in %s with extension: %s"
-			% [p_directory, p_extension_filter]
-		)
-	)
-
-	var files = []
-	var dir = DirAccess.open(p_directory)
-
-	if dir:
-		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		while file_name != "":
-			if not dir.current_is_dir() and file_name.get_extension() == p_extension_filter:
-				files.append(p_directory.path_join(file_name))
-			file_name = dir.get_next()
-		Log.info("[DataManager][list_files] Found %d files in directory" % files.size())
-	else:
-		Log.error("[DataManager][list_files] Failed to open directory: %s" % p_directory)
-
-	return files
-
-
-## Validate JSON data against required keys
-func validate_json_schema(p_data: Dictionary, p_required_keys: Array) -> bool:
-	Log.info(
-		(
-			"[DataManager][validate_json_schema] Validating JSON schema with %d required keys"
-			% p_required_keys.size()
-		)
-	)
-
-	for key in p_required_keys:
-		if not p_data.has(key):
-			Log.error(
-				(
-					"[DataManager][validate_json_schema] Missing required key in JSON data: %s"
-					% str(key)
-				)
-			)
-			return false
-
-	Log.info("[DataManager][validate_json_schema] JSON schema validation passed")
-	return true
-
-
-## Deep merge two dictionaries
-func merge_dictionaries(p_target: Dictionary, p_source: Dictionary) -> Dictionary:
-	(
-		Log
-		. info(
-			(
-				"[DataManager][merge_dictionaries] Merging dictionaries - target: %d keys, source: %d keys"
-				% [p_target.size(), p_source.size()]
-			)
-		)
-	)
-
-	var result = p_target.duplicate(true)
-
-	for key in p_source:
-		if result.has(key) and result[key] is Dictionary and p_source[key] is Dictionary:
-			result[key] = merge_dictionaries(result[key], p_source[key])
-		else:
-			result[key] = p_source[key]
-
-	Log.info("[DataManager][merge_dictionaries] Merge complete - result: %d keys" % result.size())
-	return result
-
-
-## Copy file with backup option
-func copy_file(p_source: String, p_destination: String, p_create_backup: bool = false) -> bool:
-	Log.info(
-		(
-			"[DataManager][copy_file] Copying file from %s to %s (backup: %s)"
-			% [p_source, p_destination, p_create_backup]
-		)
-	)
-
-	if not FileAccess.file_exists(p_source):
-		Log.error("[DataManager][copy_file] Source file does not exist: %s" % p_source)
-		return false
-
-	if p_create_backup and FileAccess.file_exists(p_destination):
-		Log.info("[DataManager][copy_file] Creating backup of existing destination file")
-		create_backup(p_destination)
-
-	if not _ensure_directory_for_file(p_destination):
-		Log.error("[DataManager][copy_file] Failed to ensure directory for destination file")
-		return false
-
-	var success = DirAccess.copy_absolute(p_source, p_destination) == OK
-	if success:
-		Log.info("[DataManager][copy_file] File copied successfully")
-	else:
-		Log.error("[DataManager][copy_file] Failed to copy file")
-
-	return success
-
-
-## Delete file safely with optional backup
-func delete_file(p_path: String, p_create_backup: bool = true) -> bool:
-	Log.info(
-		"[DataManager][delete_file] Deleting file: %s (backup: %s)" % [p_path, p_create_backup]
-	)
-
-	if not FileAccess.file_exists(p_path):
-		Log.info(
-			"[DataManager][delete_file] File doesn't exist, considering it deleted: %s" % p_path
-		)
-		return true  # File doesn't exist, consider it deleted
-
-	if p_create_backup:
-		Log.info("[DataManager][delete_file] Creating backup before deletion")
-		create_backup(p_path)
-
-	var success = DirAccess.remove_absolute(p_path) == OK
-	if success:
-		Log.info("[DataManager][delete_file] File deleted successfully")
-	else:
-		Log.error("[DataManager][delete_file] Failed to delete file")
-
-	return success
-
-
-# Private helper methods
 
 
 func _ensure_directory_for_file(p_file_path: String) -> bool:

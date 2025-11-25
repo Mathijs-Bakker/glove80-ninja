@@ -67,6 +67,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Forgive" type="CheckBox" parent="VBoxContainer2/Forgive Errors"]
+visible = false
 layout_mode = 2
 
 [node name="Forgive errors" type="Label" parent="VBoxContainer2/Forgive Errors"]

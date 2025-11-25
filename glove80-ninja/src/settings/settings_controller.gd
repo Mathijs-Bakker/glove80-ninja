@@ -16,4 +16,8 @@ extends Control
 @export var cursor_shape_line: Button
 @export var cursor_shape_underline: Button
 
-# Data
+# methods
+
+
+func _ready() -> void:
+    ConfigService.

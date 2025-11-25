@@ -32,7 +32,7 @@ func _load_config() -> void:
 	var _dict = DataManager.load_json(_config_path, User.DEFAULT_USER_CONFIG)
 
 	# _is_loaded = true
-	# config_loaded.emit()
+	config_loaded.emit()
 
 
 ## Get a setting value (checks user config first, then app config)

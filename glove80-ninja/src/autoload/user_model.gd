@@ -1,6 +1,15 @@
 extends Node
 
-const DEFAULT_USERS = {USERS.USER_IDS: [], USERS.LAST_LOGGED_IN: null}
+# User files
+const DATA_PATH = "user://data/"
+const USERS_PATH = "user://data/users.json"
+const USER_PROFILE_PREPEND_PATH = "user://data/user_"
+const FILE_PROFILE = "profile.json"
+const FILE_CONFIG = "config.json"
+const FILE_STATS = "stats.json"
+
+# Inititial: users.json
+const INIT_USERS_DATA = {User.USERS.USER_IDS: [0], User.USERS.LAST_LOGGED_IN: 0}
 
 const USERS = {"USER_IDS": "user_ids", "LAST_LOGGED_IN": "last_logged_in"}
 

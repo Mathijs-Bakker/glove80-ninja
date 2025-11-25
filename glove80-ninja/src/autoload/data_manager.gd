@@ -2,12 +2,6 @@ extends Control
 
 ## Unified data management service that handles file operations and path management
 
-# Base directories
-const DATA_DIR = "user://data/"
-# const CONFIG_DIR = "user://data/config/"
-# const PROFILES_DIR = "user://data/profiles/"
-# const STATS_DIR = "user://data/statistics/"
-
 # Specific file paths
 const APP_CONFIG = "user://data/config/app_config.json"
 const UI_CONFIG = "user://data/config/ui_config.json"
@@ -22,7 +16,7 @@ const DEFAULT_CONFIG = "res://assets/data/default_config.json"
 
 
 func save_json(p_path: String, p_data: Dictionary, p_pretty: bool = true) -> bool:
-	Log.info("[DataManager][save_json] Saving JSON data to: %s" % p_path)
+	Log.info("[DataManager][save_json] Preparing to save JSON data to: %s" % p_path)
 
 	if not _ensure_directory_for_file(p_path):
 		Log.error("[DataManager][save_json] Failed to ensure directory for file: %s" % p_path)
@@ -43,7 +37,7 @@ func save_json(p_path: String, p_data: Dictionary, p_pretty: bool = true) -> boo
 
 	file.store_string(json_string)
 	file.close()
-	Log.info("[DataManager][save_json] JSON data saved successfully to: %s" % p_path)
+	Log.info("[DataManager][save_json] JSON data saved to: %s" % p_path)
 	return true
 
 
@@ -52,7 +46,10 @@ func load_json(p_path: String, p_default_data: Dictionary = {}) -> Dictionary:
 
 	if not FileAccess.file_exists(p_path):
 		Log.info(
-			"[DataManager][load_json] File does not exist, returning default data: %s" % p_path
+			(
+				"[DataManager][load_json] File does not exist, returning default data: %s"
+				% p_default_data
+			)
 		)
 		return p_default_data.duplicate(true)
 
@@ -88,7 +85,7 @@ func load_json(p_path: String, p_default_data: Dictionary = {}) -> Dictionary:
 		)
 		return p_default_data.duplicate(true)
 
-	Log.info("[DataManager][load_json] JSON data loaded successfully from: %s" % p_path)
+	Log.info("[DataManager][load_json] JSON data loaded from: %s" % p_path)
 	return json.data
 
 
@@ -96,7 +93,7 @@ func ensure_directories_exist() -> void:
 	Log.info("[DataManager][ensure_directories_exist] Ensuring all necessary directories exist")
 
 	# var directories = [DATA_DIR, CONFIG_DIR, PROFILES_DIR, STATS_DIR, CACHE_DIR, BACKUPS_DIR]
-	var directories = [DATA_DIR]
+	var directories = [User.DATA_DIR]
 
 	var created_count = 0
 	for dir_path in directories:
@@ -116,7 +113,9 @@ func ensure_directories_exist() -> void:
 
 func _ensure_directory_for_file(p_file_path: String) -> bool:
 	var dir_path = p_file_path.get_base_dir()
-	return _create_directory_if_not_exists(dir_path)
+	_create_directory_if_not_exists(dir_path)
+
+	return true
 
 
 func _create_directory_if_not_exists(p_dir_path: String) -> bool:
@@ -133,10 +132,6 @@ func _create_directory_if_not_exists(p_dir_path: String) -> bool:
 				)
 			)
 			return false
-		Log.info(
-			(
-				"[DataManager][_create_directory_if_not_exists] Directory created successfully: %s"
-				% p_dir_path
-			)
-		)
-	return true
+		Log.info("[DataManager][_create_directory_if_not_exists] Directory created s" % p_dir_path)
+		return true
+	return false

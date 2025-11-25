@@ -25,6 +25,8 @@ func _set_data() -> void:
 	if user_prfl == null:
 		Log.Error("[typing][_set_data] Error fetching profile")
 	else:
+		Log.info("US SETTINGS: %s" % user_prfl)
+		Log.info("STOP CURSOR: %s" % user_prfl.get(us.STOP_CURSOR_ON_ERROR))
 		stop_cursor_on_error_btn.button_pressed = user_prfl.get(us.STOP_CURSOR_ON_ERROR)
 		forgive_errors_btn.button_pressed = user_prfl.get(us.FORGIVE_ERRORS)
 		space_skips_words_btn.button_pressed = user_prfl.get(us.SPACE_SKIPS_WORDS)

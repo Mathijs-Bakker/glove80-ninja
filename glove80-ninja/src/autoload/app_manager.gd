@@ -11,20 +11,22 @@ var total_services: int = 2
 
 
 func _ready() -> void:
-	_initialize_app()
+	_initialize_application()
 
 
-func _initialize_app() -> void:
-	Log.info("[app_manager][_initialize_app] Start initializing application")
+func _initialize_application() -> void:
+	Log.info("[AppManager][initialize_application] Start initialize application.")
+	if not UserService.users_file_exist():
+		var first_run = FirstRunSetup.new()
+		first_run.run_setup_async()
+		Log.info("[AppManager][initialize_application] First run setup complete.")
 
-	DataManager.ensure_directories_exist()
 	UserService.initialize()
 	_connect_service_signals()
-	# _finalize_initialization()
 
 	is_initialized = true
 
-	Log.info("[AppManager][_initialize_app] Application initialization completed")
+	Log.info("[AppManager][_initialize_application] End initialization.")
 	await get_tree().create_timer(0.1).timeout
 	app_initialized.emit()
 	services_ready.emit()
@@ -67,68 +69,6 @@ func _finalize_initialization() -> void:
 
 	Log.info("[AppManager][_finalize_initialization] Initialization finalized")
 
-
-# func _setup_default_settings() -> void:
-# 	Log.info("[AppManager][_setup_default_settings] Setting up default settings")
-# 	# Set up any required default settings that haven't been set
-# 	var required_defaults = {
-# 		"first_run": false,
-# 		"app_version": "1.0.0",
-# 		"last_startup": Time.get_datetime_string_from_system()
-# 	}
-
-# 	for key in required_defaults:
-# 		if ConfigService.get_setting(key) == null:
-# 			ConfigService.set_app_setting(key, required_defaults[key])
-# 			Log.info("[AppManager][_setup_default_settings] Set default for %s" % key)
-
-# func _check_first_run() -> void:
-# 	if not ConfigService:
-# 		Log.error("[AppManager][_check_first_run] ConfigService not available")
-# 		return
-
-# 	var is_first_run = ConfigService.get_setting("first_run", true)
-# 	if is_first_run:
-# 		Log.info("[AppManager][_check_first_run] First run detected - setting up defaults")
-# 		_setup_first_run_defaults()
-# 		ConfigService.set_app_setting("first_run", false, true)
-# 	else:
-# 		Log.info("[AppManager][_check_first_run] Not a first run")
-
-
-func _setup_first_run_defaults() -> void:
-	Log.info("[AppManager][_setup_first_run_defaults] Setting up first run defaults")
-	# Set up defaults for first-time users
-	if ConfigService:
-		ConfigService.set_user_setting("cursor_style", "block")
-		ConfigService.set_user_setting("theme", "dark")
-		ConfigService.set_user_setting("font_size", 16)
-		(
-			Log
-			. info(
-				"[AppManager][_setulist_files_with_extension_filtern_defaults] Default user settings configured"
-			)
-		)
-
-	# Could also show a welcome tutorial here
-	Log.info("[AppManager][_setup_first_run_defaults] First run setup complete")
-
-
-# func _wait_for_service_ready(p_service_name: String) -> void:
-# 	Log.info(
-# 		"[AppManager][_wait_for_service_ready] Waiting for %s service to be ready" % p_service_name
-# 	)
-# 	# Simple wait - in a real implementation, you might want to wait for specific signals
-# 	await get_tree().create_timer(0.1).timeout
-# 	Log.info("[AppManager][_wait_for_service_ready] %s service ready" % p_service_name)
-
-# func _cleanup_temp_files() -> void:
-# 	Log.info("[AppManager][_cleanup_temp_files] Cleaning up temporary files")
-# 	# Clean up any temporary files created during the session
-# 	var temp_files = DataManager.list_files(DataManager.CACHE_DIR, "tmp")
-# 	for temp_file in temp_files:
-# 		DataManager.delete_file(temp_file, false)  # Don't create backup for temp files
-# 	Log.info("[AppManager][_cleanup_temp_files] Cleaned up %d temporary files" % temp_files.size())
 
 # Signal handlers
 

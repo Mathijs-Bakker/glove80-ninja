@@ -7,11 +7,6 @@ signal profile_saved
 signal stats_updated
 signal achievement_unlocked(p_achievement_id: String)
 
-const PATH = "user://data/"
-const USERS_PATH = "user://data/users.json"
-const USER_PROFILE_PATH = "user://data/user_"
-# const PROFILE_PATH = "user://data/profiles/default_profile.json"
-
 # @export var DataManager: DataManager
 
 var _user_dir: String
@@ -24,32 +19,42 @@ var _session_stats: SessionStats
 
 ## Initialize the user service
 func initialize() -> void:
-	Log.info("[UserService][initialize] Initializing user service")
+	Log.info("[UserService][initialize] Start initialization of the user service.")
 	_session_stats = SessionStats.new()
 	# _profile_stats = ProfileStats.new()
-	fetch_last_logged_in_user()
+	_get_last_logged_in_user()
 	_user_dir = _fmt_user_dir()
 	load_profile(_current_user_id)
-	Log.info("[UserService][initialize] User service initialized successfully")
+	Log.info("[UserService][initialize] End the user service initialization.")
 
 
-func fetch_last_logged_in_user() -> void:
-	Log.info("[UserService][fetch_last_logged_in_user]")
-	var users = DataManager.load_json(USERS_PATH, User.DEFAULT_USERS)
+func users_file_exist() -> bool:
+	var users_file = DataManager.load_json(User.USERS_PATH)
+	if users_file.is_empty():
+		Log.info("[UserService][users_file_exist] No userfile found.")
+		return false
+	return true
+
+
+func _get_last_logged_in_user() -> void:
+	Log.info("[UserService][get_last_logged_in_user]")
+	var users = DataManager.load_json(User.USERS_PATH, User.INIT_USERS_DATA)
+
+	# When no user is found (null) we create a new users.json file. With a default setup.
+	# if users.get(User.USERS.LAST_LOGGED_IN) == null:
+	# 	Log.info("[UserService][_get_last_logged_in_user] No (valid) users.json file found.")
+	# 	_current_user_id = 0
+	# 	users.set(User.USERS.LAST_LOGGED_IN, _current_user_id)
+	# 	DataManager.save_json(User.USERS_PATH, users)
+	# 	Log.info("[UserService][_get_last_logged_in_user] New `users.json` file created.")
+	# 	return
+
 	var _last_logged_in = users.get(User.USERS.LAST_LOGGED_IN)
-
-	if _last_logged_in == null:
-		Log.info("[UserService][fetch_last_logged_in_user] Found no existing users.")
-		_current_user_id = 0
-		DataManager.save_json(USERS_PATH, User.DEFAULT_USERS)
-		return
-
 	_current_user_id = _last_logged_in
 
 
 func _fmt_user_dir() -> String:
-	var prepend_path = "user://data/user_"
-	return prepend_path + str(_current_user_id)
+	return User.USER_PROFILE_PREPEND_PATH + str(_current_user_id)
 
 
 ## Returns the path of the current logged in user, for other services
@@ -74,8 +79,8 @@ func load_profile(p_user_id) -> void:
 		Log.info("[UserService][load_profile] Set creation date for new profile")
 		save_profile()
 
-	_current_profile[User.PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
-	Log.info("[UserService][load_profile] Updated last login date")
+	# _current_profile[User.PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
+	# Log.info("[UserService][load_profile] Last_login_date updated")
 
 	# _profile_stats.load_from_profile(_current_profile)
 	Log.info(

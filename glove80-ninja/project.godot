@@ -8,13 +8,17 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Glove80 Ninja"
 run/main_scene="res://src/main/main.tscn"
-config/features=PackedStringArray("4.5", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 boot_splash/bg_color=Color(0.231606, 0.353981, 0.409801, 1)
-boot_splash/fullsize=false
+boot_splash/stretch_mode=0
 boot_splash/image="uid://c4he1hocbe6g"
 config/icon="res://assets/identity/icon.svg"
 boot_splash/minimum_display_time=30
@@ -26,6 +30,7 @@ ConfigData="*res://src/autoload/config_data.gd"
 DataManager="*res://src/autoload/data_manager.gd"
 AppManager="*res://src/autoload/app_manager.gd"
 User="*res://src/autoload/user_model.gd"
+UserSettings="*res://src/autoload/user_settings.gd"
 UserService="*res://src/autoload/user_service.gd"
 ConfigService="*res://src/autoload/config_service.gd"
 StatsService="*res://src/autoload/stats_service.gd"

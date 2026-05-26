@@ -1,20 +1,23 @@
 class_name FirstRunSetup
 extends Node
 
-const DEFAULT_USER_ID = "0"
+const DEFAULT_USER_ID: String = "0"
 
 
 func run_setup_async() -> void:
 	Log.info("[FirstRunSetup][run_setup_async] Starting first run setup.")
 	_create_directory(User.DATA_PATH)
 	DataManager.save_json(User.USERS_PATH, User.INIT_USERS_DATA)
-	# Create default user
+
+	# Create default user in default path: 'user://data/user_0/'
 	_create_directory(User.USER_PROFILE_PREPEND_PATH + DEFAULT_USER_ID)
+
 	var user_profile = User.DEFAULT_PROFILE
 	user_profile.set(User.PROFILE.CREATED_DATE, Time.get_datetime_string_from_system())
-	_save_user_data(User.FILE_PROFILE, user_profile)
-	_save_user_data(User.FILE_CONFIG, User.DEFAULT_USER_CONFIG)
-	_save_user_data(User.FILE_STATS, User.DEFAULT_STATS)
+	_save_data(User.FILE_PROFILE, user_profile)
+
+	_save_data(User.FILE_SETTINGS, User.DEFAULT_USER_SETTINGS)
+	_save_data(User.FILE_STATS, User.DEFAULT_STATS)
 
 
 func _create_directory(p_path: String) -> bool:
@@ -29,13 +32,13 @@ func _create_directory(p_path: String) -> bool:
 	return false
 
 
-func _save_user_data(p_file_name, p_data) -> void:
-	Log.info("[FirstRunSetup][_save_user_data] Create a default user profile.")
+func _save_data(p_file_name, p_data) -> void:
+	Log.info("[FirstRunSetup][_save_data] Create a default user profile.")
 
 	var success = DataManager.save_json(
 		User.USER_PROFILE_PREPEND_PATH + DEFAULT_USER_ID + "/" + p_file_name, p_data
 	)
 	if success:
-		Log.info("[FirstRunSetup][_save_user_data] %s saved." % p_data)
+		Log.info("[FirstRunSetup][_save_data] %s saved." % p_data)
 	else:
-		Log.error("[FirstRunSetup][_save_user_data] Failed to save %s." % p_data)
+		Log.error("[FirstRunSetup][_save_data] Failed to save %s." % p_data)

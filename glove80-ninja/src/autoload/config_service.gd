@@ -29,7 +29,7 @@ func _load_config() -> void:
 	_config_path = _create_stats_path(user_data.get("user_id"))
 	Log.info("[|ConfigService][load_config] Loading configuration from: %s" % _config_path)
 
-	var _dict = DataManager.load_json(_config_path, User.DEFAULT_USER_CONFIG)
+	var _dict = DataManager.load_json(_config_path, User.DEFAULT_USER_SETTINGS)
 
 	# _is_loaded = true
 	config_loaded.emit()

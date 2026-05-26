@@ -19,13 +19,12 @@ var _session_stats: SessionStats
 
 ## Initialize the user service
 func initialize() -> void:
-	Log.info("[UserService][initialize] Start initialization of the user service.")
+	Log.info("≥≥≥ [UserService][initialize] :: START :: Initialization of the USER SERVICE")
 	_session_stats = SessionStats.new()
-	# _profile_stats = ProfileStats.new()
-	_get_last_logged_in_user()
-	_user_dir = _fmt_user_dir()
+	_current_user_id = _get_id_last_logged_in_user()
+	_user_dir = get_user_dir()
 	load_profile(_current_user_id)
-	Log.info("[UserService][initialize] End the user service initialization.")
+	Log.info("≤≤≤ [UserService][initialize] :: FINISH :: USER SERVICE initialization.")
 
 
 func users_file_exist() -> bool:
@@ -36,40 +35,32 @@ func users_file_exist() -> bool:
 	return true
 
 
-func _get_last_logged_in_user() -> void:
-	Log.info("[UserService][get_last_logged_in_user]")
+func _get_id_last_logged_in_user() -> int:
+	Log.info("[UserService][get_last_logged_in_user] Getting last logged in user from users.json.")
 	var users = DataManager.load_json(User.USERS_PATH, User.INIT_USERS_DATA)
 
-	# When no user is found (null) we create a new users.json file. With a default setup.
-	# if users.get(User.USERS.LAST_LOGGED_IN) == null:
-	# 	Log.info("[UserService][_get_last_logged_in_user] No (valid) users.json file found.")
-	# 	_current_user_id = 0
-	# 	users.set(User.USERS.LAST_LOGGED_IN, _current_user_id)
-	# 	DataManager.save_json(User.USERS_PATH, users)
-	# 	Log.info("[UserService][_get_last_logged_in_user] New `users.json` file created.")
-	# 	return
-
 	var _last_logged_in = users.get(User.USERS.LAST_LOGGED_IN)
-	_current_user_id = _last_logged_in
+	return _last_logged_in
 
 
-func _fmt_user_dir() -> String:
+func get_user_dir() -> String:
 	return User.USER_PROFILE_PREPEND_PATH + str(_current_user_id)
 
 
-## Returns the path of the current logged in user, for other services
-func get_user_dir_path() -> Dictionary:
-	return {"user_dir": _user_dir, "user_id": _current_user_id}
+# ## Returns the path of the current logged in user, for other services
+# func get_user_dir_path() -> Dictionary:
+# 	return {"user_dir": _user_dir, "user_id": _current_user_id}
 
 
-func _create_profile_path(p_user_id) -> String:
-	var prepend_path = "user://data/user_"
-	return prepend_path + str(p_user_id) + "/user_profile.json"
+func _format_profile_path(p_user_id) -> String:
+	var user_profile_path = (
+		User.USER_PROFILE_PREPEND_PATH + str(p_user_id) + "/" + User.FILE_PROFILE
+	)
+	return user_profile_path
 
 
-## Load user profile from file
 func load_profile(p_user_id) -> void:
-	_profile_path = _create_profile_path(p_user_id)
+	_profile_path = _format_profile_path(p_user_id)
 	Log.info("[UserService][load_profile] Loading user profile from: %s" % _profile_path)
 	_current_profile = DataManager.load_json(_profile_path, User.DEFAULT_PROFILE)
 
@@ -79,13 +70,9 @@ func load_profile(p_user_id) -> void:
 		Log.info("[UserService][load_profile] Set creation date for new profile")
 		save_profile()
 
-	# _current_profile[User.PROFILE.LAST_LOGIN_DATE] = Time.get_date_string_from_system()
-	# Log.info("[UserService][load_profile] Last_login_date updated")
-
-	# _profile_stats.load_from_profile(_current_profile)
 	Log.info(
 		(
-			"[UserService][load_profile] Profile loaded successfully for user: %s"
+			"[UserService][load_profile] Profile loaded for user: %s"
 			% _current_profile[User.PROFILE.USERNAME]
 		)
 	)
@@ -140,7 +127,6 @@ func get_session_stats() -> Dictionary:
 
 ## Get user profile data
 func get_profile() -> Dictionary:
-	Log.info("[UserService][get_profile] Getting user profile data")
 	return _current_profile.duplicate(true)
 
 
@@ -195,71 +181,6 @@ func get_achievements() -> Array:
 		)
 	)
 	return _current_profile["achievements"].duplicate()
-
-
-## Reset profile to defaults (for testing or new user)
-func reset_profile() -> void:
-	Log.info("[UserService][reset_profile] Resetting profile to defaults")
-	var backup_created = DataManager.create_backup(_profile_path)
-	if backup_created:
-		Log.info("[UserService][reset_profile] Profile backup created before reset")
-	else:
-		Log.warn("[UserService][reset_profile] Failed to create backup before reset")
-
-	_current_profile = User.DEFAULT_PROFILE.duplicate(true)
-	_current_profile[User.PROFILE.CREATED_DATE] = Time.get_date_string_from_system()
-	# _profile_stats = ProfileStats.new()
-	save_profile()
-	Log.info("[UserService][reset_profile] Profile reset complete")
-
-
-## Export profile for backup
-func export_profile(p_export_path: String) -> bool:
-	Log.info("[UserService][export_profile] Exporting profile to: %s" % p_export_path)
-	var success = DataManager.save_json(p_export_path, _current_profile)
-
-	if success:
-		Log.info("[UserService][export_profile] Profile exported successfully")
-	else:
-		Log.error("[UserService][export_profile] Failed to export profile")
-
-	return success
-
-
-## Import profile from backup
-func import_profile(p_import_path: String) -> bool:
-	Log.info("[UserService][import_profile] Importing profile from: %s" % p_import_path)
-
-	if not FileAccess.file_exists(p_import_path):
-		Log.error("[UserService][import_profile] Import file does not exist: %s" % p_import_path)
-		return false
-
-	var imported_profile = DataManager.load_json(p_import_path, {})
-	if imported_profile.is_empty():
-		Log.error("[UserService][import_profile] Failed to load import file or file is empty")
-		return false
-
-	# Validate required fields
-	# var required_fields = [User.PROFILE.USERNAME]
-	# if not DataManager.validate_json_schema(imported_profile, required_fields):
-	# 	Log.error("[UserService][import_profile] Import file missing required fields")
-	# 	return false
-
-	_current_profile = imported_profile
-	# _profile_stats.load_from_profile(_current_profile)
-	var success = save_profile()
-
-	if success:
-		Log.info(
-			(
-				"[UserService][import_profile] Profile imported successfully for user: %s"
-				% _current_profile[User.PROFILE.USERNAME]
-			)
-		)
-	else:
-		Log.error("[UserService][import_profile] Failed to save imported profile")
-
-	return success
 
 
 # Private methods
@@ -378,106 +299,3 @@ class SessionStats:
 			"is_active": is_active,
 			"session_duration": (Time.get_ticks_msec() - start_time) / 1000.0 if is_active else 0.0
 		}
-
-# class ProfileStats:
-# 	var total_words_typed: int = 0
-# 	var total_characters_typed: int = 0
-# 	var average_wpm: float = 0.0
-# 	var best_wpm: float = 0.0
-# 	var average_accuracy: float = 0.0
-# 	var best_accuracy: float = 0.0
-# 	var total_mistakes: int = 0
-# 	var sessions_completed: int = 0
-
-# 	func load_from_profile(p_profile: Dictionary) -> void:
-# 		# total_words_typed = p_profile.get(STATS.ALL_TIME_WORDS_TYPED, 0)
-# 		# total_characters_typed = p_profile.get(STATS.ALL_TIME_CHARS_TYPED, 0)
-# 		average_wpm = p_profile.get(User.STATS.ALL_TIME_AVERAGE_WPM, 0.0)
-# 		best_wpm = p_profile.get(User.STATS.ALL_TIME_BEST_WPM, 0.0)
-# 		average_accuracy = p_profile.get(User.STATS.ALL_TIME_AVERAGE_ACCURACY, 0.0)
-# 		best_accuracy = p_profile.get(User.STATS.ALL_TIME_BEST_ACCURACY, 0.0)
-# 		# total_mistakes = p_profile.get(STATS.ALL_TIME_MISTAKES, 0)
-# 		sessions_completed = p_profile.get(User.STATS.ALL_TIME_SESSIONS_COMPLETED, 0)
-# 		(
-# 			Log
-# 			. info(
-# 				(
-# 					"[UserService.ProfileStats][load_from_profile] Loaded stats - Sessions: %d, Best WPM: %.1f, Best Accuracy: %.1f%%"
-# 					% [sessions_completed, best_wpm, best_accuracy]
-# 				)
-# 			)
-# 		)
-
-# 	func save_to_profile(p_profile: Dictionary) -> void:
-# 		Log.info("[UserService.ProfileStats][save_to_profile] Saving profile statistics")
-# 		p_profile["total_words_typed"] = total_words_typed
-# 		p_profile["total_characters_typed"] = total_characters_typed
-# 		p_profile["average_wpm"] = average_wpm
-# 		p_profile["best_wpm"] = best_wpm
-# 		p_profile["average_accuracy"] = average_accuracy
-# 		p_profile["best_accuracy"] = best_accuracy
-# 		p_profile["total_mistakes"] = total_mistakes
-# 		p_profile["sessions_completed"] = sessions_completed
-
-# 	func update_with_session(p_session_results: Dictionary) -> void:
-# 		(
-# 			Log
-# 			. info(
-# 				"[UserService.ProfileStats][update_with_session] Updating profile stats with session data"
-# 			)
-# 		)
-
-# 		var session_wpm = p_session_results.get("wpm", 0.0)
-# 		var session_accuracy = p_session_results.get("accuracy", 0.0)
-# 		var session_characters = p_session_results.get("characters_typed", 0)
-# 		var session_mistakes = p_session_results.get("mistakes", 0)
-
-# 		total_characters_typed += session_characters
-# 		var word = 5.0
-# 		total_words_typed += int(session_characters / word)
-# 		total_mistakes += session_mistakes
-# 		sessions_completed += 1
-
-# 		# Update averages
-# 		if sessions_completed > 0:
-# 			average_wpm = (
-# 				(average_wpm * (sessions_completed - 1) + session_wpm) / sessions_completed
-# 			)
-# 			average_accuracy = (
-# 				(average_accuracy * (sessions_completed - 1) + session_accuracy)
-# 				/ sessions_completed
-# 			)
-
-# 		# Update bests
-# 		var new_best_wpm = false
-# 		var new_best_accuracy = false
-
-# 		if session_wpm > best_wpm:
-# 			best_wpm = session_wpm
-# 			new_best_wpm = true
-
-# 		if session_accuracy > best_accuracy:
-# 			best_accuracy = session_accuracy
-# 			new_best_accuracy = true
-
-# 		(
-# 			Log
-# 			. info(
-# 				(
-# 					"[UserService.ProfileStats][update_with_session] STATS updated - New best WPM: %s (%.1f), New best accuracy: %s (%.1f%%)"
-# 					% [new_best_wpm, best_wpm, new_best_accuracy, best_accuracy]
-# 				)
-# 			)
-# 		)
-
-# 	func get_stats() -> Dictionary:
-# 		return {
-# 			"total_words_typed": total_words_typed,
-# 			"total_characters_typed": total_characters_typed,
-# 			"average_wpm": average_wpm,
-# 			"best_wpm": best_wpm,
-# 			"average_accuracy": average_accuracy,
-# 			"best_accuracy": best_accuracy,
-# 			"total_mistakes": total_mistakes,
-# 			"sessions_completed": sessions_completed
-# 		}

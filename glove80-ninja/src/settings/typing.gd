@@ -8,7 +8,7 @@ extends Control
 @export var whitespace_btn_group: ButtonGroup
 @export var cursor_shape_btn_group: ButtonGroup
 
-var us := User.SETTINGS
+var s := User.SETTINGS
 
 var _show_whitespace: String
 var _cursor_shape: String
@@ -20,18 +20,16 @@ func _ready() -> void:
 
 
 func _set_data() -> void:
-	var user_prfl = UserService.get_profile()
+	var settings = UserSettings.get_settings()
 
-	if user_prfl == null:
+	if settings == null:
 		Log.Error("[typing][_set_data] Error fetching profile")
 	else:
-		Log.info("US SETTINGS: %s" % user_prfl)
-		Log.info("STOP CURSOR: %s" % user_prfl.get(us.STOP_CURSOR_ON_ERROR))
-		stop_cursor_on_error_btn.button_pressed = user_prfl.get(us.STOP_CURSOR_ON_ERROR)
-		forgive_errors_btn.button_pressed = user_prfl.get(us.FORGIVE_ERRORS)
-		space_skips_words_btn.button_pressed = user_prfl.get(us.SPACE_SKIPS_WORDS)
+		stop_cursor_on_error_btn.button_pressed = settings.get(s.STOP_CURSOR_ON_ERROR)
+		forgive_errors_btn.button_pressed = settings.get(s.FORGIVE_ERRORS)
+		space_skips_words_btn.button_pressed = settings.get(s.SPACE_SKIPS_WORDS)
 
-	var settings_value = user_prfl.get(us.SHOW_WHITESPACE)
+	var settings_value = settings.get(s.SHOW_WHITESPACE)
 	# Show whitespace
 	for btn in whitespace_btn_group.get_buttons():
 		btn.toggled.connect(_on_whitespace_toggled.bind(btn))
@@ -39,7 +37,7 @@ func _set_data() -> void:
 		if btn.name == settings_value:
 			btn.set_pressed_no_signal(true)
 
-	settings_value = user_prfl.get(us.CURSOR_SHAPE)
+	settings_value = settings.get(s.CURSOR_SHAPE)
 	# Cursor Shape
 	for btn in cursor_shape_btn_group.get_buttons():
 		btn.toggled.connect(_on_cursor_shape_toggled.bind(btn))
@@ -62,3 +60,36 @@ func _on_cursor_shape_toggled(p_pressed: bool, p_button: BaseButton) -> void:
 		)
 		_cursor_shape = p_button.name
 		_settings_changed = true
+
+
+func on_save_button() -> void:
+	var settings = UserSettings.get_settings()
+
+	settings.set(User.SETTINGS.STOP_CURSOR_ON_ERROR, stop_cursor_on_error_btn.button_pressed)
+	settings.set(User.SETTINGS.FORGIVE_ERRORS, forgive_errors_btn.button_pressed)
+	settings.set(User.SETTINGS.SPACE_SKIPS_WORDS, space_skips_words_btn.button_pressed)
+
+	# Whitespace
+	for btn in whitespace_btn_group.get_buttons():
+		btn.toggled.connect(_on_whitespace_toggled.bind(btn))
+		# Valid string values are: 'show', 'bar', 'bullet'
+		if btn.button_pressed == true:
+			settings.set(User.SETTINGS.SHOW_WHITESPACE, btn.name)
+
+	# Cursor Shape
+	for btn in cursor_shape_btn_group.get_buttons():
+		btn.toggled.connect(_on_cursor_shape_toggled.bind(btn))
+		# Valid string values are: 'block', 'box', 'line', 'underline'
+		if btn.button_pressed == true:
+			settings.set(User.SETTINGS.CURSOR_SHAPE, btn.name)
+
+	UserSettings.save(settings)
+
+
+func on_reset_button() -> void:
+	_set_data()
+
+
+func restore_to_defaults_button() -> void:
+	var default_settings = User.DEFAULT_USER_SETTINGS
+	UserSettings.save(default_settings)

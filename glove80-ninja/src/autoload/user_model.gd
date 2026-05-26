@@ -5,7 +5,7 @@ const DATA_PATH = "user://data/"
 const USERS_PATH = "user://data/users.json"
 const USER_PROFILE_PREPEND_PATH = "user://data/user_"
 const FILE_PROFILE = "profile.json"
-const FILE_CONFIG = "config.json"
+const FILE_SETTINGS = "settings.json"
 const FILE_STATS = "stats.json"
 
 # Inititial: users.json
@@ -62,7 +62,7 @@ const STATS = {
 	"TODAY_SESSIONS_COMPLETED": "today_sessions_completed",
 }
 
-const DEFAULT_USER_CONFIG = {
+const DEFAULT_USER_SETTINGS = {
 	SETTINGS.STOP_CURSOR_ON_ERROR: true,
 	SETTINGS.FORGIVE_ERRORS: false,
 	SETTINGS.SPACE_SKIPS_WORDS: false,

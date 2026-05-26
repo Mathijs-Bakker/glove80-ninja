@@ -5,7 +5,6 @@ signal services_ready
 signal app_shutting_down
 
 # Application state
-var is_initialized: bool = false
 var services_ready_count: int = 0
 var total_services: int = 2
 
@@ -15,18 +14,19 @@ func _ready() -> void:
 
 
 func _initialize_application() -> void:
-	Log.info("[AppManager][initialize_application] Start initialize application.")
+	Log.info(">>> [AppManager][initialize_application] :: START :: Initialize application.")
 	if not UserService.users_file_exist():
 		var first_run = FirstRunSetup.new()
 		first_run.run_setup_async()
 		Log.info("[AppManager][initialize_application] First run setup complete.")
 
 	UserService.initialize()
+	UserSettings.initialize()
 	_connect_service_signals()
 
-	is_initialized = true
-
-	Log.info("[AppManager][_initialize_application] End initialization.")
+	Log.info(
+		"<<< [AppManager][_initialize_application] :: END ::  initialization of the application."
+	)
 	await get_tree().create_timer(0.1).timeout
 	app_initialized.emit()
 	services_ready.emit()

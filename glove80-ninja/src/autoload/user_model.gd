@@ -20,6 +20,8 @@ const DEFAULT_PROFILE = {
 	PROFILE.LAST_LOGIN_DATE: "",
 	PROFILE.LEVEL: 0,
 	PROFILE.EXPERIENCE: 0,
+	"total_time_typed": 0.0,
+	"total_sessions": 0,
 	"language": "en",
 	"theme": "dark",
 	"achievements": [],
@@ -68,12 +70,11 @@ const DEFAULT_USER_SETTINGS = {
 	SETTINGS.SPACE_SKIPS_WORDS: false,
 	SETTINGS.SHOW_WHITESPACE: "bullet",
 	SETTINGS.CURSOR_SHAPE: "block",
-	# "font_size": 40,
-	# "sound_volume": 80,
-	# "typing_sounds": true,
-	# "auto_save": true,
-	# "show_wpm": true,
-	# "show_accuracy": true
+	"theme": "dark",
+	"font_size": 28,
+	"sound_volume": 80,
+	"typing_sounds": true,
+	"language": "en"
 }
 
 const APP_CONFIG = {"THEME": "theme", "FONT": "font"}

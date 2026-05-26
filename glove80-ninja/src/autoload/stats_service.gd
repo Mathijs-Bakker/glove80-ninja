@@ -6,11 +6,22 @@ signal user_stats_saved
 var _user_stats: UserStats
 var _stats_path: String
 var _stats: Dictionary
+var _is_initialized: bool = false
 
 
 func _ready() -> void:
-	UserService.profile_loaded.connect(_load_stats)
+	initialize()
+
+
+func initialize() -> void:
+	if _is_initialized:
+		return
+
+	if not UserService.profile_loaded.is_connected(_load_stats):
+		UserService.profile_loaded.connect(_load_stats)
+
 	_user_stats = UserStats.new()
+	_is_initialized = true
 
 
 func get_stats() -> UserStats:

@@ -63,7 +63,7 @@ var pending_color: Color = Color.GRAY
 var background_color: Color = Color.BLACK
 
 # Configuration
-var config_service: ConfigService
+var config_service
 
 
 func _ready() -> void:
@@ -74,7 +74,7 @@ func _ready() -> void:
 
 
 ## Initialize the display with text content
-func initialize(text: String, config: ConfigService = null) -> void:
+func initialize(text: String, config = null) -> void:
 	config_service = config
 	set_text(text)
 	if config_service:

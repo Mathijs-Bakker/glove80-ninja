@@ -11,7 +11,7 @@ signal typing_started()
 signal typing_paused()
 
 # Configuration
-var config_service: ConfigService
+var config_service
 var allow_backspace: bool = true
 var case_sensitive: bool = false
 var ignore_whitespace_errors: bool = false
@@ -39,7 +39,7 @@ var ignored_keys = [
 ]
 
 
-func initialize(p_config_service: ConfigService = null) -> void:
+func initialize(p_config_service = null) -> void:
 	config_service = p_config_service
 	_apply_config_settings()
 
@@ -150,14 +150,12 @@ func _handle_character_input(p_key_event: InputEventKey) -> bool:
 	if is_correct:
 		correct_keystrokes += 1
 		current_input += character
+		current_position += 1
 
 		# Check if input is complete
 		var is_complete = _is_input_complete()
-		print("_is_input_complete: ", is_complete)
 		if is_complete:
 			input_completed.emit()
-		else:
-			current_position += 1
 	else:
 		mistakes_count += 1
 		# In replace mode, we still advance but mark as incorrect

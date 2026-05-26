@@ -1,4 +1,4 @@
-extends Control
+extends Node
 
 ## Focused service for managing user profiles, progress, and statistics
 
@@ -47,9 +47,12 @@ func get_user_dir() -> String:
 	return User.USER_PROFILE_PREPEND_PATH + str(_current_user_id)
 
 
-# ## Returns the path of the current logged in user, for other services
-# func get_user_dir_path() -> Dictionary:
-# 	return {"user_dir": _user_dir, "user_id": _current_user_id}
+func get_user_dir_path() -> Dictionary:
+	return {"user_dir": _user_dir, "user_id": _current_user_id}
+
+
+func get_current_user_id() -> int:
+	return _current_user_id
 
 
 func _format_profile_path(p_user_id) -> String:
@@ -63,6 +66,9 @@ func load_profile(p_user_id) -> void:
 	_profile_path = _format_profile_path(p_user_id)
 	Log.info("[UserService][load_profile] Loading user profile from: %s" % _profile_path)
 	_current_profile = DataManager.load_json(_profile_path, User.DEFAULT_PROFILE)
+	for profile_key in User.DEFAULT_PROFILE:
+		if not _current_profile.has(profile_key):
+			_current_profile[profile_key] = User.DEFAULT_PROFILE[profile_key]
 
 	# Set creation date if not exists (new user)
 	if _current_profile[User.PROFILE.CREATED_DATE].is_empty():
@@ -192,6 +198,8 @@ func _update_profile_from_session(p_session_results: Dictionary) -> void:
 	var session_time = p_session_results.get("duration", 0.0)
 
 	_current_profile["total_time_typed"] += session_time
+	_current_profile["total_sessions"] += 1
+	_current_profile[User.PROFILE.EXPERIENCE] += _calculate_experience_gain(p_session_results)
 
 	Log.info(
 		(

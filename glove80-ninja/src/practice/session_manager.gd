@@ -10,7 +10,7 @@ signal stats_updated(stats: Dictionary)
 signal milestone_reached(milestone: String, value: float)
 
 # Services
-var user_service: UserService
+var user_service
 
 # Session state
 var is_session_active: bool = false
@@ -28,7 +28,7 @@ var stats_timer: Timer
 
 
 ## Initialize session manager with user service and parent node for timer
-func initialize(p_user_service: UserService, p_parent_node: Node) -> void:
+func initialize(p_user_service, p_parent_node: Node) -> void:
 	user_service = p_user_service
 	current_stats = SessionStats.new()
 	performance_tracker = PerformanceTracker.new()
@@ -63,13 +63,14 @@ func complete_session(exercise_results: Dictionary) -> Dictionary:
 		return {}
 
 	session_end_time = Time.get_ticks_msec()
+	var elapsed_time = (session_end_time - session_start_time) / 1000.0
 	is_session_active = false
 
 	if stats_timer:
 		stats_timer.stop()
 
 	# Calculate final session results
-	var session_results = _calculate_final_results(exercise_results)
+	var session_results = _calculate_final_results(exercise_results, elapsed_time)
 
 	# Update user service
 	if user_service:
@@ -153,8 +154,7 @@ func _get_elapsed_time() -> float:
 	return (Time.get_ticks_msec() - session_start_time) / 1000.0
 
 
-func _calculate_final_results(exercise_results: Dictionary) -> Dictionary:
-	var elapsed_time = _get_elapsed_time()
+func _calculate_final_results(exercise_results: Dictionary, elapsed_time: float) -> Dictionary:
 	var stats = current_stats.get_stats(elapsed_time)
 
 	# Merge exercise results with session stats

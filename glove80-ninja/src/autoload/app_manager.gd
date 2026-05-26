@@ -4,12 +4,25 @@ signal app_initialized
 signal services_ready
 signal app_shutting_down
 
+const PRACTICE_CONTROLLER_SCENE = preload("res://src/practice/practice_controller.tscn")
+const SETTINGS_CONTROLLER_SCENE = preload("res://src/settings/settings_controller.tscn")
+
 # Application state
 var services_ready_count: int = 0
 var total_services: int = 2
+var _is_initialized: bool = false
+var _is_initializing: bool = false
 
 
 func _ready() -> void:
+	initialize()
+
+
+func initialize() -> void:
+	if _is_initialized or _is_initializing:
+		return
+
+	_is_initializing = true
 	_initialize_application()
 
 
@@ -20,6 +33,8 @@ func _initialize_application() -> void:
 		first_run.run_setup_async()
 		Log.info("[AppManager][initialize_application] First run setup complete.")
 
+	ConfigService.initialize()
+	StatsService.initialize()
 	UserService.initialize()
 	UserSettings.initialize()
 	_connect_service_signals()
@@ -28,8 +43,38 @@ func _initialize_application() -> void:
 		"<<< [AppManager][_initialize_application] :: END ::  initialization of the application."
 	)
 	await get_tree().create_timer(0.1).timeout
+	_is_initialized = true
+	_is_initializing = false
 	app_initialized.emit()
 	services_ready.emit()
+
+
+func is_initialized() -> bool:
+	return _is_initialized
+
+
+func is_initializing() -> bool:
+	return _is_initializing
+
+
+func get_config_service():
+	return ConfigService
+
+
+func get_user_service():
+	return UserService
+
+
+func create_practice_controller() -> PracticeController:
+	var controller = PRACTICE_CONTROLLER_SCENE.instantiate()
+	controller.initialize(ConfigService, UserService)
+	return controller
+
+
+func create_settings_controller() -> SettingsController:
+	var controller = SETTINGS_CONTROLLER_SCENE.instantiate()
+	controller.initialize(ConfigService)
+	return controller
 
 
 func shutdown_gracefully() -> void:
@@ -51,13 +96,19 @@ func shutdown_gracefully() -> void:
 
 
 func _connect_service_signals() -> void:
-	ConfigService.config_loaded.connect(_on_config_loaded)
-	ConfigService.config_saved.connect(_on_config_saved)
-	ConfigService.setting_changed.connect(_on_setting_changed)
+	if not ConfigService.config_loaded.is_connected(_on_config_loaded):
+		ConfigService.config_loaded.connect(_on_config_loaded)
+	if not ConfigService.config_saved.is_connected(_on_config_saved):
+		ConfigService.config_saved.connect(_on_config_saved)
+	if not ConfigService.setting_changed.is_connected(_on_setting_changed):
+		ConfigService.setting_changed.connect(_on_setting_changed)
 
-	UserService.profile_loaded.connect(_on_profile_loaded)
-	UserService.profile_saved.connect(_on_profile_saved)
-	UserService.achievement_unlocked.connect(_on_achievement_unlocked)
+	if not UserService.profile_loaded.is_connected(_on_profile_loaded):
+		UserService.profile_loaded.connect(_on_profile_loaded)
+	if not UserService.profile_saved.is_connected(_on_profile_saved):
+		UserService.profile_saved.connect(_on_profile_saved)
+	if not UserService.achievement_unlocked.is_connected(_on_achievement_unlocked):
+		UserService.achievement_unlocked.connect(_on_achievement_unlocked)
 
 
 func _finalize_initialization() -> void:

@@ -1,337 +1,172 @@
-[gd_scene format=3 uid="uid://bvju6sxwa7me2"]
+[gd_scene format=3 uid="uid://q5p36r7rjuxk"]
 
-[ext_resource type="Theme" uid="uid://kcben5y0d2o6" path="res://themes/dark.tres" id="1_g837a"]
-[ext_resource type="Script" uid="uid://cs3uk2slcgj1h" path="res://src/settings/typing.gd" id="2_nev6n"]
-[ext_resource type="ButtonGroup" uid="uid://bnehai7jn20dn" path="res://src/settings/cursor_shape_btn_group.tres" id="3_30pip"]
-[ext_resource type="ButtonGroup" uid="uid://7d6iq2p7tx5b" path="res://src/settings/whitespace_btn_group.tres" id="4_f2wgr"]
+[ext_resource type="Script" uid="uid://dad3t3p4tog3h" path="res://src/settings/settings_controller.gd" id="1"]
+[ext_resource type="Theme" uid="uid://kcben5y0d2o6" path="res://themes/dark.tres" id="2"]
 
-[node name="SettingsController" type="Control" unique_id=1803694023]
+[node name="SettingsController" type="Control" unique_id=717237958]
 layout_mode = 3
-anchors_preset = 0
-size_flags_horizontal = 0
-size_flags_vertical = 4
-theme = ExtResource("1_g837a")
-
-[node name="BG" type="Label" parent="." unique_id=933462520]
-layout_mode = 0
-offset_right = 1678.0
-offset_bottom = 1078.0
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="." unique_id=816624520 node_paths=PackedStringArray("stop_cursor_on_error_btn", "forgive_errors_btn", "space_skips_words_btn")]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 295.0
-offset_top = 193.0
-offset_right = 1434.0
-offset_bottom = 784.0
-grow_horizontal = 2
-script = ExtResource("2_nev6n")
-stop_cursor_on_error_btn = NodePath("Stop Cursor on Error/Stop Cursor")
-forgive_errors_btn = NodePath("Forgive Errors/Forgive")
-space_skips_words_btn = NodePath("Space skips words/Space skips")
-whitespace_btn_group = ExtResource("4_f2wgr")
-cursor_shape_btn_group = ExtResource("3_30pip")
-
-[node name="Label" type="Label" parent="VBoxContainer2" unique_id=503580597]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Typing options
-These are the typing assists which help your preserve your concentration and keep the flow 
-by automatically correcting your errors."
-
-[node name="Spacer2" type="Label" parent="VBoxContainer2" unique_id=989730246]
-layout_mode = 2
-
-[node name="Stop Cursor on Error" type="HBoxContainer" parent="VBoxContainer2" unique_id=1607319916]
-layout_mode = 2
-
-[node name="Stop Cursor" type="CheckBox" parent="VBoxContainer2/Stop Cursor on Error" unique_id=385221471]
-layout_mode = 2
-
-[node name="Stop cursor on error" type="Label" parent="VBoxContainer2/Stop Cursor on Error" unique_id=1523926936]
-layout_mode = 2
-theme_type_variation = &"HeaderLarge"
-text = "Stop cursor on error"
-
-[node name="Label2" type="Label" parent="VBoxContainer2" unique_id=261883069]
-layout_mode = 2
-text = "If enabled, the text cursor stops advancing until the right key is pressed at the current position. 
-If disabled, all errors will be accumulated in the text input field and must be cleared with the delete key."
-
-[node name="Spacer" type="Label" parent="VBoxContainer2" unique_id=231395568]
-layout_mode = 2
-
-[node name="Forgive Errors" type="HBoxContainer" parent="VBoxContainer2" unique_id=1693883978]
-layout_mode = 2
-
-[node name="Forgive" type="CheckBox" parent="VBoxContainer2/Forgive Errors" unique_id=121970086]
-visible = false
-layout_mode = 2
-
-[node name="Forgive errors" type="Label" parent="VBoxContainer2/Forgive Errors" unique_id=553020053]
-layout_mode = 2
-theme_type_variation = &"HeaderLarge"
-text = "Forgive errors"
-
-[node name="Label3" type="Label" parent="VBoxContainer2" unique_id=1528871886]
-layout_mode = 2
-text = "If enabled, the text input field will forgive some kinds of errors by automatically fixing them.
-These are errors such as typing a wrong character or skipping a character."
-
-[node name="Spacer3" type="Label" parent="VBoxContainer2" unique_id=1587945325]
-layout_mode = 2
-
-[node name="Space skips words" type="HBoxContainer" parent="VBoxContainer2" unique_id=2131935054]
-layout_mode = 2
-
-[node name="Space skips" type="CheckBox" parent="VBoxContainer2/Space skips words" unique_id=586443841]
-layout_mode = 2
-
-[node name="Space skips words" type="Label" parent="VBoxContainer2/Space skips words" unique_id=1869655317]
-layout_mode = 2
-theme_type_variation = &"HeaderLarge"
-text = "Space skips words"
-
-[node name="Label4" type="Label" parent="VBoxContainer2" unique_id=1168844361]
-layout_mode = 2
-text = "If enabled, pressing the space key in the middle of a word will skip the remaining characters
-of the word and position cursor at the beginning of the next word."
-
-[node name="Spacer4" type="Label" parent="VBoxContainer2" unique_id=1892230634]
-layout_mode = 2
-
-[node name="Label5" type="Label" parent="VBoxContainer2" unique_id=1689459161]
-layout_mode = 2
-theme_type_variation = &"HeaderLarge"
-text = "Text appearance"
-
-[node name="Spacer5" type="Label" parent="VBoxContainer2" unique_id=279188183]
-layout_mode = 2
-
-[node name="Label6" type="Label" parent="VBoxContainer2" unique_id=2089789310]
-layout_mode = 2
-theme_type_variation = &"HeaderLarge"
-text = "Font:"
-
-[node name="Font" type="HBoxContainer" parent="VBoxContainer2" unique_id=996474134]
-layout_mode = 2
-
-[node name="MenuButton" type="MenuButton" parent="VBoxContainer2/Font" unique_id=1305914771]
-layout_mode = 2
-item_count = 2
-popup/item_0/text = "Foo"
-popup/item_0/id = 0
-popup/item_1/text = "Bar"
-popup/item_1/id = 1
-
-[node name="Whitespace" type="HBoxContainer" parent="VBoxContainer2" unique_id=714494661]
-layout_mode = 2
-
-[node name="Whitespace" type="Label" parent="VBoxContainer2/Whitespace" unique_id=901960937]
-layout_mode = 2
-theme_type_variation = &"HeaderLarge"
-text = "Whitespace:"
-
-[node name="show" type="CheckButton" parent="VBoxContainer2/Whitespace" unique_id=407201734]
-layout_mode = 2
-button_group = ExtResource("4_f2wgr")
-text = "Show"
-
-[node name="bar" type="CheckButton" parent="VBoxContainer2/Whitespace" unique_id=1479628842]
-layout_mode = 2
-button_group = ExtResource("4_f2wgr")
-text = "Bar"
-
-[node name="bullet" type="CheckButton" parent="VBoxContainer2/Whitespace" unique_id=159189934]
-layout_mode = 2
-button_group = ExtResource("4_f2wgr")
-text = "Bullet"
-
-[node name="Cursor Shape" type="HBoxContainer" parent="VBoxContainer2" unique_id=2011497163]
-layout_mode = 2
-
-[node name="Label4" type="Label" parent="VBoxContainer2/Cursor Shape" unique_id=1508987206]
-layout_mode = 2
-theme_type_variation = &"HeaderLarge"
-text = "Cursor shape:"
-
-[node name="block" type="CheckButton" parent="VBoxContainer2/Cursor Shape" unique_id=2126651278]
-layout_mode = 2
-button_group = ExtResource("3_30pip")
-text = "Block"
-
-[node name="box" type="CheckButton" parent="VBoxContainer2/Cursor Shape" unique_id=307476515]
-layout_mode = 2
-button_group = ExtResource("3_30pip")
-text = "Box"
-
-[node name="line" type="CheckButton" parent="VBoxContainer2/Cursor Shape" unique_id=401866028]
-layout_mode = 2
-button_group = ExtResource("3_30pip")
-text = "Line"
-
-[node name="underline" type="CheckButton" parent="VBoxContainer2/Cursor Shape" unique_id=2076655319]
-layout_mode = 2
-button_group = ExtResource("3_30pip")
-text = "Underline"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2" unique_id=1164297395]
-layout_mode = 2
-
-[node name="Confirmation" type="HBoxContainer" parent="VBoxContainer2" unique_id=697736441]
-layout_mode = 2
-
-[node name="Restore to Defaults - Btn" type="Button" parent="VBoxContainer2/Confirmation" unique_id=2069090271]
-layout_mode = 2
-size_flags_horizontal = 6
-text = "Restore to defaults"
-
-[node name="Reset - Btn" type="Button" parent="VBoxContainer2/Confirmation" unique_id=1327001568]
-layout_mode = 2
-size_flags_horizontal = 6
-text = "Reset"
-
-[node name="Save -Btn" type="Button" parent="VBoxContainer2/Confirmation" unique_id=553079166]
-layout_mode = 2
-size_flags_horizontal = 6
-text = "Save"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1705727321]
-visible = false
-layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 40.0
-offset_top = 40.0
-offset_right = -40.0
-offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2")
+script = ExtResource("1")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=759062847]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -420.0
+offset_top = -320.0
+offset_right = 420.0
+offset_bottom = 320.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer" unique_id=1418520697]
+[node name="MarginContainer" type="MarginContainer" parent="Panel" unique_id=354634226]
 layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer" unique_id=964105261]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="TitleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer" unique_id=935419054]
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
 text = "Settings"
 horizontal_alignment = 1
 
-[node name="SettingsContainer" type="VBoxContainer" parent="VBoxContainer" unique_id=750507624]
+[node name="GeneralSection" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer" unique_id=115295075]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="GeneralLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/GeneralSection" unique_id=885129008]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "General"
+
+[node name="ThemeRow" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/GeneralSection" unique_id=756501108]
+layout_mode = 2
+
+[node name="ThemeLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/ThemeRow" unique_id=1219492295]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+text = "Theme"
 
-[node name="CursorStyleContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer" unique_id=1844216956]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="CursorStyleLabel" type="Label" parent="VBoxContainer/SettingsContainer/CursorStyleContainer" unique_id=666265481]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Cursor Style:"
-vertical_alignment = 1
-
-[node name="CursorStyleOption" type="OptionButton" parent="VBoxContainer/SettingsContainer/CursorStyleContainer" unique_id=1912840044]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ThemeContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer" unique_id=686155236]
+[node name="ThemeOption" type="OptionButton" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/ThemeRow" unique_id=987302837]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ThemeLabel" type="Label" parent="VBoxContainer/SettingsContainer/ThemeContainer" unique_id=1077983022]
+[node name="LanguageRow" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/GeneralSection" unique_id=291349461]
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/LanguageRow" unique_id=1859069907]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Theme:"
-vertical_alignment = 1
+text = "Language"
 
-[node name="ThemeOption" type="OptionButton" parent="VBoxContainer/SettingsContainer/ThemeContainer" unique_id=1749522511]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="FontSizeContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer" unique_id=164815495]
+[node name="LanguageOption" type="OptionButton" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/LanguageRow" unique_id=407868300]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="FontSizeLabel" type="Label" parent="VBoxContainer/SettingsContainer/FontSizeContainer" unique_id=866294828]
+[node name="FontSizeRow" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/GeneralSection" unique_id=1228221536]
+layout_mode = 2
+
+[node name="FontSizeLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/FontSizeRow" unique_id=1583394085]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Font Size:"
-vertical_alignment = 1
+text = "Font Size"
 
-[node name="FontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsContainer/FontSizeContainer" unique_id=1120720458]
-layout_mode = 2
-size_flags_horizontal = 3
-min_value = 12.0
-max_value = 24.0
-value = 16.0
-
-[node name="SoundVolumeContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer" unique_id=835010068]
+[node name="FontSizeSpinBox" type="SpinBox" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/FontSizeRow" unique_id=318893710]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SoundVolumeLabel" type="Label" parent="VBoxContainer/SettingsContainer/SoundVolumeContainer" unique_id=1398822002]
+[node name="SoundVolumeRow" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/GeneralSection" unique_id=1325286468]
+layout_mode = 2
+
+[node name="SoundVolumeLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/SoundVolumeRow" unique_id=731607943]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Sound Volume:"
-vertical_alignment = 1
+text = "Sound Volume"
 
-[node name="SoundVolumeSlider" type="HSlider" parent="VBoxContainer/SettingsContainer/SoundVolumeContainer" unique_id=2033640099]
-layout_mode = 2
-size_flags_horizontal = 3
-value = 80.0
-
-[node name="TypingSoundsContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer" unique_id=1997679293]
+[node name="SoundVolumeSlider" type="HSlider" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/SoundVolumeRow" unique_id=757113838]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TypingSoundsLabel" type="Label" parent="VBoxContainer/SettingsContainer/TypingSoundsContainer" unique_id=2105773061]
+[node name="TypingSoundsCheckBox" type="CheckBox" parent="Panel/MarginContainer/VBoxContainer/GeneralSection" unique_id=121717620]
+layout_mode = 2
+text = "Enable Typing Sounds"
+
+[node name="TypingSection" type="VBoxContainer" parent="Panel/MarginContainer/VBoxContainer" unique_id=239544266]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TypingLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/TypingSection" unique_id=3080173]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Typing"
+
+[node name="StopCursorOnErrorCheckBox" type="CheckBox" parent="Panel/MarginContainer/VBoxContainer/TypingSection" unique_id=1032793240]
+layout_mode = 2
+text = "Stop Cursor On Error"
+
+[node name="ForgiveErrorsCheckBox" type="CheckBox" parent="Panel/MarginContainer/VBoxContainer/TypingSection" unique_id=1854093030]
+layout_mode = 2
+text = "Forgive Errors"
+
+[node name="SpaceSkipsWordsCheckBox" type="CheckBox" parent="Panel/MarginContainer/VBoxContainer/TypingSection" unique_id=549303195]
+layout_mode = 2
+text = "Space Skips Words"
+
+[node name="WhitespaceRow" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TypingSection" unique_id=1101013823]
+layout_mode = 2
+
+[node name="WhitespaceLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/TypingSection/WhitespaceRow" unique_id=1631454710]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Typing Sounds:"
-vertical_alignment = 1
+text = "Whitespace"
 
-[node name="TypingSoundsCheckBox" type="CheckBox" parent="VBoxContainer/SettingsContainer/TypingSoundsContainer" unique_id=1426384693]
-layout_mode = 2
-size_flags_horizontal = 3
-button_pressed = true
-
-[node name="LanguageContainer" type="HBoxContainer" parent="VBoxContainer/SettingsContainer" unique_id=1131499813]
+[node name="WhitespaceOption" type="OptionButton" parent="Panel/MarginContainer/VBoxContainer/TypingSection/WhitespaceRow" unique_id=1608403925]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LanguageLabel" type="Label" parent="VBoxContainer/SettingsContainer/LanguageContainer" unique_id=344635285]
+[node name="CursorStyleRow" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/TypingSection" unique_id=399605049]
+layout_mode = 2
+
+[node name="CursorStyleLabel" type="Label" parent="Panel/MarginContainer/VBoxContainer/TypingSection/CursorStyleRow" unique_id=967310156]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Language:"
-vertical_alignment = 1
+text = "Cursor Style"
 
-[node name="LanguageOption" type="OptionButton" parent="VBoxContainer/SettingsContainer/LanguageContainer" unique_id=652218320]
+[node name="CursorStyleOption" type="OptionButton" parent="Panel/MarginContainer/VBoxContainer/TypingSection/CursorStyleRow" unique_id=1584520020]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HSeparator2" type="HSeparator" parent="VBoxContainer" unique_id=2039196309]
+[node name="ButtonRow" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer" unique_id=1643109594]
 layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
 
-[node name="ButtonContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1131921825]
+[node name="DefaultsButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/ButtonRow" unique_id=41415820]
 layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
+text = "Restore Defaults"
 
-[node name="SaveButton" type="Button" parent="VBoxContainer/ButtonContainer" unique_id=1476961645]
+[node name="CancelButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/ButtonRow" unique_id=343948848]
 layout_mode = 2
-disabled = true
-text = "Save"
-
-[node name="CancelButton" type="Button" parent="VBoxContainer/ButtonContainer" unique_id=1007379900]
-layout_mode = 2
-disabled = true
 text = "Cancel"
 
-[node name="ResetButton" type="Button" parent="VBoxContainer/ButtonContainer" unique_id=1005107219]
+[node name="SaveButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/ButtonRow" unique_id=1684704854]
 layout_mode = 2
-text = "Reset to Defaults"
+text = "Save"
 
-[connection signal="pressed" from="VBoxContainer2/Confirmation/Restore to Defaults - Btn" to="VBoxContainer2" method="restore_to_defaults_button"]
-[connection signal="pressed" from="VBoxContainer2/Confirmation/Reset - Btn" to="VBoxContainer2" method="on_reset_button"]
-[connection signal="pressed" from="VBoxContainer2/Confirmation/Save -Btn" to="VBoxContainer2" method="on_save_button"]
+[node name="BackButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/ButtonRow" unique_id=1552344978]
+layout_mode = 2
+text = "Back"

@@ -1,37 +1,48 @@
-extends Control
+extends Node
 
 signal config_loaded
 signal config_saved
 signal setting_changed(p_setting_name: String, p_new_value)
 
 var _config_path: String
-var _user_config: UserConfig
+var _user_config: Dictionary = {}
 
 # Internal state
-var _app_config: Dictionary = {}
+var _app_config: Dictionary = {"app_version": "0.1.0", "theme": "dark", "language": "en"}
 var _unsaved_changes: Dictionary = {}
 var _is_loaded: bool = false
+var _is_initialized: bool = false
 
 
 func _ready() -> void:
-	# load_configs()
-	UserService.profile_loaded.connect(_load_config)
-	_user_config = UserConfig.new()
+	initialize()
 
 
-func _create_stats_path(p_user_id) -> String:
-	var prepend_path = "user://data/user_"
-	return prepend_path + str(p_user_id) + "/config.json"
+func initialize() -> void:
+	if _is_initialized:
+		return
+
+	if not UserService.profile_loaded.is_connected(_load_config):
+		UserService.profile_loaded.connect(_load_config)
+
+	_is_initialized = true
+
+
+func _create_config_path(p_user_id: int) -> String:
+	return User.USER_PROFILE_PREPEND_PATH + str(p_user_id) + "/" + User.FILE_SETTINGS
 
 
 func _load_config() -> void:
 	var user_data = UserService.get_user_dir_path()
-	_config_path = _create_stats_path(user_data.get("user_id"))
+	_config_path = _create_config_path(user_data.get("user_id", 0))
 	Log.info("[|ConfigService][load_config] Loading configuration from: %s" % _config_path)
 
-	var _dict = DataManager.load_json(_config_path, User.DEFAULT_USER_SETTINGS)
-
-	# _is_loaded = true
+	_user_config = DataManager.load_json(_config_path, User.DEFAULT_USER_SETTINGS)
+	for setting_name in User.DEFAULT_USER_SETTINGS:
+		if not _user_config.has(setting_name):
+			_user_config[setting_name] = User.DEFAULT_USER_SETTINGS[setting_name]
+	_unsaved_changes.clear()
+	_is_loaded = true
 	config_loaded.emit()
 
 
@@ -45,9 +56,9 @@ func get_setting(p_setting_name: String, p_default_value = null):
 		return _unsaved_changes[p_setting_name]
 
 	# Check user config
-	# if _user_config.get_stats().has(p_setting_name):
-	# 	Log.info("[ConfigService][get_setting] Found user config value for %s" % p_setting_name)
-	# 	return _user_config[p_setting_name]
+	if _user_config.has(p_setting_name):
+		Log.info("[ConfigService][get_setting] Found user config value for %s" % p_setting_name)
+		return _user_config[p_setting_name]
 
 	# Check app config
 	if _app_config.has(p_setting_name):
@@ -69,66 +80,43 @@ func get_setting(p_setting_name: String, p_default_value = null):
 	return p_default_value
 
 
-class UserConfig:
-	var uc = User.APP_CONFIG
-	var us = User.STATS
+func set_user_setting(p_setting_name: String, p_new_value) -> void:
+	if get_setting(p_setting_name) == p_new_value:
+		return
 
-	var all_time_time_typed: float
-	var all_time_best_wpm: float
-	var all_time_average_wpm: float
-	var all_time_best_accuracy: float
-	var all_time_average_accuracy: float
-	var all_time_sessions_completed: float
+	_unsaved_changes[p_setting_name] = p_new_value
+	setting_changed.emit(p_setting_name, p_new_value)
 
-	var today_time_typed: float
-	var today_best_wpm: float
-	var today_average_wpm: float
-	var today_best_accuracy: float
-	var today_average_accuracy: float
-	var today_sessions_completed: float
 
-	func from_dict(p_stats: Dictionary) -> void:
-		all_time_time_typed = p_stats.get(us.ALL_TIME_TIME_TYPED, 0.0)
-		all_time_best_wpm = p_stats.get(us.ALL_TIME_BEST_WPM, 0.0)
-		all_time_average_wpm = p_stats.get(us.ALL_TIME_AVERAGE_WPM, 0.0)
-		all_time_best_accuracy = p_stats.get(us.ALL_TIME_BEST_ACCURACY, 0.0)
-		all_time_average_accuracy = p_stats.get(us.ALL_TIME_AVERAGE_ACCURACY, 0.0)
-		all_time_sessions_completed = p_stats.get(us.ALL_TIME_SESSIONS_COMPLETED, 0.0)
-		today_time_typed = p_stats.get(us.TODAY_TIME_TYPED, 0.0)
-		today_best_wpm = p_stats.get(us.TODAY_BEST_WPM, 0.0)
-		today_average_wpm = p_stats.get(us.TODAY_AVERAGE_WPM, 0.0)
-		today_best_accuracy = p_stats.get(us.TODAY_BEST_ACCURACY, 0.0)
-		today_average_accuracy = p_stats.get(us.TODAY_AVERAGE_ACCURACY, 0.0)
-		today_sessions_completed = p_stats.get(us.TODAY_SESSIONS_COMPLETED, 0.0)
-		Log.info("[StatsService.UserStats][from_dict] Stats loaded")
+func has_unsaved_changes() -> bool:
+	return not _unsaved_changes.is_empty()
 
-	func to_dict(p_stats: Dictionary) -> void:
-		Log.info("[StatsService.ProfileStats][to_dict] Exporting statistics")
-		p_stats[us.ALL_TIME_TIME_TYPED] = all_time_time_typed
-		p_stats[us.ALL_TIME_BEST_WPM] = all_time_best_wpm
-		p_stats[us.ALL_TIME_AVERAGE_WPM] = all_time_average_wpm
-		p_stats[us.ALL_TIME_BEST_ACCURACY] = all_time_best_accuracy
-		p_stats[us.ALL_TIME_AVERAGE_ACCURACY] = all_time_average_accuracy
-		p_stats[us.ALL_TIME_SESSIONS_COMPLETED] = all_time_sessions_completed
-		p_stats[us.TODAY_TIME_TYPED] = today_time_typed
-		p_stats[us.TODAY_BEST_WPM] = today_best_wpm
-		p_stats[us.TODAY_AVERAGE_WPM] = today_average_wpm
-		p_stats[us.TODAY_BEST_ACCURACY] = today_best_accuracy
-		p_stats[us.TODAY_AVERAGE_ACCURACY] = today_average_accuracy
-		p_stats[us.TODAY_SESSIONS_COMPLETED] = today_sessions_completed
 
-	func get_stats() -> Dictionary:
-		return {
-			us.STATS.ALL_TIME_TIME_TYPED: all_time_time_typed,
-			us.ALL_TIME_BEST_WPM: all_time_best_wpm,
-			us.ALL_TIME_AVERAGE_WPM: all_time_average_wpm,
-			us.ALL_TIME_BEST_ACCURACY: all_time_best_accuracy,
-			us.ALL_TIME_AVERAGE_ACCURACY: all_time_average_accuracy,
-			us.ALL_TIME_SESSIONS_COMPLETED: all_time_sessions_completed,
-			us.TODAY_TIME_TYPED: today_time_typed,
-			us.TODAY_BEST_WPM: today_best_wpm,
-			us.TODAY_AVERAGE_WPM: today_average_wpm,
-			us.TODAY_BEST_ACCURACY: today_best_accuracy,
-			us.TODAY_AVERAGE_ACCURACY: today_average_accuracy,
-			us.TODAY_SESSIONS_COMPLETED: today_sessions_completed,
-		}
+func save_user_config() -> bool:
+	if _config_path.is_empty():
+		return false
+
+	for setting_name in _unsaved_changes:
+		_user_config[setting_name] = _unsaved_changes[setting_name]
+
+	var success = DataManager.save_json(_config_path, _user_config)
+	if success:
+		_unsaved_changes.clear()
+		config_saved.emit()
+
+	return success
+
+
+func save_all_configs() -> bool:
+	return save_user_config()
+
+
+func reset_user_config_to_defaults(p_save_immediately: bool = false) -> void:
+	_user_config = User.DEFAULT_USER_SETTINGS.duplicate(true)
+	_unsaved_changes.clear()
+
+	if p_save_immediately:
+		DataManager.save_json(_config_path, _user_config)
+		config_saved.emit()
+
+	config_loaded.emit()

@@ -7,7 +7,7 @@ class_name Main
 signal scene_ready
 
 # Core components
-var app_manager: AppManager
+var app_manager
 var current_controller: Control
 var loading_screen: Control
 
@@ -50,22 +50,22 @@ func _initialize_app() -> void:
 	Log.info("[Main][_initialize_app] Starting application initialization")
 	_show_loading_screen("Initializing application...")
 
-	# Create and initialize AppManager
-	Log.info("[Main][_initialize_app] Creating AppManager")
-	app_manager = AppManager.new()
-	app_manager.name = "AppManager"
-	add_child(app_manager)
-	app_manager.add_to_group("app_manager")
+	app_manager = AppManager
 
 	# Connect AppManager signals
-	app_manager.app_initialized.connect(_on_app_initialized)
-	app_manager.services_ready.connect(_on_services_ready)
-	app_manager.app_shutting_down.connect(_on_app_shutting_down)
+	if not app_manager.app_initialized.is_connected(_on_app_initialized):
+		app_manager.app_initialized.connect(_on_app_initialized)
+	if not app_manager.services_ready.is_connected(_on_services_ready):
+		app_manager.services_ready.connect(_on_services_ready)
+	if not app_manager.app_shutting_down.is_connected(_on_app_shutting_down):
+		app_manager.app_shutting_down.connect(_on_app_shutting_down)
 	Log.info("[Main][_initialize_app] AppManager signals connected")
 
-	# Wait for initialization
-	Log.info("[Main][_initialize_app] Waiting for AppManager initialization")
-	await app_manager.app_initialized
+	if not app_manager.is_initialized():
+		Log.info("[Main][_initialize_app] Waiting for AppManager initialization")
+		if not app_manager.is_initializing():
+			app_manager.initialize()
+		await app_manager.app_initialized
 
 	_hide_loading_screen()
 	_setup_initial_scene()
@@ -73,7 +73,7 @@ func _initialize_app() -> void:
 
 
 ## Get the AppManager instance (for static access)
-func get_app_manager() -> AppManager:
+func get_app_manager():
 	Log.info("[Main][get_app_manager] Returning AppManager instance")
 	return app_manager
 
@@ -125,7 +125,6 @@ func quit_application() -> void:
 	if app_manager:
 		Log.info("[Main][quit_application] Shutting down AppManager")
 		app_manager.shutdown_gracefully()
-		await app_manager.app_shutting_down
 		Log.info("[Main][quit_application] AppManager shutdown complete")
 
 	Log.info("[Main][quit_application] Exiting application")
@@ -244,6 +243,7 @@ func _show_loading_screen(p_message: String) -> void:
 func _hide_loading_screen() -> void:
 	Log.info("[Main][_hide_loading_screen] Hiding loading screen")
 	is_loading = false
+	main_container.visible = true
 	loading_overlay.visible = false
 
 

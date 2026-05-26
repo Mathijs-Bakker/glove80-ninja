@@ -7,8 +7,8 @@ signal exercise_completed(results: Dictionary)
 signal settings_requested()
 
 # Services
-var config_service: ConfigService
-var user_service: UserService
+var config_service
+var user_service
 
 # Components
 var text_display: Control
@@ -31,8 +31,8 @@ var current_exercise: TypingExercise
 var is_active: bool = false
 
 # Deferred initialization
-var _pending_config_service: ConfigService
-var _pending_user_service: UserService
+var _pending_config_service
+var _pending_user_service
 var _initialization_pending: bool = false
 
 
@@ -57,7 +57,7 @@ func _exit_tree() -> void:
 
 
 ## Initialize with required services
-func initialize(p_config_service: ConfigService, p_user_service: UserService) -> void:
+func initialize(p_config_service, p_user_service) -> void:
 	Log.info("[PracticeController][initialize] Initialize called with services")
 	_pending_config_service = p_config_service
 	_pending_user_service = p_user_service
@@ -162,7 +162,7 @@ func _initialize_components() -> void:
 
 	# Initialize input handler
 	if input_handler:
-		input_handler.initialize()
+		input_handler.initialize(config_service)
 		Log.info("[PracticeController][_initialize_components] InputHandler initialized")
 	else:
 		Log.error("[PracticeController][_initialize_components] InputHandler is null during initialization")
@@ -215,7 +215,7 @@ func _restart_exercise() -> void:
 
 		# Reset components
 		_safe_call_display_method("set_text", [current_exercise.get_text()])
-		input_handler.reset()
+		input_handler.reset_input_state()
 		session_manager.restart_session()
 
 		# Update state

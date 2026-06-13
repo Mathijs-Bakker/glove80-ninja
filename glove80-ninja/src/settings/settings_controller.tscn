@@ -62,6 +62,7 @@ size_flags_horizontal = 3
 text = "Theme"
 
 [node name="ThemeOption" type="OptionButton" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/ThemeRow" unique_id=987302837]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -74,6 +75,7 @@ size_flags_horizontal = 3
 text = "Language"
 
 [node name="LanguageOption" type="OptionButton" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/LanguageRow" unique_id=407868300]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -86,6 +88,7 @@ size_flags_horizontal = 3
 text = "Font Size"
 
 [node name="FontSizeSpinBox" type="SpinBox" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/FontSizeRow" unique_id=318893710]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -98,10 +101,12 @@ size_flags_horizontal = 3
 text = "Sound Volume"
 
 [node name="SoundVolumeSlider" type="HSlider" parent="Panel/MarginContainer/VBoxContainer/GeneralSection/SoundVolumeRow" unique_id=757113838]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="TypingSoundsCheckBox" type="CheckBox" parent="Panel/MarginContainer/VBoxContainer/GeneralSection" unique_id=121717620]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Enable Typing Sounds"
 
@@ -115,14 +120,17 @@ theme_type_variation = &"HeaderMedium"
 text = "Typing"
 
 [node name="StopCursorOnErrorCheckBox" type="CheckBox" parent="Panel/MarginContainer/VBoxContainer/TypingSection" unique_id=1032793240]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Stop Cursor On Error"
 
 [node name="ForgiveErrorsCheckBox" type="CheckBox" parent="Panel/MarginContainer/VBoxContainer/TypingSection" unique_id=1854093030]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Forgive Errors"
 
 [node name="SpaceSkipsWordsCheckBox" type="CheckBox" parent="Panel/MarginContainer/VBoxContainer/TypingSection" unique_id=549303195]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Space Skips Words"
 
@@ -135,6 +143,7 @@ size_flags_horizontal = 3
 text = "Whitespace"
 
 [node name="WhitespaceOption" type="OptionButton" parent="Panel/MarginContainer/VBoxContainer/TypingSection/WhitespaceRow" unique_id=1608403925]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -147,6 +156,7 @@ size_flags_horizontal = 3
 text = "Cursor Style"
 
 [node name="CursorStyleOption" type="OptionButton" parent="Panel/MarginContainer/VBoxContainer/TypingSection/CursorStyleRow" unique_id=1584520020]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -156,17 +166,21 @@ theme_override_constants/separation = 10
 alignment = 2
 
 [node name="DefaultsButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/ButtonRow" unique_id=41415820]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Restore Defaults"
 
 [node name="CancelButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/ButtonRow" unique_id=343948848]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Cancel"
 
 [node name="SaveButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/ButtonRow" unique_id=1684704854]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Save"
 
 [node name="BackButton" type="Button" parent="Panel/MarginContainer/VBoxContainer/ButtonRow" unique_id=1552344978]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Back"

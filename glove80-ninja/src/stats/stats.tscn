@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://dv33jjwn2p3x8"]
+[gd_scene format=3 uid="uid://dv33jjwn2p3x8"]
 
 [ext_resource type="Script" uid="uid://0ggrdubynd6f" path="res://src/stats/stats.gd" id="1_qyu6f"]
 
-[node name="Profile" type="Control" node_paths=PackedStringArray("_all_time_time", "_all_time_lessons", "_all_time_top_speed", "_all_time_avg_speed", "_all_time_top_accuracy", "_all_time_avg_accuracy", "_today_time", "_today_lessons", "_today_top_speed", "_today_avg_speed", "_today_top_accuracy", "_today_avg_accuracy")]
+[node name="Profile" type="Control" unique_id=1316412992 node_paths=PackedStringArray("_all_time_time", "_all_time_lessons", "_all_time_top_speed", "_all_time_avg_speed", "_all_time_top_accuracy", "_all_time_avg_accuracy", "_today_time", "_today_lessons", "_today_top_speed", "_today_avg_speed", "_today_top_accuracy", "_today_avg_accuracy")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,13 +22,14 @@ _today_top_speed = NodePath("Today Stats/Best speed/Today Best Speed")
 _today_avg_speed = NodePath("Today Stats/Average speed/Today AVG Speed")
 _today_top_accuracy = NodePath("Today Stats/Best Accuracy/Today Best Accuracy")
 _today_avg_accuracy = NodePath("Today Stats/Average accuracy/Today AVG Accuracy")
+metadata/_edit_use_anchors_ = true
 
-[node name="BG" type="Label" parent="."]
+[node name="BG" type="Label" parent="." unique_id=148567435]
 layout_mode = 0
 offset_right = 1678.0
 offset_bottom = 1078.0
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=129958507]
 layout_mode = 0
 offset_left = 90.0
 offset_top = 108.0
@@ -36,18 +37,18 @@ offset_right = 384.0
 offset_bottom = 140.0
 text = "All Time Statistics"
 
-[node name="All Time Stats" type="HBoxContainer" parent="."]
+[node name="All Time Stats" type="HBoxContainer" parent="." unique_id=647411486]
 layout_mode = 0
 offset_left = 89.0
 offset_top = 142.0
 offset_right = 1663.0
 offset_bottom = 263.0
 
-[node name="Time" type="Panel" parent="All Time Stats"]
+[node name="Time" type="Panel" parent="All Time Stats" unique_id=355675587]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Header" type="Label" parent="All Time Stats/Time"]
+[node name="Header" type="Label" parent="All Time Stats/Time" unique_id=1735536215]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -60,7 +61,7 @@ grow_horizontal = 2
 text = "Time:"
 horizontal_alignment = 1
 
-[node name="AT Time" type="Label" parent="All Time Stats/Time"]
+[node name="AT Time" type="Label" parent="All Time Stats/Time" unique_id=117592805]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -74,16 +75,16 @@ theme_type_variation = &"stats_value"
 text = "00:00:00"
 horizontal_alignment = 1
 
-[node name="Separator" type="Control" parent="All Time Stats"]
+[node name="Separator" type="Control" parent="All Time Stats" unique_id=1737451798]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Sessions" type="Panel" parent="All Time Stats"]
+[node name="Sessions" type="Panel" parent="All Time Stats" unique_id=1595509790]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Header" type="Label" parent="All Time Stats/Sessions"]
+[node name="Header" type="Label" parent="All Time Stats/Sessions" unique_id=995417532]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -96,7 +97,7 @@ grow_horizontal = 2
 text = "Sessions:"
 horizontal_alignment = 1
 
-[node name="AT Sessions" type="Label" parent="All Time Stats/Sessions"]
+[node name="AT Sessions" type="Label" parent="All Time Stats/Sessions" unique_id=1915490833]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -110,16 +111,16 @@ theme_type_variation = &"stats_value"
 text = "0"
 horizontal_alignment = 1
 
-[node name="Separator2" type="Control" parent="All Time Stats"]
+[node name="Separator2" type="Control" parent="All Time Stats" unique_id=1167025550]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Best speed" type="Panel" parent="All Time Stats"]
+[node name="Best speed" type="Panel" parent="All Time Stats" unique_id=664436470]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Header" type="Label" parent="All Time Stats/Best speed"]
+[node name="Header" type="Label" parent="All Time Stats/Best speed" unique_id=981338043]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -132,7 +133,7 @@ grow_horizontal = 2
 text = "Best speed:"
 horizontal_alignment = 1
 
-[node name="AT Best Speed" type="Label" parent="All Time Stats/Best speed"]
+[node name="AT Best Speed" type="Label" parent="All Time Stats/Best speed" unique_id=1227912192]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -146,16 +147,16 @@ theme_type_variation = &"stats_value"
 text = "N/A"
 horizontal_alignment = 1
 
-[node name="Separator3" type="Control" parent="All Time Stats"]
+[node name="Separator3" type="Control" parent="All Time Stats" unique_id=1876432300]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Average speed" type="Panel" parent="All Time Stats"]
+[node name="Average speed" type="Panel" parent="All Time Stats" unique_id=1537126916]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Header" type="Label" parent="All Time Stats/Average speed"]
+[node name="Header" type="Label" parent="All Time Stats/Average speed" unique_id=155361282]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -168,7 +169,7 @@ grow_horizontal = 2
 text = "Average speed:"
 horizontal_alignment = 1
 
-[node name="AT AVG Speed" type="Label" parent="All Time Stats/Average speed"]
+[node name="AT AVG Speed" type="Label" parent="All Time Stats/Average speed" unique_id=1284732031]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -182,16 +183,16 @@ theme_type_variation = &"stats_value"
 text = "N/A"
 horizontal_alignment = 1
 
-[node name="Separator4" type="Control" parent="All Time Stats"]
+[node name="Separator4" type="Control" parent="All Time Stats" unique_id=674662224]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Best Accuracy" type="Panel" parent="All Time Stats"]
+[node name="Best Accuracy" type="Panel" parent="All Time Stats" unique_id=1791676268]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Header" type="Label" parent="All Time Stats/Best Accuracy"]
+[node name="Header" type="Label" parent="All Time Stats/Best Accuracy" unique_id=1883190293]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -204,7 +205,7 @@ grow_horizontal = 2
 text = "Best accuracy:"
 horizontal_alignment = 1
 
-[node name="AT Best Accuracy" type="Label" parent="All Time Stats/Best Accuracy"]
+[node name="AT Best Accuracy" type="Label" parent="All Time Stats/Best Accuracy" unique_id=2063209422]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -218,16 +219,16 @@ theme_type_variation = &"stats_value"
 text = "N/A"
 horizontal_alignment = 1
 
-[node name="Separator5" type="Control" parent="All Time Stats"]
+[node name="Separator5" type="Control" parent="All Time Stats" unique_id=1280153317]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Average accuracy" type="Panel" parent="All Time Stats"]
+[node name="Average accuracy" type="Panel" parent="All Time Stats" unique_id=2066195654]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="All Time Stats/Average accuracy"]
+[node name="Label" type="Label" parent="All Time Stats/Average accuracy" unique_id=1768328463]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -240,7 +241,7 @@ grow_horizontal = 2
 text = "Average accuracy:"
 horizontal_alignment = 1
 
-[node name="AT AVG Accuracy" type="Label" parent="All Time Stats/Average accuracy"]
+[node name="AT AVG Accuracy" type="Label" parent="All Time Stats/Average accuracy" unique_id=1945329950]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -254,7 +255,7 @@ theme_type_variation = &"stats_value"
 text = "N/A"
 horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="."]
+[node name="Label2" type="Label" parent="." unique_id=472486351]
 layout_mode = 0
 offset_left = 90.0
 offset_top = 340.0
@@ -262,18 +263,18 @@ offset_right = 384.0
 offset_bottom = 372.0
 text = "Statistics for Today"
 
-[node name="Today Stats" type="HBoxContainer" parent="."]
+[node name="Today Stats" type="HBoxContainer" parent="." unique_id=805919060]
 layout_mode = 0
 offset_left = 89.0
 offset_top = 380.0
 offset_right = 1663.0
 offset_bottom = 501.0
 
-[node name="Time" type="Panel" parent="Today Stats"]
+[node name="Time" type="Panel" parent="Today Stats" unique_id=30992112]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Header" type="Label" parent="Today Stats/Time"]
+[node name="Header" type="Label" parent="Today Stats/Time" unique_id=1259867862]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -286,7 +287,7 @@ grow_horizontal = 2
 text = "Time:"
 horizontal_alignment = 1
 
-[node name="Today Time" type="Label" parent="Today Stats/Time"]
+[node name="Today Time" type="Label" parent="Today Stats/Time" unique_id=1211698354]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -300,16 +301,16 @@ theme_type_variation = &"stats_value"
 text = "00:00:00"
 horizontal_alignment = 1
 
-[node name="Separator" type="Control" parent="Today Stats"]
+[node name="Separator" type="Control" parent="Today Stats" unique_id=1279294389]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Sessions" type="Panel" parent="Today Stats"]
+[node name="Sessions" type="Panel" parent="Today Stats" unique_id=1148610234]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Header" type="Label" parent="Today Stats/Sessions"]
+[node name="Header" type="Label" parent="Today Stats/Sessions" unique_id=2109833689]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -322,7 +323,7 @@ grow_horizontal = 2
 text = "Sessions:"
 horizontal_alignment = 1
 
-[node name="Today Sessions" type="Label" parent="Today Stats/Sessions"]
+[node name="Today Sessions" type="Label" parent="Today Stats/Sessions" unique_id=1227323523]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -336,16 +337,16 @@ theme_type_variation = &"stats_value"
 text = "0"
 horizontal_alignment = 1
 
-[node name="Separator2" type="Control" parent="Today Stats"]
+[node name="Separator2" type="Control" parent="Today Stats" unique_id=1533453093]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Best speed" type="Panel" parent="Today Stats"]
+[node name="Best speed" type="Panel" parent="Today Stats" unique_id=1236688718]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Header" type="Label" parent="Today Stats/Best speed"]
+[node name="Header" type="Label" parent="Today Stats/Best speed" unique_id=1072219441]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -358,7 +359,7 @@ grow_horizontal = 2
 text = "Best speed:"
 horizontal_alignment = 1
 
-[node name="Today Best Speed" type="Label" parent="Today Stats/Best speed"]
+[node name="Today Best Speed" type="Label" parent="Today Stats/Best speed" unique_id=2065252941]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -372,16 +373,16 @@ theme_type_variation = &"stats_value"
 text = "0 wpm"
 horizontal_alignment = 1
 
-[node name="Separator3" type="Control" parent="Today Stats"]
+[node name="Separator3" type="Control" parent="Today Stats" unique_id=1814460220]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Average speed" type="Panel" parent="Today Stats"]
+[node name="Average speed" type="Panel" parent="Today Stats" unique_id=1867947985]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Header" type="Label" parent="Today Stats/Average speed"]
+[node name="Header" type="Label" parent="Today Stats/Average speed" unique_id=537275533]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -394,7 +395,7 @@ grow_horizontal = 2
 text = "Average speed:"
 horizontal_alignment = 1
 
-[node name="Today AVG Speed" type="Label" parent="Today Stats/Average speed"]
+[node name="Today AVG Speed" type="Label" parent="Today Stats/Average speed" unique_id=79624464]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -408,16 +409,16 @@ theme_type_variation = &"stats_value"
 text = "0 wpm"
 horizontal_alignment = 1
 
-[node name="Separator4" type="Control" parent="Today Stats"]
+[node name="Separator4" type="Control" parent="Today Stats" unique_id=234605501]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Best Accuracy" type="Panel" parent="Today Stats"]
+[node name="Best Accuracy" type="Panel" parent="Today Stats" unique_id=435756953]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Header" type="Label" parent="Today Stats/Best Accuracy"]
+[node name="Header" type="Label" parent="Today Stats/Best Accuracy" unique_id=1571216980]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -430,7 +431,7 @@ grow_horizontal = 2
 text = "Best accuracy:"
 horizontal_alignment = 1
 
-[node name="Today Best Accuracy" type="Label" parent="Today Stats/Best Accuracy"]
+[node name="Today Best Accuracy" type="Label" parent="Today Stats/Best Accuracy" unique_id=227890150]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -444,16 +445,16 @@ theme_type_variation = &"stats_value"
 text = "0%"
 horizontal_alignment = 1
 
-[node name="Separator5" type="Control" parent="Today Stats"]
+[node name="Separator5" type="Control" parent="Today Stats" unique_id=2050196385]
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Average accuracy" type="Panel" parent="Today Stats"]
+[node name="Average accuracy" type="Panel" parent="Today Stats" unique_id=453349292]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="Today Stats/Average accuracy"]
+[node name="Label" type="Label" parent="Today Stats/Average accuracy" unique_id=2142916406]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -466,7 +467,7 @@ grow_horizontal = 2
 text = "Average accuracy:"
 horizontal_alignment = 1
 
-[node name="Today AVG Accuracy" type="Label" parent="Today Stats/Average accuracy"]
+[node name="Today AVG Accuracy" type="Label" parent="Today Stats/Average accuracy" unique_id=437203829]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5

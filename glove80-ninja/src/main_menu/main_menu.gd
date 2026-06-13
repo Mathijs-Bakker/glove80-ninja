@@ -14,9 +14,12 @@ var _layouts: Node
 
 
 func _ready() -> void:
-	AppManager.app_initialized.connect(get_username)
-	UserService.profile_loaded.connect(get_username)
-	UserService.profile_saved.connect(get_username)
+	if not AppManager.app_initialized.is_connected(get_username):
+		AppManager.app_initialized.connect(get_username)
+	if not UserService.profile_loaded.is_connected(get_username):
+		UserService.profile_loaded.connect(get_username)
+	if not UserService.profile_saved.is_connected(get_username):
+		UserService.profile_saved.connect(get_username)
 
 	_user_profile = _user_profile_scn.instantiate()
 	add_child(_user_profile)
@@ -33,6 +36,9 @@ func _ready() -> void:
 	_layouts = _layouts_scn.instantiate()
 	add_child(_layouts)
 	_layouts.hide()
+
+	if AppManager.is_initialized():
+		get_username()
 
 
 func get_username() -> void:

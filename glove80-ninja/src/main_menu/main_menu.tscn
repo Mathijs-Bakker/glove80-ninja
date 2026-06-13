@@ -1,11 +1,11 @@
-[gd_scene load_steps=16 format=3 uid="uid://bfmiyek72frl7"]
+[gd_scene format=3 uid="uid://bfmiyek72frl7"]
 
 [ext_resource type="Script" uid="uid://cnsybue83envj" path="res://src/main_menu/main_menu.gd" id="1_amn4d"]
 [ext_resource type="Theme" uid="uid://kcben5y0d2o6" path="res://themes/dark.tres" id="1_e0prm"]
 [ext_resource type="PackedScene" uid="uid://dv33jjwn2p3x8" path="res://src/stats/stats.tscn" id="2_abxxg"]
 [ext_resource type="Texture2D" uid="uid://ck22qg6csv8uh" path="res://assets/menu/profile.svg" id="2_amn4d"]
 [ext_resource type="PackedScene" uid="uid://bontr55blyh36" path="res://src/user_profile/user_profile.tscn" id="2_plxga"]
-[ext_resource type="PackedScene" uid="uid://bvju6sxwa7me2" path="res://src/settings/settings_controller.tscn" id="2_ramr7"]
+[ext_resource type="PackedScene" uid="uid://q5p36r7rjuxk" path="res://src/settings/settings_controller.tscn" id="2_ramr7"]
 [ext_resource type="PackedScene" uid="uid://yuyvsspa0qtp" path="res://src/layout_settings/layouts.tscn" id="3_vccap"]
 [ext_resource type="Texture2D" uid="uid://bap06qxivdpd4" path="res://assets/menu/fonts.svg" id="4_axgno"]
 [ext_resource type="Texture2D" uid="uid://bqlgwhdery2b5" path="res://assets/menu/ practice.svg" id="4_b2bbe"]
@@ -17,7 +17,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_plxga"]
 
-[node name="Main Menu" type="Control" node_paths=PackedStringArray("_username")]
+[node name="Main Menu" type="Control" unique_id=224093893 node_paths=PackedStringArray("_username")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_amn4d")
@@ -27,18 +27,18 @@ _stats_scn = ExtResource("2_abxxg")
 _settings_scn = ExtResource("2_ramr7")
 _layouts_scn = ExtResource("3_vccap")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=538542686]
 layout_mode = 1
 offset_left = 1715.0
 offset_top = 76.0
 offset_right = 1844.0
 offset_bottom = 371.0
 
-[node name="UserProfile" type="Control" parent="VBoxContainer"]
+[node name="UserProfile" type="Control" parent="VBoxContainer" unique_id=1506738269]
 custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="VBoxContainer/UserProfile"]
+[node name="Button" type="Button" parent="VBoxContainer/UserProfile" unique_id=1010640816]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -48,7 +48,7 @@ grow_vertical = 2
 theme = ExtResource("1_e0prm")
 theme_type_variation = &"menu_button"
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer/UserProfile"]
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/UserProfile" unique_id=483187059]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -65,7 +65,7 @@ mouse_filter = 2
 texture = ExtResource("2_amn4d")
 expand_mode = 1
 
-[node name="UserName" type="Label" parent="VBoxContainer/UserProfile"]
+[node name="UserName" type="Label" parent="VBoxContainer/UserProfile" unique_id=1573833337]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -82,26 +82,26 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_plxga")
 text = "UserName"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1472248705]
 layout_mode = 2
 alignment = 1
 
-[node name="Theme" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
+[node name="Theme" type="TextureButton" parent="VBoxContainer/HBoxContainer" unique_id=1777939201]
 layout_mode = 2
 theme_type_variation = &"menu_button"
 texture_normal = ExtResource("4_bk001")
 
-[node name="Type" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
+[node name="Type" type="TextureButton" parent="VBoxContainer/HBoxContainer" unique_id=61083232]
 layout_mode = 2
 theme_type_variation = &"menu_button"
 texture_normal = ExtResource("4_axgno")
 
-[node name="FullScreen" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
+[node name="FullScreen" type="TextureButton" parent="VBoxContainer/HBoxContainer" unique_id=600911202]
 layout_mode = 2
 theme_type_variation = &"menu_button"
 texture_normal = ExtResource("6_bh353")
 
-[node name="Practice" type="Button" parent="VBoxContainer"]
+[node name="Practice" type="Button" parent="VBoxContainer" unique_id=1904230278]
 layout_mode = 2
 theme_type_variation = &"menu_button"
 text = "Practice"
@@ -109,7 +109,7 @@ icon = ExtResource("4_b2bbe")
 alignment = 0
 expand_icon = true
 
-[node name="Stats" type="Button" parent="VBoxContainer"]
+[node name="Stats" type="Button" parent="VBoxContainer" unique_id=889258856]
 layout_mode = 2
 theme_type_variation = &"menu_button"
 text = "Stats"
@@ -117,7 +117,7 @@ icon = ExtResource("5_b2bbe")
 alignment = 0
 expand_icon = true
 
-[node name="Settings" type="Button" parent="VBoxContainer"]
+[node name="Settings" type="Button" parent="VBoxContainer" unique_id=1595216992]
 layout_mode = 2
 theme_type_variation = &"menu_button"
 text = "Settings"
@@ -125,7 +125,7 @@ icon = ExtResource("5_no1ax")
 alignment = 0
 expand_icon = true
 
-[node name="Layouts" type="Button" parent="VBoxContainer"]
+[node name="Layouts" type="Button" parent="VBoxContainer" unique_id=1803190789]
 layout_mode = 2
 theme_type_variation = &"menu_button"
 text = "Layouts"
@@ -133,7 +133,7 @@ icon = ExtResource("10_bh353")
 alignment = 0
 expand_icon = true
 
-[node name="Themes Sub" type="Control" parent="."]
+[node name="Themes Sub" type="Control" parent="." unique_id=1544656489]
 visible = false
 anchors_preset = 0
 offset_left = 43.0
@@ -141,17 +141,17 @@ offset_top = 130.0
 offset_right = 144.0
 offset_bottom = 321.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Themes Sub"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Themes Sub" unique_id=72680629]
 layout_mode = 0
 offset_right = 123.0
 offset_bottom = 186.0
 
-[node name="Dark" type="Button" parent="Themes Sub/VBoxContainer"]
+[node name="Dark" type="Button" parent="Themes Sub/VBoxContainer" unique_id=691872212]
 layout_mode = 2
 theme_type_variation = &"sub_menu_button"
 text = "Dark"
 
-[node name="Light" type="Button" parent="Themes Sub/VBoxContainer"]
+[node name="Light" type="Button" parent="Themes Sub/VBoxContainer" unique_id=1549471343]
 layout_mode = 2
 theme_type_variation = &"sub_menu_button"
 text = "Light"

@@ -26,29 +26,6 @@ func initialize() -> void:
 	_initialize_application()
 
 
-func _initialize_application() -> void:
-	Log.info(">>> [AppManager][initialize_application] :: START :: Initialize application.")
-	if not UserService.users_file_exist():
-		var first_run = FirstRunSetup.new()
-		first_run.run_setup_async()
-		Log.info("[AppManager][initialize_application] First run setup complete.")
-
-	ConfigService.initialize()
-	StatsService.initialize()
-	UserService.initialize()
-	UserSettings.initialize()
-	_connect_service_signals()
-
-	Log.info(
-		"<<< [AppManager][_initialize_application] :: END ::  initialization of the application."
-	)
-	await get_tree().create_timer(0.1).timeout
-	_is_initialized = true
-	_is_initializing = false
-	app_initialized.emit()
-	services_ready.emit()
-
-
 func is_initialized() -> bool:
 	return _is_initialized
 
@@ -74,6 +51,7 @@ func create_practice_controller() -> PracticeController:
 func create_settings_controller() -> SettingsController:
 	var controller = SETTINGS_CONTROLLER_SCENE.instantiate()
 	controller.initialize(ConfigService)
+	Log.warn("SETTINGS CONTROLLER SCENE")
 	return controller
 
 
@@ -93,6 +71,29 @@ func shutdown_gracefully() -> void:
 	# _cleanup_temp_files()
 
 	Log.info("[AppManager][shutdown_gracefully] Shutdown complete")
+
+
+func _initialize_application() -> void:
+	Log.info(">>> [AppManager][initialize_application] :: START :: Initialize application.")
+	if not UserService.users_file_exist():
+		var first_run = FirstRunSetup.new()
+		first_run.run_setup_async()
+		Log.info("[AppManager][initialize_application] First run setup complete.")
+
+	ConfigService.initialize()
+	StatsService.initialize()
+	UserService.initialize()
+	UserSettings.initialize()
+	_connect_service_signals()
+
+	Log.info(
+		"<<< [AppManager][_initialize_application] :: END ::  initialization of the application.",
+	)
+	await get_tree().create_timer(0.1).timeout
+	_is_initialized = true
+	_is_initializing = false
+	app_initialized.emit()
+	services_ready.emit()
 
 
 func _connect_service_signals() -> void:
@@ -122,8 +123,6 @@ func _finalize_initialization() -> void:
 
 
 # Signal handlers
-
-
 func _on_config_loaded() -> void:
 	Log.info("[AppManager][_on_config_loaded] Configuration loaded")
 
@@ -134,7 +133,7 @@ func _on_config_saved() -> void:
 
 func _on_setting_changed(p_setting_name: String, p_new_value) -> void:
 	Log.info(
-		"[AppManager][_on_setting_changed] Setting changed - %s: %s" % [p_setting_name, p_new_value]
+		"[AppManager][_on_setting_changed] Setting changed - %s: %s" % [p_setting_name, p_new_value],
 	)
 
 	# Handle important setting changes
@@ -166,19 +165,15 @@ func _apply_app_theme(p_theme_name: String) -> void:
 func _change_app_language(p_language_code: String) -> void:
 	Log.info("[AppManager][_change_app_language] Changing language - %s" % p_language_code)
 	# TODO: Implementation would change the application language
-
 # func get_instance() -> AppManager:
 # 	var main_scene = Engine.get_main_loop().current_scene
 # 	if main_scene and main_scene.has_method("get_app_manager"):
 # 		return main_scene.get_app_manager()
-
 # 	# Fallback: search for AppManager in the scene tree
 # 	var app_manager = main_scene.get_tree().get_first_node_in_group("app_manager")
 # 	if app_manager and app_manager is AppManager:
 # 		return app_manager as AppManager
-
 # 	return null
-
 # func get_user() -> UserService:
 # 	var instance = get_instance()
 # 	return instance.get_user_service() if instance else null

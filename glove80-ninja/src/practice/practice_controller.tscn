@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://17cvtuoul1oj"]
+[gd_scene format=3 uid="uid://17cvtuoul1oj"]
 
 [ext_resource type="Script" uid="uid://cbfouoen72kkt" path="res://src/practice/practice_controller.gd" id="1_practice_controller"]
 
-[node name="PracticeController" type="Control"]
+[node name="PracticeController" type="Control" unique_id=319833216]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_practice_controller")
 
-[node name="HeaderContainer" type="HBoxContainer" parent="."]
+[node name="HeaderContainer" type="HBoxContainer" parent="." unique_id=1275830850]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -19,16 +19,16 @@ offset_bottom = 50.0
 grow_horizontal = 2
 alignment = 2
 
-[node name="RestartButton" type="Button" parent="HeaderContainer"]
+[node name="RestartButton" type="Button" parent="HeaderContainer" unique_id=163734997]
 layout_mode = 2
 disabled = true
 text = "Restart (F5)"
 
-[node name="SettingsButton" type="Button" parent="HeaderContainer"]
+[node name="SettingsButton" type="Button" parent="HeaderContainer" unique_id=764554772]
 layout_mode = 2
 text = "Settings (ESC)"
 
-[node name="MainContainer" type="VBoxContainer" parent="."]
+[node name="MainContainer" type="VBoxContainer" parent="." unique_id=1077725825]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -38,12 +38,12 @@ offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextDisplayContainer" type="Control" parent="MainContainer"]
+[node name="TextDisplayContainer" type="Control" parent="MainContainer" unique_id=31965733]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="TypingContainer" type="Control" parent="."]
+[node name="TypingContainer" type="Control" parent="." unique_id=1690750595]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -52,12 +52,12 @@ offset_top = 462.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ResultsPopup" type="AcceptDialog" parent="."]
+[node name="ResultsPopup" type="AcceptDialog" parent="." unique_id=1482212891]
 title = "Exercise Results"
 initial_position = 2
 size = Vector2i(400, 300)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ResultsPopup"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ResultsPopup" unique_id=1980584252]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -66,7 +66,7 @@ offset_top = 8.0
 offset_right = -8.0
 offset_bottom = -49.0
 
-[node name="ResultsLabel" type="RichTextLabel" parent="ResultsPopup/VBoxContainer"]
+[node name="ResultsLabel" type="RichTextLabel" parent="ResultsPopup/VBoxContainer" unique_id=1089760133]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

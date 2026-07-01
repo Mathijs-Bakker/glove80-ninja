@@ -11,23 +11,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_practice_controller")
 
-[node name="HeaderContainer" type="HBoxContainer" parent="." unique_id=1275830850]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 50.0
-grow_horizontal = 2
-alignment = 2
-
-[node name="RestartButton" type="Button" parent="HeaderContainer" unique_id=163734997]
-layout_mode = 2
-disabled = true
-text = "Restart (F5)"
-
-[node name="SettingsButton" type="Button" parent="HeaderContainer" unique_id=764554772]
-layout_mode = 2
-text = "Settings (ESC)"
-
 [node name="MainContainer" type="VBoxContainer" parent="." unique_id=1077725825]
 layout_mode = 1
 anchors_preset = 15

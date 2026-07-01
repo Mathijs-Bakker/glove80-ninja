@@ -34,23 +34,6 @@ theme_type_variation = &"HeaderLarge"
 text = "Glove80 Ninja"
 vertical_alignment = 1
 
-[node name="NavigationContainer" type="HBoxContainer" parent="MainContainer/HeaderContainer" unique_id=75408960]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 2
-
-[node name="PracticeButton" type="Button" parent="MainContainer/HeaderContainer/NavigationContainer" unique_id=180901085]
-layout_mode = 2
-text = "Practice (F1)"
-
-[node name="SettingsButton" type="Button" parent="MainContainer/HeaderContainer/NavigationContainer" unique_id=1201071762]
-layout_mode = 2
-text = "Settings (F2)"
-
-[node name="ProfileButton" type="Button" parent="MainContainer/HeaderContainer/NavigationContainer" unique_id=1078557223]
-layout_mode = 2
-text = "Profile (F3)"
-
 [node name="ContentContainer" type="Control" parent="MainContainer" unique_id=1575189602]
 layout_mode = 2
 size_flags_horizontal = 3

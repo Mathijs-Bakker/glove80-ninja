@@ -6,6 +6,11 @@ signal app_shutting_down
 
 const PRACTICE_CONTROLLER_SCENE = preload("res://src/practice/practice_controller.tscn")
 const SETTINGS_CONTROLLER_SCENE = preload("res://src/settings/settings_controller.tscn")
+const THEME_PATHS = {
+	"dark": "res://themes/dark.tres",
+	"light": "res://themes/light.tres",
+	"high_contrast": "res://themes/dark.tres",
+}
 
 # Application state
 var services_ready_count: int = 0
@@ -159,7 +164,29 @@ func _on_achievement_unlocked(p_achievement_id: String) -> void:
 
 func _apply_app_theme(p_theme_name: String) -> void:
 	Log.info("[AppManager][_apply_app_theme] Applying theme - %s" % p_theme_name)
-	# TODO: Implementation would apply theme to the entire application
+	var theme_path = THEME_PATHS.get(p_theme_name, THEME_PATHS["dark"])
+	var theme_resource = load(theme_path)
+	if not theme_resource is Theme:
+		Log.error("[AppManager][_apply_app_theme] Failed to load theme: %s" % theme_path)
+		return
+
+	ConfigData.theme = theme_resource
+
+	var current_scene = get_tree().current_scene
+	if not current_scene:
+		return
+
+	_apply_theme_to_node(current_scene, theme_resource)
+
+
+func _apply_theme_to_node(p_node: Node, p_theme: Theme) -> void:
+	if p_node is Control:
+		var control = p_node as Control
+		if control == get_tree().current_scene or control.theme:
+			control.theme = p_theme
+
+	for child in p_node.get_children():
+		_apply_theme_to_node(child, p_theme)
 
 
 func _change_app_language(p_language_code: String) -> void:

@@ -30,6 +30,7 @@ func _ready() -> void:
 	_stats.hide()
 
 	_settings = _settings_scn.instantiate()
+	_settings.initialize(ConfigService)
 	add_child(_settings)
 	_settings.hide()
 
